@@ -1,9 +1,3 @@
-//Name Group: Ike Chukz
-//Course: ISTE 121-02
-//Instructor: Michael Flueser
-//Homework#07 (Team): Server
-
-// Packages from Java API
 import java.util.*;
 import java.net.*;
 import java.io.*;
@@ -33,7 +27,7 @@ public class Server extends JFrame {
       setTitle("Server");
 
       jpTextArea = new JPanel(); // Panel for text area
-      jlTextArea = new JLabel("Server Log: "); // Paenl for label
+      jlTextArea = new JLabel("Server Log: "); // Panel for label
 
       jpTextArea.add(jlTextArea); // Add label to the panel
 
@@ -59,7 +53,7 @@ public class Server extends JFrame {
             Socket cSocket = sSocket.accept();
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(cSocket.getOutputStream()));
 
-            // Both Client Socket and printwriter in arrays
+            // Both Client Socket and printwriter in vectors
             SocketConnection.add(cSocket);
             multiClients.add(pw);
 
@@ -67,23 +61,22 @@ public class Server extends JFrame {
             ServerThreads clientRun = new ServerThreads(cSocket);
 
             clientRun.start();
-            ta.append("Connect Successfully\n");
+            writeToClient("Connect Successfully");
          }
       }
 
       catch (IOException ioe) {
-         ta.append("Server failed\n");
+         writeToClient("Server failed");
       }
 
    } // End of default constructor
 
-   // Constructor
    class ServerThreads extends Thread {
       // Required attributes
       Socket cs;
-      BufferedReader br;
-      PrintWriter pwt;
-      String msg;
+      BufferedReader inReader;
+      PrintWriter outWriter;
+      String message;
 
       // constructor ServerThreads and param (Socket cSocket - cs
       ServerThreads(Socket cSocket) {
@@ -94,45 +87,54 @@ public class Server extends JFrame {
       public void run() {
          try {
             // Objects for BufferedReader and PrintWriter
-            br = new BufferedReader(new InputStreamReader(cs.getInputStream()));
-            pwt = new PrintWriter(new OutputStreamWriter(cs.getOutputStream()));
+            inReader = new BufferedReader(new InputStreamReader(cs.getInputStream()));
+            outWriter = new PrintWriter(new OutputStreamWriter(cs.getOutputStream()));
 
-            while ((msg = br.readLine()) != null) {
-               ta.append("Server read: " + msg + "\n");
+            while ((message = inReader.readLine()) != null) {
+               ta.append("Server read: " + message + "\n");
 
                // Loop for PrintWriter object from Vector list
                for (PrintWriter writer : multiClients) {
-                  writer.println(msg);
+                  writer.println(message);
                   writer.flush();
                }
 
             }
-         }
-
-         catch (IOException ioe) {
+         } catch (IOException ioe) {
             System.out.println("Exception thrown  :" + ioe);
-            ta.append("Bad run\n");
+            writeToClient("Bad run");
          }
 
          try {
-            br.close();// close BufferedReader object
-            pwt.close();// Close PrintWriter object
+            writeToClient("Disconnected");// Send (disconnect message) to clients before sockets are closed
+            inReader.close();// close BufferedReader object
+            outWriter.close();// Close PrintWriter object
             cs.close();// Close the socket
-            ta.append("Disconnected\n");// Send (disconnect message) to clients
-         }
-
-         catch (IOException ie) {
-            ta.append("Disconnected");
+         } catch (IOException ie) {
+            writeToClient("Disconnected");
          }
 
       } // End of run method
 
    } // End of ServerThreads class
 
-   // Main method
    public static void main(String[] args) {
-      new Server(); // Server constructor
+      new Server();
 
    } // End of main method
 
-} // End of this program
+   /**
+    * writeToClient This method takes the provided message, appends it to the local
+    * text area and sends it to all connected clients.
+    * 
+    * @param _message
+    */
+   public void writeToClient(String _message) {
+      for (PrintWriter writer : multiClients) {
+         writer.println(_message);
+         writer.flush();
+      }
+      ta.append(_message + "\n");
+   }
+
+}
