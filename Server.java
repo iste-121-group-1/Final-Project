@@ -78,12 +78,14 @@ public class Server extends JFrame {
       PrintWriter outWriter;
       String message;
 
-      // constructor ServerThreads and param (Socket cSocket - cs
+      /**
+       * ServerThreads is a Thread class that contains the main loop for server io.
+       * @param cSocket The client socket that has connected.
+       */
       ServerThreads(Socket cSocket) {
          cs = cSocket;
       }
 
-      // Run method
       public void run() {
          try {
             // Objects for BufferedReader and PrintWriter
@@ -127,13 +129,21 @@ public class Server extends JFrame {
     * writeToClient This method takes the provided message, appends it to the local
     * text area and sends it to all connected clients.
     * 
-    * @param _message
+    * @param _message The string that the is to be sent to both the client and the log.
     */
    public void writeToClient(String _message) {
       for (PrintWriter writer : multiClients) {
          writer.println(_message);
          writer.flush();
       }
+      ta.append(_message + "\n");
+   }
+
+   /**
+    * writeToLog is a convience method for writing to the server log.
+    * @param _message The string that is logged by the server.  
+    */
+   public void writeToLog(String _message) {
       ta.append(_message + "\n");
    }
 
