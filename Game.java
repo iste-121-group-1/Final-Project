@@ -97,10 +97,17 @@ public class Game extends JFrame implements KeyListener {
         switch(GameState) {
         case MENU:
             break;
+        case CREATE:
+            break;
         case GAME:
             player.update(level);
             level.update(player);
+            break;
+        case CHAT:
+            break;
         case LEADERBOARD:
+            break;
+        case QUIT:
             break;
         } // end switch
     } // end update
@@ -108,6 +115,8 @@ public class Game extends JFrame implements KeyListener {
     public void draw() {
         switch(GameState) {
         case MENU:
+            break;
+        case CREATE:
             break;
         case GAME:
             // get canvas
@@ -127,6 +136,10 @@ public class Game extends JFrame implements KeyListener {
             strategy.show();
             break;
         case LEADERBOARD:
+            break;
+        case CHAT:
+            break;
+        case QUIT:
             break;
         } // end switch
     } // end draw
