@@ -1,27 +1,24 @@
+package finalGame;
 import java.util.*;
 import java.net.*;
 import java.io.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
-// Create Server class extending from JFrame 
 public class GameServer extends JFrame {
    JPanel jpTextArea;
    JLabel jlTextArea;
    // Vector objects for Socket and PrintWriter
    Vector<Socket> SocketConnection = new Vector<Socket>();
-   Vector<PrintWriter> multiClients = new Vector<PrintWriter>();
+   Vector<PrintWriter> clientWriters = new Vector<PrintWriter>();
 
-   // BufferedReader object
    BufferedReader bufferedReader;
 
-   // Text area object
    JTextArea textArea = new JTextArea(20, 30);
 
-   // Constructor Server
    public GameServer() {
 
+      // GUI
       setSize(400, 420);
       setLocationRelativeTo(null);
       setTitle("Server");
@@ -38,48 +35,47 @@ public class GameServer extends JFrame {
       textArea.setEditable(false);
       jpTextArea.add(scroll);
 
-      add(jpTextArea, BorderLayout.CENTER); // Add text area panel to the center of borderlayout
+      add(jpTextArea, BorderLayout.CENTER);
 
       setDefaultCloseOperation(EXIT_ON_CLOSE);
       setVisible(true);
+      // end GUI
 
       try {
 
-         // An object for ServerSocket that is using localhost as port number
          ServerSocket sSocket = new ServerSocket(16789);
 
          while (true) {
-            // Accept from client
             Socket cSocket = sSocket.accept();
-            PrintWriter pw = new PrintWriter(new OutputStreamWriter(cSocket.getOutputStream()));
+            PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(cSocket.getOutputStream()));
 
-            // Both Client Socket and printwriter in vectors
+            // add client sockets and writers to their respective vectors
             SocketConnection.add(cSocket);
-            multiClients.add(pw);
+            clientWriters.add(printWriter);
 
-            // An object for ServerThreads, then run as multithread.
             ServerThreads clientRun = new ServerThreads(cSocket);
-
             clientRun.start();
-            writeToClient("Connect Successfully");
+
+            writeToClient("Connected Successfully");
          }
-      }
-
-      catch (IOException ioe) {
+      } catch (IOException ioe) {
          writeToClient("Server failed");
+         System.exit(1); // Exit with error code 1 (not sure how this works on windows)
       }
 
-   } // End of default constructor
+   }
 
    class ServerThreads extends Thread {
-      // Required attributes
       Socket cs;
       BufferedReader inReader;
       PrintWriter outWriter;
       String message;
+      ObjectInputStream getClientData;
+      ObjectOutputStream sendClientData;
 
       /**
        * ServerThreads is a Thread class that contains the main loop for server io.
+       * 
        * @param cSocket The client socket that has connected.
        */
       ServerThreads(Socket cSocket) {
@@ -89,13 +85,56 @@ public class GameServer extends JFrame {
       public void run() {
          try {
 
-            // The server needs to both send and recieve a Pair() of x and y locations CONSTANTLY
-            // This will let the client both send where its player is and recieve where the other players are.
+            // TODO The server needs to both send and recieve a Pair() of x and y locations
+            // CONSTANTLY
+            // This will let the client both send where its player is and recieve where the
+            // other players are.
+            // TODO The server also needs to keep track of the GameState of each connected
+            // player, as well as their username.
             // seperate socket?
             // switch statements for recieved data types?
             // something else?
 
-            // Objects for BufferedReader and PrintWriter
+            // PLAN TODO
+            // for now, assume client will send Objects,
+            // a TextData for the messaging client
+            // and
+            // a GameData for the game client
+            // TextData will contain Type: Text and a String with the message
+            // GameData will contain Type: Game
+            // Player GameState
+            // Player Name
+            // Player Color
+            // Player Position
+            // thats it?
+
+            getClientData = new ObjectInputStream(cs.getInputStream());
+            sendClientData = new ObjectOutputStream(cs.getOutputStream());
+
+            // getClientData will always recieve a TextData, GameData, or will die
+            try {
+               //System.out.println(getClientData.readObject());
+               DataObject tempObject = (DataObject) getClientData.readObject();
+               switch (tempObject.DataType) {
+                  case TEXT:
+                     
+                     break;
+               
+                  case GAME:
+
+                     break;
+                  default:
+                     break;
+               }
+               
+            } catch (Exception e) {
+               // TODO: handle exception
+            }
+            // while (true) {
+
+            // }
+
+            // not really sure if I will end up using this ↓
             inReader = new BufferedReader(new InputStreamReader(cs.getInputStream()));
             outWriter = new PrintWriter(new OutputStreamWriter(cs.getOutputStream()));
 
@@ -103,7 +142,7 @@ public class GameServer extends JFrame {
                textArea.append("Server read: " + message + "\n");
 
                // Loop for PrintWriter object from Vector list
-               for (PrintWriter writer : multiClients) {
+               for (PrintWriter writer : clientWriters) {
                   writer.println(message);
                   writer.flush();
                }
@@ -116,30 +155,31 @@ public class GameServer extends JFrame {
 
          try {
             writeToClient("Disconnected");// Send (disconnect message) to clients before sockets are closed
-            inReader.close();// close BufferedReader object
-            outWriter.close();// Close PrintWriter object
-            cs.close();// Close the socket
+            inReader.close();
+            outWriter.close();
+            cs.close();
          } catch (IOException ie) {
             writeToClient("Disconnected");
          }
 
-      } // End of run method
+      }
 
-   } // End of ServerThreads class
+   }
 
    public static void main(String[] args) {
       new GameServer();
 
-   } // End of main method
+   }
 
    /**
-    * writeToClient This method takes the provided message, appends it to the local
-    * text area and sends it to all connected clients.
+    * This method takes the provided message, appends it to the local text area and
+    * sends it to all connected clients.
     * 
-    * @param _message The string that the is to be sent to both the client and the log.
+    * @param _message The string that the is to be sent to both the client and the
+    *                 log.
     */
    public void writeToClient(String _message) {
-      for (PrintWriter writer : multiClients) {
+      for (PrintWriter writer : clientWriters) {
          writer.println(_message);
          writer.flush();
       }
@@ -148,7 +188,8 @@ public class GameServer extends JFrame {
 
    /**
     * writeToLog is a convience method for writing to the server log.
-    * @param _message The string that is logged by the server.  
+    * 
+    * @param _message The string that is logged by the server.
     */
    public void writeToLog(String _message) {
       textArea.append(_message + "\n");
