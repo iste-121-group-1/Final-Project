@@ -4,8 +4,8 @@ package finalGame;
  */
 public class TextData extends DataObject{
 
-    DataType type;
-    String message;
+    public DataType type;
+    public String message;
     
     public TextData() {
         type = DataType.TEXT;

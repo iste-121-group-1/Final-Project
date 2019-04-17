@@ -8,17 +8,17 @@ import java.awt.Color;
  */
 public class GameData extends DataObject{
 
-                // GameData will contain Type: Game
+            // GameData will contain Type: Game
             // Player GameState
             // Player Name
             // Player Color
             // Player Position -> for now, seperated as xpos and ypos
-    DataType type;
-    GAME_STATES state;
-    String name;
-    Color color;
-    int xpos;
-    int ypos;
+    public DataType type;
+    public GAME_STATES state;
+    public String name;
+    public Color color;
+    public int xpos;
+    public int ypos;
     
     public GameData(GAME_STATES _state, String _name, Color _color, int _xpos, int _ypos) {
         type = DataType.GAME;
@@ -28,9 +28,4 @@ public class GameData extends DataObject{
         xpos = _xpos;
         ypos = _ypos;
     }
-    
-    /*public GameData(String _message) {
-        type = DataType.GAME;
-        //message = _message;
-    }*/
 }

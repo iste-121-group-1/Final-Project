@@ -117,7 +117,7 @@ public class GameServer extends JFrame {
                DataObject tempObject = (DataObject) getClientData.readObject();
                switch (tempObject.DataType) {
                   case TEXT:
-                     
+                     writeToClient((TextData)tempObject.message);
                      break;
                
                   case GAME:
