@@ -163,8 +163,8 @@ public class Game extends JFrame implements KeyListener {
             lastFrame = startFrame;
             
             // call update and draw methods
-            update();
             draw();
+            update();
             
             // dynamic thread sleep, only sleep the time we need to cap framerate
             rest = (1000 / MAX_FPS) - (System.currentTimeMillis() - startFrame);
