@@ -26,7 +26,7 @@ class Client extends JFrame implements ActionListener {
    JButton jbMessage = new JButton("Send");
 
    // Attributes
-   public static final int SERVER_PORT = 32001;
+   public static final int SERVER_PORT = 16789;
    private Socket cSocket = null;
    public String name = "";
 
