@@ -16,6 +16,12 @@ public class GameServer extends JFrame {
    Vector<Socket> SocketConnection = new Vector<Socket>();
    Vector<PrintWriter> clientWriters = new Vector<PrintWriter>();
 
+   // ArrayLists for client data
+   ArrayList<GAME_STATES> clientState = new ArrayList<GAME_STATES>();
+   ArrayList<String> clientNames = new ArrayList<String>();
+   ArrayList<Integer> clientXpos = new ArrayList<Integer>();
+   ArrayList<Integer> clientYpos = new ArrayList<Integer>();
+
    BufferedReader bufferedReader;
 
    JTextArea textArea = new JTextArea(20, 30);
