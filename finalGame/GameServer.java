@@ -1,8 +1,12 @@
 package finalGame;
+
 import java.util.*;
 import java.net.*;
 import java.io.*;
 import javax.swing.*;
+
+import finalGame.Game.GAME_STATES;
+
 import java.awt.*;
 
 public class GameServer extends JFrame {
@@ -111,17 +115,28 @@ public class GameServer extends JFrame {
             getClientData = new ObjectInputStream(cs.getInputStream());
             sendClientData = new ObjectOutputStream(cs.getOutputStream());
 
+            // player data
+            final GAME_STATES state;
+            final String name;
+            final Color color;
+            final int xpos;
+            final int ypos;
+
             // getClientData will always recieve a TextData, GameData, or will die
             try {
                //System.out.println(getClientData.readObject());
                DataObject tempObject = (DataObject) getClientData.readObject();
                switch (tempObject.DataType) {
                   case TEXT:
-                     writeToClient((TextData)tempObject.message);
+                     writeToClient(((TextData)tempObject).message);  // this line of code should be a crime
                      break;
                
                   case GAME:
-
+                     state = ((GameData)tempObject).state;
+                     name = ((GameData)tempObject).name;
+                     color = ((GameData)tempObject).color;
+                     xpos = ((GameData)tempObject).xpos;
+                     ypos = ((GameData)tempObject).ypos;
                      break;
                   default:
                      break;
@@ -130,11 +145,8 @@ public class GameServer extends JFrame {
             } catch (Exception e) {
                // TODO: handle exception
             }
-            // while (true) {
 
-            // }
-
-            // not really sure if I will end up using this ↓
+            // not really sure if I will end up using this ↓  <- probabaly wont
             inReader = new BufferedReader(new InputStreamReader(cs.getInputStream()));
             outWriter = new PrintWriter(new OutputStreamWriter(cs.getOutputStream()));
 
