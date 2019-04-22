@@ -207,10 +207,10 @@ public class GameServer extends JFrame {
     */
    public void writeToClient(String _message) {
       for (PrintWriter writer : clientWriters) {
-         writer.println(_message);
+         writer.println("SERVER: " + _message);
          writer.flush();
       }
-      textArea.append(_message + "\n");
+      textArea.append("SERVER: " + _message + "\n");
    }
 
    /**
