@@ -11,6 +11,7 @@ public class Terrain extends GameObject {
         myGround.add(new TerrainComponents(0, 670, 1080, 50));
         myGround.add(new TerrainComponents(360, 0, 50, 400));
         myGround.add(new TerrainComponents(500, 400, 50, 50));
+        myGround.add(new TerrainComponents(800, 0, 50, 720));
     } //
     
     public void update(GameObject o) {

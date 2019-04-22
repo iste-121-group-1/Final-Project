@@ -109,23 +109,35 @@ public class Player extends GameObject {
         }
         
         // Check if collision is on the player's left
-        if (player.getX() > o.getX() + o.getWidth()) {
+        if (player.getX() < o.getX() + o.getWidth()) {
             vx = 0;
             leftC = true;
+            left = false;
             if (right) {
                 vx = 1;
-            }    
+            }
         }
         
         // Check if collision is on the player's right
-        if (player.getX() + player.getWidth() < o.getX()) {
+        if (player.getX() + player.getWidth() > o.getX()) {
             vx = 0;
             rightC = true;
+            right = false;
             if (left) {
                 vx = -1;
             }
         }
         
+        // If collision, check for what ways can be moved 
+        if (rightC || leftC) {
+            if (jump && !upC) {
+                vy = -10;
+            } else if (!downC) {
+                vy = 1;
+            } else if (downC) {
+                vy = 0;
+            }
+        } 
         // If no collision, do regular movement
         if (!(rightC && leftC)) {
             if (right) {
