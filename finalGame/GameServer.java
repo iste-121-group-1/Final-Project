@@ -17,10 +17,14 @@ public class GameServer extends JFrame {
    Vector<PrintWriter> clientWriters = new Vector<PrintWriter>();
 
    // ArrayLists for client data
-   ArrayList<GAME_STATES> clientState = new ArrayList<GAME_STATES>();
+   ArrayList<GameData> clientData = new ArrayList<>();
+   //ArrayList<GAME_STATES> clientState = new ArrayList<GAME_STATES>();
+
+   // store usernames and colors seperately, since they are only used once
    ArrayList<String> clientNames = new ArrayList<String>();
-   ArrayList<Integer> clientXpos = new ArrayList<Integer>();
-   ArrayList<Integer> clientYpos = new ArrayList<Integer>();
+   ArrayList<Color> clientColors = new ArrayList<Color>();
+   //ArrayList<Integer> clientXpos = new ArrayList<Integer>();
+   //ArrayList<Integer> clientYpos = new ArrayList<Integer>();
 
    BufferedReader bufferedReader;
 
@@ -130,21 +134,26 @@ public class GameServer extends JFrame {
 
             // getClientData will always recieve a TextData, GameData, or will die
             try {
-               //System.out.println(getClientData.readObject());
+               // most of this switch statement should be considered a war crime, be warned
                DataObject tempObject = (DataObject) getClientData.readObject();
                switch (tempObject.DataType) {
                   case TEXT:
-                     writeToClient(((TextData)tempObject).message);  // this line of code should be a crime
+                     writeToClient(((TextData)tempObject).message);
                      break;
                
                   case GAME:
                      state = ((GameData)tempObject).state;
                      name = ((GameData)tempObject).name;
                      color = ((GameData)tempObject).color;
+                     if (clientColors.contains(color)) {
+                        // tell client to pick a different color
+                        writeToClient("Pick a different color!");
+                     }
                      xpos = ((GameData)tempObject).xpos;
                      ypos = ((GameData)tempObject).ypos;
                      break;
                   default:
+                     // do nothing at all
                      break;
                }
                
