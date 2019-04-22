@@ -219,7 +219,7 @@ public class GameServer extends JFrame {
     * @param _message The string that is logged by the server.
     */
    public void writeToLog(String _message) {
-      textArea.append(_message + "\n");
+      textArea.append("LOG: " + _message + "\n");
    }
 
 }
