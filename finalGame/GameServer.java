@@ -14,7 +14,7 @@ public class GameServer extends JFrame {
    JLabel jlTextArea;
    // Vector objects for Socket and PrintWriter
    Vector<Socket> SocketConnection = new Vector<Socket>();
-   Vector<PrintWriter> clientWriters = new Vector<PrintWriter>();
+   Vector<ObjectOutputStream> clientWriters = new Vector<ObjectOutputStream>();
 
    // ArrayLists for client data
    ArrayList<GameData> clientData = new ArrayList<>();
@@ -58,16 +58,21 @@ public class GameServer extends JFrame {
       try {
 
          ServerSocket sSocket = new ServerSocket(16789);
+         ObjectInputStream getClientData;
+         ObjectOutputStream sendClientData;
 
          while (true) {
             Socket cSocket = sSocket.accept();
-            PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(cSocket.getOutputStream()));
+            //PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(cSocket.getOutputStream()));
+            // switched to ObjectOutputStreams
+            getClientData = new ObjectInputStream(cSocket.getInputStream());
+            sendClientData = new ObjectOutputStream(cSocket.getOutputStream());
 
             // add client sockets and writers to their respective vectors
             SocketConnection.add(cSocket);
-            clientWriters.add(printWriter);
+            clientWriters.add(sendClientData);
 
-            ServerThreads clientRun = new ServerThreads(cSocket);
+            ServerThreads clientRun = new ServerThreads(cSocket, getClientData, sendClientData);
             clientRun.start();
 
             writeToClient("Connected Successfully");
@@ -81,23 +86,22 @@ public class GameServer extends JFrame {
 
    class ServerThreads extends Thread {
       Socket cs;
-      BufferedReader inReader;
-      PrintWriter outWriter;
-      String message;
       ObjectInputStream getClientData;
       ObjectOutputStream sendClientData;
+      String message;
 
       /**
        * ServerThreads is a Thread class that contains the main loop for server io.
        * 
        * @param cSocket The client socket that has connected.
        */
-      ServerThreads(Socket cSocket) {
+      ServerThreads(Socket cSocket, ObjectInputStream get, ObjectOutputStream send) {
          cs = cSocket;
+         getClientData = get;
+         sendClientData = send;
       }
 
       public void run() {
-         try {
 
             // TODO The server needs to both send and recieve a Pair() of x and y locations
             // CONSTANTLY
@@ -106,7 +110,7 @@ public class GameServer extends JFrame {
             // TODO The server also needs to keep track of the GameState of each connected
             // player, as well as their username.
             // seperate socket?
-            // switch statements for recieved data types?
+            // switch statements for recieved data types
             // something else?
 
             // PLAN TODO
@@ -122,10 +126,10 @@ public class GameServer extends JFrame {
             // Player Position
             // thats it?
 
-            getClientData = new ObjectInputStream(cs.getInputStream());
-            sendClientData = new ObjectOutputStream(cs.getOutputStream());
+            //getClientData // = new ObjectInputStream(cs.getInputStream()); these are now passed in to prevent duplication
+            //sendClientData// = new ObjectOutputStream(cs.getOutputStream());
 
-            // player data
+            // player data <- not sure why these have to be final, might cause problems?
             final GAME_STATES state;
             final String name;
             final Color color;
@@ -162,10 +166,11 @@ public class GameServer extends JFrame {
             }
 
             // TODO change this block to send username and message to client, as part of the chat program
+            // TODO change this whole block to use the object io bits that are passed in
             // not really sure if I will end up using this ↓  <- wont
-            inReader = new BufferedReader(new InputStreamReader(cs.getInputStream()));
-            outWriter = new PrintWriter(new OutputStreamWriter(cs.getOutputStream()));
-
+            //inReader = new BufferedReader(new InputStreamReader(cs.getInputStream()));
+            //outWriter = new PrintWriter(new OutputStreamWriter(cs.getOutputStream()));
+/*
             while ((message = inReader.readLine()) != null) {
                textArea.append("Server read: " + message + "\n");
 
@@ -175,16 +180,12 @@ public class GameServer extends JFrame {
                   writer.flush();
                }
 
-            }
-         } catch (IOException ioe) {
-            System.out.println("Exception thrown  :" + ioe);
-            writeToClient("Bad run");
-         }
+            }*/
 
          try {
             writeToClient("Disconnected");// Send (disconnect message) to clients before sockets are closed
-            inReader.close();
-            outWriter.close();
+            getClientData.close();
+            sendClientData.close();
             cs.close();
          } catch (IOException ie) {
             writeToClient("Disconnected");
@@ -194,6 +195,10 @@ public class GameServer extends JFrame {
 
    }
 
+   /**
+    * Main event loop
+    * @param args array of command line argument Strings
+    */
    public static void main(String[] args) {
       new GameServer();
 
@@ -208,14 +213,19 @@ public class GameServer extends JFrame {
     */
    public void writeToClient(String _message) {
       for (ObjectOutputStream sendClientData : clientWriters) {
-         writer.println("SERVER: " + _message);
-         writer.flush();
+         String builderString = "SERVER: " + _message;
+         try {
+            sendClientData.writeObject(new TextData(builderString));
+         } catch (IOException ioe) {
+            //TODO: handle io exception
+         }
+         //writer.flush();
       }
       textArea.append("SERVER: " + _message + "\n");
    }
 
    /**
-    * writeToLog is a convience method for writing to the server log.
+    * writeToLog is a convenience method for writing to the server log.
     * 
     * @param _message The string that is logged by the server.
     */
