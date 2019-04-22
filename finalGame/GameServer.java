@@ -161,7 +161,8 @@ public class GameServer extends JFrame {
                // TODO: handle exception
             }
 
-            // not really sure if I will end up using this ↓  <- probabaly wont
+            // TODO change this block to send username and message to client, as part of the chat program
+            // not really sure if I will end up using this ↓  <- wont
             inReader = new BufferedReader(new InputStreamReader(cs.getInputStream()));
             outWriter = new PrintWriter(new OutputStreamWriter(cs.getOutputStream()));
 
@@ -206,7 +207,7 @@ public class GameServer extends JFrame {
     *                 log.
     */
    public void writeToClient(String _message) {
-      for (PrintWriter writer : clientWriters) {
+      for (ObjectOutputStream sendClientData : clientWriters) {
          writer.println("SERVER: " + _message);
          writer.flush();
       }

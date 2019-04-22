@@ -13,7 +13,7 @@ public class GameData extends DataObject {
     // Player GameState
     // Player Name
     // Player Color
-    // Player Position -> for now, seperated as xpos and ypos
+    // Player Position -> seperated as xpos and ypos
     public DataType type;
     public GAME_STATES state;
     public String name;
