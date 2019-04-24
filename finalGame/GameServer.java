@@ -237,8 +237,8 @@ public class GameServer extends JFrame {
    /**
     * Method to take a username and text message and send to all clients
     * 
-    * @param _username
-    * @param _message
+    * @param _username the username of the client sending the messsage
+    * @param _message the message that is being sent
     */
    public void clientMessage(String _username, String _message) {
       for (ObjectOutputStream sender : clientWriters) {
@@ -254,8 +254,8 @@ public class GameServer extends JFrame {
    /**
     * Method to update each clients position
     * 
-    * @param _xpos
-    * @param _ypos
+    * @param _xpos the xpos to update the player xpos to
+    * @param _ypos the ypos to update the player ypos to
     */
    public void updateClientPos(int _xpos, int _ypos) {
       for (ObjectOutputStream sender : clientWriters) {
@@ -270,7 +270,8 @@ public class GameServer extends JFrame {
 
    /**
     * Method to update each client's Game State
-    * @param state
+    *
+    * @param state the GAME_STATES to update the clients to
     */
    public void updateClientState(GAME_STATES state) {
       for (ObjectOutputStream sender : clientWriters) {
