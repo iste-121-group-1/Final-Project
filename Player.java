@@ -1,4 +1,3 @@
-package finalGame;
 import java.awt.*;
 import java.util.*;
 
@@ -31,6 +30,8 @@ public class Player extends GameObject {
     private void spawn() {
         this.px = spawnX;
         this.py = spawnY;
+        // this.px = 50;
+        // this.py = 620;
     } 
     
     public void update(GameObject o) {
@@ -49,7 +50,7 @@ public class Player extends GameObject {
             playerStop(collidedWith);
         } else {
             if (jump) {
-                vy = -50;
+                vy = -10;
             } else {
                 vy = 1;
             }
@@ -92,21 +93,23 @@ public class Player extends GameObject {
         boolean rightC = false;
         
         // Check if collision is on player's bottom
-        if (player.getY() + player.getHeight() > o.getY()) {
-            setY(o.getY() - player.getHeight());
+        if (player.getY() + player.getHeight() > o.getHeight()) {
+            setY(o.getHeight() - player.getHeight());
+            System.out.println(getX());
+            System.out.println(getY());
             player.setLocation(getX(), getY());
             bottomC = true;
             if (jump) {
-                vy = -50;
+                vy = -10;
                 bottomC = false;
             }
         }
         
         /*// Check if collision is on player's top
-        if (player.getY() < o.getHeight() + o.getY()) {
+        if (player.getY() > o.getHeight() + o.getY()) {
             vy = 0;
             topC = true;
-        }
+        }*/
         
         // Check if collision is on the player's left
         if (player.getX() > o.getX() + o.getWidth()) {
@@ -127,9 +130,10 @@ public class Player extends GameObject {
             if (left) {
                 vx = -1;
             }
-        } */
+        }
         
         if (bottomC && (!leftC || !rightC)) {
+            System.out.println("Bottom Collision only");
             if (left) {
                 vx = -1;
             }
@@ -137,6 +141,7 @@ public class Player extends GameObject {
                 vx = 1;
             }
         } else if (bottomC && leftC) {
+            System.out.println("Bottom and Left Collision");
             if (left) {
                 vx = 0;
             }
@@ -144,6 +149,7 @@ public class Player extends GameObject {
                 vx = 1;
             }
         } else if (bottomC && rightC) {
+            System.out.println("Bottom and Right Collision");
             if (left) {
                 vx = -1;
             }
@@ -152,10 +158,10 @@ public class Player extends GameObject {
             }
         } // end checks for bottom + other collisions
         
-       /* // If collision, check for what ways can be moved 
+        // If collision, check for what ways can be moved 
         if (rightC || leftC) {
             if (jump && !topC) {
-                vy = -50;
+                vy = -10;
             } else if (!bottomC) {
                 vy = 1;
             } else if (bottomC) {
@@ -171,15 +177,15 @@ public class Player extends GameObject {
             } else {
                 vx = 0;    
             }
-        } */
+        }
     } // end playerStop
     
     public void setX(double x) {
-        px = (float) x;
+        vx = (float) x;
     } // end setX
     
     public void setY(double y) {
-        py = (float) y;
+        vy = (float) y;
     } // end setY
 
 } // end Player
