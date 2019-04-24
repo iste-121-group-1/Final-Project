@@ -18,13 +18,13 @@ public class GameServer extends JFrame {
 
    // ArrayLists for client data
    ArrayList<GameData> clientData = new ArrayList<>();
-   //ArrayList<GAME_STATES> clientState = new ArrayList<GAME_STATES>();
+   // ArrayList<GAME_STATES> clientState = new ArrayList<GAME_STATES>();
 
    // store usernames and colors seperately, since they are only used once
    ArrayList<String> clientNames = new ArrayList<String>();
    ArrayList<Color> clientColors = new ArrayList<Color>();
-   //ArrayList<Integer> clientXpos = new ArrayList<Integer>();
-   //ArrayList<Integer> clientYpos = new ArrayList<Integer>();
+   // ArrayList<Integer> clientXpos = new ArrayList<Integer>();
+   // ArrayList<Integer> clientYpos = new ArrayList<Integer>();
 
    BufferedReader bufferedReader;
 
@@ -63,7 +63,8 @@ public class GameServer extends JFrame {
 
          while (true) {
             Socket cSocket = sSocket.accept();
-            //PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(cSocket.getOutputStream()));
+            // PrintWriter printWriter = new PrintWriter(new
+            // OutputStreamWriter(cSocket.getOutputStream()));
             // switched to ObjectOutputStreams
             getClientData = new ObjectInputStream(cSocket.getInputStream());
             sendClientData = new ObjectOutputStream(cSocket.getOutputStream());
@@ -103,84 +104,84 @@ public class GameServer extends JFrame {
 
       public void run() {
 
-            // TODO The server needs to both send and recieve a Pair() of x and y locations
-            // CONSTANTLY
-            // This will let the client both send where its player is and recieve where the
-            // other players are.
-            // TODO The server also needs to keep track of the GameState of each connected
-            // player, as well as their username.
-            // seperate socket?
-            // switch statements for recieved data types
-            // something else?
+         // TODO The server needs to both send and recieve a Pair() of x and y locations
+         // CONSTANTLY
+         // This will let the client both send where its player is and recieve where the
+         // other players are.
+         // TODO The server also needs to keep track of the GameState of each connected
+         // player, as well as their username.
+         // seperate socket?
+         // switch statements for recieved data types
+         // something else?
 
-            // PLAN TODO
-            // for now, assume client will send Objects,
-            // a TextData for the messaging client
-            // and
-            // a GameData for the game client
-            // TextData will contain Type: Text and a String with the message
-            // GameData will contain Type: Game
-            // Player GameState
-            // Player Name
-            // Player Color
-            // Player Position
-            // thats it?
+         // PLAN TODO
+         // for now, assume client will send Objects,
+         // a TextData for the messaging client
+         // and
+         // a GameData for the game client
+         // TextData will contain Type: Text and a String with the message
+         // GameData will contain Type: Game
+         // Player GameState
+         // Player Name
+         // Player Color
+         // Player Position
+         // thats it?
 
-            //getClientData // = new ObjectInputStream(cs.getInputStream()); these are now passed in to prevent duplication
-            //sendClientData// = new ObjectOutputStream(cs.getOutputStream());
+         // getClientData // = new ObjectInputStream(cs.getInputStream()); these are now
+         // passed in to prevent duplication
+         // sendClientData// = new ObjectOutputStream(cs.getOutputStream());
 
-            // player data <- not sure why these have to be final, might cause problems?
-            final GAME_STATES state;
-            final String name;
-            final Color color;
-            final int xpos;
-            final int ypos;
+         // player data <- not sure why these have to be final, might cause problems?
+         final GAME_STATES state;
+         final String name;
+         final Color color;
+         final int xpos;
+         final int ypos;
 
-            // getClientData will always recieve a TextData, GameData, or will die
-            try {
-               // most of this switch statement should be considered a war crime, be warned
-               DataObject tempObject = (DataObject) getClientData.readObject();
-               switch (tempObject.DataType) {
-                  case TEXT:
-                     writeToClient(((TextData)tempObject).message);
-                     break;
-               
-                  case GAME:
-                     state = ((GameData)tempObject).state;
-                     name = ((GameData)tempObject).name;
-                     color = ((GameData)tempObject).color;
-                     if (clientColors.contains(color)) {
-                        // tell client to pick a different color
-                        writeToClient("Pick a different color!");
-                     }
-                     xpos = ((GameData)tempObject).xpos;
-                     ypos = ((GameData)tempObject).ypos;
-                     break;
-                  default:
-                     // do nothing at all
-                     break;
+         // getClientData will always recieve a TextData, GameData, or will die
+         try {
+            // most of this switch statement should be considered a war crime, be warned
+            DataObject tempObject = (DataObject) getClientData.readObject();
+            switch (tempObject.DataType) {
+            case TEXT:
+               writeToClient(((TextData) tempObject).message);
+               break;
+
+            case GAME:
+               state = ((GameData) tempObject).state;
+               name = ((GameData) tempObject).name;
+               color = ((GameData) tempObject).color;
+               if (clientColors.contains(color)) {
+                  // tell client to pick a different color
+                  writeToClient("Pick a different color!");
                }
-               
-            } catch (Exception e) {
-               // TODO: handle exception
+               xpos = ((GameData) tempObject).xpos;
+               ypos = ((GameData) tempObject).ypos;
+               break;
+            default:
+               // do nothing at all
+               break;
             }
 
-            // TODO change this block to send username and message to client, as part of the chat program
-            // TODO change this whole block to use the object io bits that are passed in
-            // not really sure if I will end up using this ↓  <- wont
-            //inReader = new BufferedReader(new InputStreamReader(cs.getInputStream()));
-            //outWriter = new PrintWriter(new OutputStreamWriter(cs.getOutputStream()));
-/*
-            while ((message = inReader.readLine()) != null) {
-               textArea.append("Server read: " + message + "\n");
+         } catch (Exception e) {
+            // TODO: handle exception
+         }
 
-               // Loop for PrintWriter object from Vector list
-               for (PrintWriter writer : clientWriters) {
-                  writer.println(message);
-                  writer.flush();
-               }
-
-            }*/
+         // TODO change this block to send username and message to client, as part of the
+         // chat program
+         // TODO change this whole block to use the object io bits that are passed in
+         // not really sure if I will end up using this ↓ <- wont
+         // inReader = new BufferedReader(new InputStreamReader(cs.getInputStream()));
+         // outWriter = new PrintWriter(new OutputStreamWriter(cs.getOutputStream()));
+         /*
+          * while ((message = inReader.readLine()) != null) {
+          * textArea.append("Server read: " + message + "\n");
+          * 
+          * // Loop for PrintWriter object from Vector list for (PrintWriter writer :
+          * clientWriters) { writer.println(message); writer.flush(); }
+          * 
+          * }
+          */
 
          try {
             writeToClient("Disconnected");// Send (disconnect message) to clients before sockets are closed
@@ -197,6 +198,7 @@ public class GameServer extends JFrame {
 
    /**
     * Main event loop
+    * 
     * @param args array of command line argument Strings
     */
    public static void main(String[] args) {
@@ -217,9 +219,8 @@ public class GameServer extends JFrame {
          try {
             sendClientData.writeObject(new TextData(builderString));
          } catch (IOException ioe) {
-            //TODO: handle io exception
+            // TODO: handle io exception
          }
-         //writer.flush();
       }
       textArea.append("SERVER: " + _message + "\n");
    }
@@ -233,15 +234,55 @@ public class GameServer extends JFrame {
       textArea.append("LOG: " + _message + "\n");
    }
 
+   /**
+    * Method to take a username and text message and send to all clients
+    * 
+    * @param _username
+    * @param _message
+    */
    public void clientMessage(String _username, String _message) {
       for (ObjectOutputStream sender : clientWriters) {
          String builderString = _username + ": " + _message;
          try {
             sender.writeObject(new TextData(builderString));
          } catch (IOException ioe) {
-            //TODO: handle io exception
+            // TODO: handle io exception
          }
       }
    }
 
+   /**
+    * Method to update each clients position
+    * 
+    * @param _xpos
+    * @param _ypos
+    */
+   public void updateClientPos(int _xpos, int _ypos) {
+      for (ObjectOutputStream sender : clientWriters) {
+         // ObjectOutputStream sender = clientWriters.get(clientId);
+         try {
+            sender.writeObject(new GameData(_xpos, _ypos));
+         } catch (IOException ioe) {
+            // TODO: handle io exception
+         }
+      }
+   }
+
+   /**
+    * Method to update each client's Game State
+    * @param state
+    */
+   public void updateClientState(GAME_STATES state) {
+      for (ObjectOutputStream sender : clientWriters) {
+         // ObjectOutputStream sender = clientWriters.get(clientId);
+         try {
+            sender.writeObject(new GameData(state));
+         } catch (IOException ioe) {
+            // TODO: handle io exception
+         }
+      }
+   }
 }
+
+// TODO game only startable once 4 players connected
+// TODO game cannot have more than 4 players connected at once
