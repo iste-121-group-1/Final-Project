@@ -206,7 +206,7 @@ public class GameServer extends JFrame {
 
    /**
     * This method takes the provided message, appends it to the local text area and
-    * sends it to all connected clients.
+    * sends it to all connected clients as a TextData
     * 
     * @param _message The string that the is to be sent to both the client and the
     *                 log.
@@ -231,6 +231,17 @@ public class GameServer extends JFrame {
     */
    public void writeToLog(String _message) {
       textArea.append("LOG: " + _message + "\n");
+   }
+
+   public void clientMessage(String _username, String _message) {
+      for (ObjectOutputStream sender : clientWriters) {
+         String builderString = _username + ": " + _message;
+         try {
+            sender.writeObject(new TextData(builderString));
+         } catch (IOException ioe) {
+            //TODO: handle io exception
+         }
+      }
    }
 
 }
