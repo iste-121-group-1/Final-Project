@@ -1,7 +1,7 @@
 package finalGame;
 
 import finalGame.Game.*;
-import static finalGame.DataObject.DataType.GAME;
+//import static finalGame.DataObject.DataType.GAME;
 import java.awt.Color;
 
 /**
@@ -30,12 +30,32 @@ public class GameData extends DataObject {
      * @param _ypos player y position
      */
     public GameData(GAME_STATES _state, String _name, Color _color, int _xpos, int _ypos) {
-        type = GAME;
+        type = DataType.GAME;
         state = _state;
         name = _name;
         color = _color;
         xpos = _xpos;
         ypos = _ypos;
+    }
+
+    /**
+     * Constructor just for position data
+     * @param _xpos
+     * @param _ypos
+     */
+    public GameData(int _xpos, int _ypos) {
+        type = DataType.POS;
+        xpos = _xpos;
+        ypos = _ypos;
+    }
+
+    /**
+     * Constructor for the game state and nothing else
+     * @param _state
+     */
+    public GameData(GAME_STATES _state) {
+        type = DataType.STATE;
+        state = _state;
     }
 
     public void updateGameState(GAME_STATES _state) {
@@ -49,4 +69,30 @@ public class GameData extends DataObject {
     public void updateYpos(int _ypos) {
         ypos = _ypos;
     }
+
+
+    public DataType getType() {
+        return this.type;
+    }
+
+    public GAME_STATES getState() {
+        return this.state;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Color getColor() {
+        return this.color;
+    }
+
+    public int getXpos() {
+        return this.xpos;
+    }
+
+    public int getYpos() {
+        return this.ypos;
+    }
+    
 }
