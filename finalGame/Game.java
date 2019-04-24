@@ -1,5 +1,6 @@
 package finalGame;
 import javax.swing.*;
+import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
@@ -24,9 +25,7 @@ public class Game extends JFrame implements KeyListener {
         MENU,
         CREATE,
         GAME,
-        CHAT,
-        LEADERBOARD,
-        QUIT
+        LEADERBOARD
     } // end game_states enumeration
     public GAME_STATES GameState;
     
@@ -35,6 +34,14 @@ public class Game extends JFrame implements KeyListener {
     
     // pause
     public boolean isPaused = false;
+    
+    // Leaderboard UI elements
+    private JPanel leaderboard;
+    private JPanel scores;
+    private JPanel leaderboardButtons;
+    private ArrayList<JLabel> jlLeaderboardArray;
+    private JButton leaderboardReturn;
+    private JButton leaderboardQuit;
     
     // double buffer
     private BufferStrategy strategy;
@@ -71,6 +78,57 @@ public class Game extends JFrame implements KeyListener {
         // set initial last frame value
         lastFrame = System.currentTimeMillis();
         
+        // MENU/CHAT UI //
+        
+        // END MENU/CHAT UI //
+        
+        // CREATE UI //
+        
+        // END CREATE UI //
+        
+        // LEADERBOARD UI //
+        
+        leaderboard = new JPanel(new GridLayout(2, 1));
+        scores = new JPanel(new GridLayout(0, 1));
+        leaderboardButtons = new JPanel(new GridLayout(2, 1));
+        
+        jlLeaderboardArray = new ArrayList<JLabel>();
+        
+        JLabel test = new JLabel("Test");
+        
+        scores.add(test);
+        
+        // TO IMPLEMENT -- LISTING SCORES PROPERLY
+        
+        leaderboardReturn = new JButton("Play Again") {{
+            addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    leaderboard.setVisible(false);
+                    GameState = GAME_STATES.MENU;
+                }
+            });
+        }};
+        leaderboardQuit = new JButton("Quit") {{
+            addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+            });
+        }};
+        
+        leaderboardButtons.add(leaderboardReturn);
+        leaderboardButtons.add(leaderboardQuit);
+        
+        leaderboard.add(scores);
+        leaderboard.add(leaderboardButtons);
+        
+        leaderboard.setVisible(false);
+        this.getContentPane().add(leaderboard, BorderLayout.CENTER);
+        
+        // END LEADERBOARD UI //
+        
         // finish initializing the frame
         setResizable(true);
         setVisible(true);
@@ -103,12 +161,12 @@ public class Game extends JFrame implements KeyListener {
         case GAME:
             player.update(level);
             level.update(player);
-            break;
-        case CHAT:
+            if (player.win) {
+                GameState = GAME_STATES.LEADERBOARD;
+                leaderboard.setVisible(true);
+            } // end if checking if player has won
             break;
         case LEADERBOARD:
-            break;
-        case QUIT:
             break;
         } // end switch
     } // end update
@@ -137,10 +195,6 @@ public class Game extends JFrame implements KeyListener {
             strategy.show();
             break;
         case LEADERBOARD:
-            break;
-        case CHAT:
-            break;
-        case QUIT:
             break;
         } // end switch
     } // end draw

@@ -8,6 +8,8 @@ public class Player extends GameObject {
     private float spawnX;
     private float spawnY;
     
+    private float winPos = 1000;
+    
     private boolean jumping;
     
     private Color c;
@@ -20,6 +22,7 @@ public class Player extends GameObject {
     public boolean jump = false; // jumping
     public boolean left = false; // moving left
     public boolean right = false; // moving right
+    public boolean win = false; // winner
 
     public Player(int h, int w, Color c) {
         this.h = h;
@@ -75,6 +78,8 @@ public class Player extends GameObject {
         if (left) {
             this.px += vx;
         }
+        
+        win = checkWin();
     } // end update
     
     public void draw(Graphics2D g) {
@@ -104,7 +109,9 @@ public class Player extends GameObject {
         
         /*// Check if collision is on player's top
         if (player.getY() < o.getHeight() + o.getY()) {
-            vy = 0;
+            setY(player.getY());
+            player.setLocation(getX(), getY());
+            System.out.println("Top collision");
             topC = true;
         }
         
@@ -181,5 +188,13 @@ public class Player extends GameObject {
     public void setY(double y) {
         py = (float) y;
     } // end setY
+    
+    public boolean checkWin() {
+        if (getX() >= winPos) {
+            return true;
+        } else {
+            return false;
+        }
+    } // end checkWin
 
 } // end Player
