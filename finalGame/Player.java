@@ -5,10 +5,10 @@ import java.util.*;
 public class Player extends GameObject {
 
     // location player appears on screen
-    private float spawnX;
-    private float spawnY;
+    private float spawnX = 150;
+    private float spawnY = 620;
     
-    private float winPos = 1000;
+    private float winPos = 3950;
     
     private boolean jumping;
     
