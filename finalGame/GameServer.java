@@ -26,7 +26,6 @@ public class GameServer extends JFrame {
    // ArrayList<Integer> clientXpos = new ArrayList<Integer>();
    // ArrayList<Integer> clientYpos = new ArrayList<Integer>();
 
-   BufferedReader bufferedReader;
 
    JTextArea textArea = new JTextArea(20, 30);
 
@@ -144,7 +143,9 @@ public class GameServer extends JFrame {
             DataObject tempObject = (DataObject) getClientData.readObject();
             switch (tempObject.DataType) {
             case TEXT:
-               writeToClient(((TextData) tempObject).message);
+               synchronized ("lock") {
+                  writeToClient(((TextData) tempObject).message);
+               }
                break;
 
             case GAME:
@@ -153,7 +154,7 @@ public class GameServer extends JFrame {
                color = ((GameData) tempObject).color;
                if (clientColors.contains(color)) {
                   // tell client to pick a different color
-                  writeToClient("Pick a different color!");
+                  writeToClient("Pick a different color " + name + "!");
                }
                xpos = ((GameData) tempObject).xpos;
                ypos = ((GameData) tempObject).ypos;
@@ -203,7 +204,6 @@ public class GameServer extends JFrame {
     */
    public static void main(String[] args) {
       new GameServer();
-
    }
 
    /**
@@ -238,7 +238,7 @@ public class GameServer extends JFrame {
     * Method to take a username and text message and send to all clients
     * 
     * @param _username the username of the client sending the messsage
-    * @param _message the message that is being sent
+    * @param _message  the message that is being sent
     */
    public void clientMessage(String _username, String _message) {
       for (ObjectOutputStream sender : clientWriters) {
