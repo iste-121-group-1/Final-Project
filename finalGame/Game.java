@@ -20,89 +20,90 @@ import javax.swing.*;
 public class Game extends JFrame implements KeyListener {
 
     // window vars
-   private final int MAX_FPS;
-   private final int WIDTH;
-   private final int HEIGHT;
+    private final int MAX_FPS;
+    private final int WIDTH;
+    private final int HEIGHT;
     
     // game states
-   public enum GAME_STATES {
-      MENU,
-      CREATE,
-      GAME,
-      LEADERBOARD
-   } // end game_states enumeration
-   public GAME_STATES GameState;
+    public enum GAME_STATES {
+        MENU,
+        CREATE,
+        GAME,
+        LEADERBOARD
+    } // end game_states enumeration
+    public GAME_STATES GameState;
     
     // player time
-   public static long TIME;
+    public static long TIME;
     
     // pause
-   public boolean isPaused = false;
+    public boolean isPaused = false;
     
     // Menu UI elements
     private JPanel menu;
-   private JLabel jlAddress = new JLabel("Server IP");
-   private JTextField jtfAddress = new JTextField(20);
-   private JButton jbConnect = new JButton("Connect");
+    private JLabel jlAddress = new JLabel("Server IP");
+    private JTextField jtfAddress = new JTextField(20);
+    private JButton jbConnect = new JButton("Connect");
    
     //Name
     // Nickname Info 
-   JLabel jlName = new JLabel("Name:");
-   JTextField jtfName = new JTextField(20);
+    JLabel jlName = new JLabel("Name:");
+    JTextField jtfName = new JTextField(20);
    
    
-   private JButton jbJoin = new JButton("Join Game");
-   private JButton jbWhoIsIn = new JButton("Who is in");
-   private JButton jbStart = new JButton("Start Game");
+    private JButton jbJoin = new JButton("Join Game");
+    private JButton jbWhoIsIn = new JButton("Who is in");
+    private JButton jbStart = new JButton("Start Game");
    
-   //Text Area
-   private JLabel jlaArea;
-   private JTextArea jtaArea = new JTextArea(20, 30);
+    //Text Area
+    private JLabel jlaArea;
+    private JTextArea jtaArea = new JTextArea(20, 30);
   
-   // Attributes 
-   public static final int SERVER_PORT = 32001;
-   private Socket cSocket = null;
-   public String name = "";
+    // Attributes 
+    public static final int SERVER_PORT = 32001;
+    private Socket cSocket = null;
+    public String name = "";
    
-   // Setting attributes to null 
-   static Scanner scan = null;
-   protected PrintWriter pwt = null;
-   protected Thread listener;
+    // Setting attributes to null 
+    static Scanner scan = null;
+    protected PrintWriter pwt = null;
+    protected Thread listener;
     
     // Leaderboard UI elements
-   private JPanel leaderboard;
-   private JPanel scores;
-   private JPanel leaderboardButtons;
-   private ArrayList<JLabel> jlLeaderboardArray;
-   private JButton leaderboardReturn;
-   private JButton leaderboardQuit;
-    
+    private JPanel leaderboard;
+    private JPanel scores;
+    private JPanel leaderboardButtons;
+    private ArrayList<JLabel> jlLeaderboardArray;
+    private JButton leaderboardReturn;
+    private JButton leaderboardQuit;
+     
     // double buffer
-   private BufferStrategy strategy;
+    private BufferStrategy strategy;
     
     // loop variables
-   private boolean isRunning = true;
-   private long rest = 0;
+    private boolean isRunning = true;
+    private long rest = 0;
     
     // timing variables
-   private float dt;
-   private long lastFrame;
-   private long startFrame;
-   private int fps;
+    private float dt;
+    private long lastFrame;
+    private long startFrame;
+    private int fps;
     
     // game object handlers
-   private Player player;
-   private Terrain level;
-   private LocationView location;
+    private Player player;
+    private Terrain level;
+    private LocationView location;
     
-   public Game(int width, int height, int fps) {
+    public Game(int width, int height, int fps) {
       super("Race Demo");
       this.MAX_FPS = fps;
       this.WIDTH = width;
       this.HEIGHT = height;
-   } // end constructor
+    } // end constructor
     
-   void init() {
+   
+    void init() {
         // initialized JFrame
       setPreferredSize(new Dimension(WIDTH, HEIGHT));
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -117,19 +118,19 @@ public class Game extends JFrame implements KeyListener {
       JPanel BoarderjpPanel = new JPanel(new GridLayout(0, 1));
       JPanel jpPanel = new JPanel();
       
-      //MenuBar object and details
+       //MenuBar object and details
       JMenuBar menu = new JMenuBar();
       JMenu help = new JMenu("Help");
       menu.add(help);
       setJMenuBar(menu);
-      
-      //MenuItem for object and details 
+       
+       //MenuItem for object and details 
       JMenuItem about = new JMenuItem("About");
       JMenuItem exit = new JMenuItem("Exit");
       help.add(about);
       help.add(exit);
-      
-      //ActionListener method for exit only 
+       
+        //ActionListener method for exit only 
       exit.addActionListener(
          new ActionListener(){ 
             public void actionPerformed(ActionEvent ae)
@@ -197,25 +198,25 @@ public class Game extends JFrame implements KeyListener {
       menu.add(jpNorth, BorderLayout.NORTH);
       
       jbConnect.addActionListener(
-        new ActionListener() {
+         new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                switch(ae.getActionCommand()) {
-                    case "Connect":
-                        doConnect();
-                        break;
-                    case "Disconnect":
-                        doDisconnect();
-                        break;
-                }
+               switch(ae.getActionCommand()) {
+                  case "Connect":
+                     doConnect();
+                     break;
+                  case "Disconnect":
+                     doDisconnect();
+                     break;
+               }
             }
-        });
+         });
       
       jbJoin.addActionListener(
-        new ActionListener() {
+         new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                doJoin();
+               doJoin();
             }  
-        });
+         });
       // jbStart.addActionListener();
       // jbWhoIsIn.addActionListener();
       
@@ -292,11 +293,11 @@ public class Game extends JFrame implements KeyListener {
         // initialize game components
       ResetGame();
         
-      GameState = GAME_STATES.MENU;
+      GameState = GAME_STATES.GAME;
       setLocationRelativeTo(null);
-   } // end initialization
+    } // end initialization
     
-   private void update() {
+    private void update() {
       fps = (int) (1f / dt);
       switch(GameState) {
          case MENU:
@@ -314,9 +315,9 @@ public class Game extends JFrame implements KeyListener {
          case LEADERBOARD:
             break;
       } // end switch
-   } // end update
+    } // end update
     
-   public void draw() {
+    public void draw() {
       switch(GameState) {
          case MENU:
             break;
@@ -342,16 +343,16 @@ public class Game extends JFrame implements KeyListener {
          case LEADERBOARD:
             break;
       } // end switch
-   } // end draw
+    } // end draw
     
-   public void ResetGame() {
+    public void ResetGame() {
       Color playerC = new Color(255, 0, 0);
       player = new Player(50, 50, playerC);
       level = new Terrain();
       location = new LocationView();
-   } // end ResetGame
+    } // end ResetGame
     
-   public void run() {
+    public void run() {
       init();
         
       while (isRunning) {
@@ -373,9 +374,9 @@ public class Game extends JFrame implements KeyListener {
             catch (InterruptedException ie) { ie.printStackTrace(); } // end try-catch
          } // end if
       } // end while
-   } // end run
+    } // end run
 
-   public void keyPressed(KeyEvent ke) {
+    public void keyPressed(KeyEvent ke) {
       switch(ke.getKeyCode()) {
          case KeyEvent.VK_LEFT:
             player.left = true;
@@ -384,9 +385,9 @@ public class Game extends JFrame implements KeyListener {
             player.right = true;
             break;
       }
-   } // end keyPressed
+    } // end keyPressed
     
-   public void keyReleased(KeyEvent ke) {
+    public void keyReleased(KeyEvent ke) {
       switch(ke.getKeyCode()) {
          case KeyEvent.VK_LEFT:
             player.left = false;
@@ -398,18 +399,17 @@ public class Game extends JFrame implements KeyListener {
             player.jump = true;
             break;
       }
-   } // end keyReleased
+    } // end keyReleased
     
-   public void keyTyped(KeyEvent ke) {} // end keyTyped
+    public void keyTyped(KeyEvent ke) {} // end keyTyped
     
-   public static void main(String[] args) {
+    public static void main(String[] args) {
       Game game = new Game(1080, 720, 60);
       game.run();
-   } // end main
+    } // end main
    
-   //Connect to Server
-   private void doConnect() 
-   {
+    //Connect to Server
+    private void doConnect() {
       try
       {
          cSocket = new Socket(jtfAddress.getText(), SERVER_PORT); // Create a socket for IP address and port number info
@@ -448,11 +448,10 @@ public class Game extends JFrame implements KeyListener {
       
       jtaArea.append("Connected!\n"); // Message when a user is connected to other users
       jbConnect.setText("Disconnect"); // When a user disconnect the session
-   } // end doConnect
+    } // end doConnect
    
-   //@method doDisconnect - User clicks "disconnect" button
-   private void doDisconnect() 
-   {
+    //@method doDisconnect - User clicks "disconnect" button
+    private void doDisconnect() {
       
       // try and catch
       try  
@@ -470,20 +469,18 @@ public class Game extends JFrame implements KeyListener {
       }
       
       jbConnect.setText("Connect"); // If the user wish to re-connect the session      
-   } // end doDisconnect
+    } // end doDisconnect
    
-   //Send message to Server
-   private void doJoin()
-   {
+    //Send message to Server
+    private void doJoin() {
       pwt.println(jtfName.getText() + " is here ");
       pwt.flush();
-   } // end doJoin
+    } // end doJoin
    
-   //Receive message from server
-   private void receive()
-   {
+    //Receive message from server
+    private void receive() {
       String reply = "\n" + scan.nextLine();
       jtaArea.append(reply);
-   } // end receive
+    } // end receive
 
 } // end class Game
