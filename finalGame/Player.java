@@ -52,7 +52,6 @@ public class Player extends GameObject {
         if (colliding) {
             playerStop(collidedWith);
         } else {
-            System.out.println("Not colliding");
             // Jumping only possible if touching the ground
             vy = 1;
             
@@ -98,18 +97,22 @@ public class Player extends GameObject {
         boolean rightC = false;
         
         // Check if collision is on player's bottom
-        if (player.getY() + player.getHeight() > o.getY()) {
-            System.out.println("Player: " + player);
-            System.out.println("Obstacle: " + o);
-            setY(o.getY() - player.getHeight());
-            player.setLocation(getX(), getY());
-            System.out.println("Bottom collision");
-            bottomC = true;
-            if (jump) {
-                vy = -150;
-                bottomC = false;
-            }
-        } 
+        if (!(player.getY() < o.getHeight() + o.getY() 
+        && player.getX() < o.getX() + o.getWidth()
+        && player.getX() + player.getWidth() > o.getX())) {
+            if (player.getY() + player.getHeight() > o.getY()) {
+                System.out.println("Player: " + player);
+                System.out.println("Obstacle: " + o);
+                setY(o.getY() - player.getHeight());
+                player.setLocation(getX(), getY());
+                System.out.println("Bottom collision");
+                bottomC = true;
+                if (jump) {
+                    vy = -150;
+                    bottomC = false;
+                } // end if
+            } // end if
+        } // end if
         
         /*// Check if collision is on player's top
         if (player.getY() < o.getHeight() + o.getY()) {
