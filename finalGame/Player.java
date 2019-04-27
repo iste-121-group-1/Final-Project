@@ -5,8 +5,9 @@ import java.util.*;
 public class Player extends GameObject {
 
     // location player appears on screen
-    private float spawnX = 150;
-    private float spawnY = 620;
+    private float spawnX = 420;
+    //private float spawnY = 620;
+    private float spawnY = 100;
     
     private float winPos = 950;
     
@@ -51,14 +52,14 @@ public class Player extends GameObject {
         if (colliding) {
             playerStop(collidedWith);
         } else {
-            if (jump) {
-                vy = -50;
-            } else {
-                vy = 1;
-            }
+            System.out.println("Not colliding");
+            // Jumping only possible if touching the ground
+            vy = 1;
+            
             if (left) {
                 vx = -1;
             }
+            
             if (right) {
                 vx = 1;
             }
@@ -98,41 +99,51 @@ public class Player extends GameObject {
         
         // Check if collision is on player's bottom
         if (player.getY() + player.getHeight() > o.getY()) {
+            System.out.println("Player: " + player);
+            System.out.println("Obstacle: " + o);
             setY(o.getY() - player.getHeight());
             player.setLocation(getX(), getY());
+            System.out.println("Bottom collision");
             bottomC = true;
             if (jump) {
-                vy = -50;
+                vy = -150;
                 bottomC = false;
             }
-        }
+        } 
         
         /*// Check if collision is on player's top
         if (player.getY() < o.getHeight() + o.getY()) {
-            setY(player.getY());
+            setY(o.getHeight() + o.getY());
             player.setLocation(getX(), getY());
             System.out.println("Top collision");
             topC = true;
+            // Making sure you can't jump through the top
+            if (jump) {
+                vy = 1;
+            }
         }
         
-        // Check if collision is on the player's left
-        if (player.getX() > o.getX() + o.getWidth()) {
-            // setX(o.getWidth());
-            // player.setLocation(getX(), getY());
-            // System.out.println("Left collision");
-            // leftC = true;
-            // if (right) {
-                // vx = 1;
-            // }
-            System.out.println("Collision on left");
+       // Check if collision is on the player's left
+        if (player.getX() < o.getX() + o.getWidth()) {
+            setX(o.getX() + o.getWidth());
+            player.setLocation(getX(), getY());
+            System.out.println("Left collision");
+            leftC = true;
+            if (right) {
+                vx = 1;
+                leftC = false;
+            }
         }
         
         // Check if collision is on the player's right
-        if (player.getX() + player.getWidth() < o.getX()) {
-            
+        if (player.getX() + player.getWidth() > o.getX()) {
+            setX(o.getX() - player.getWidth());
+            player.setLocation(getX(), getY());
+            System.out.println("Right collision");
             rightC = true;
             if (left) {
                 vx = -1;
+                rightC = false;
             }
         } */
         
@@ -143,7 +154,7 @@ public class Player extends GameObject {
             if (right) {
                 vx = 1;
             }
-        } else if (bottomC && leftC) {
+        }/* else if (bottomC && leftC) {
             if (left) {
                 vx = 0;
             }
