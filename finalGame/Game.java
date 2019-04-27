@@ -62,7 +62,8 @@ public class Game extends JFrame implements KeyListener {
    public String name = "";
 
    // Setting attributes to null
-   static Scanner scan = null;
+   private ObjectInputStream getServerData;
+   private ObjectOutputStream sendServerData;
    protected PrintWriter pwt = null;
    protected Thread listener;
 
@@ -404,8 +405,10 @@ public class Game extends JFrame implements KeyListener {
    private void doConnect() {
       try {
          cSocket = new Socket(jtfAddress.getText(), SERVER_PORT); // Create a socket for IP address and port number info
-         scan = new Scanner(new InputStreamReader(cSocket.getInputStream())); // Create a scanner object
-         pwt = new PrintWriter(new OutputStreamWriter(cSocket.getOutputStream())); // Create a print writer object
+         getServerData = new ObjectInputStream(cSocket.getInputStream());
+         sendServerData = new ObjectOutputStream(cSocket.getOutputStream());
+         //scan = new Scanner(new InputStreamReader(cSocket.getInputStream())); // Create a scanner object
+         //pwt = new PrintWriter(new OutputStreamWriter(cSocket.getOutputStream())); // Create a print writer object
 
          
 
