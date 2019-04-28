@@ -1,4 +1,5 @@
 package finalGame;
+
 import javax.swing.*;
 import java.util.*;
 import java.awt.*;
@@ -10,15 +11,13 @@ import javax.swing.border.*;
 import javax.swing.*;
 
 /**
-  *
-  * Basic game demo. Code based off of and build from a game engine
-  * by Davis Smith, another RIT student. They are reachable at 
-  * dgs4349@g.rit.edu.
-  *
-  */
+ *
+ * Basic game demo. Code based off of and build from a game engine by Davis
+ * Smith, another RIT student. They are reachable at dgs4349@g.rit.edu.
+ *
+ */
 
 public class Game extends JFrame implements KeyListener {
-
     // window vars
     private final int MAX_FPS;
     private final int WIDTH;
@@ -69,6 +68,10 @@ public class Game extends JFrame implements KeyListener {
     protected PrintWriter pwt = null;
     protected Thread listener;
     
+    // Networking
+    private ObjectInputStream getServerData;
+    private ObjectOutputStream sendServerData;
+    
     // Leaderboard UI elements
     private JPanel leaderboard;
     private JPanel scores;
@@ -96,10 +99,12 @@ public class Game extends JFrame implements KeyListener {
     private LocationView location;
     
     public Game(int width, int height, int fps) {
+
       super("Race Demo");
       this.MAX_FPS = fps;
       this.WIDTH = width;
       this.HEIGHT = height;
+
     } // end constructor
     
    
@@ -109,27 +114,28 @@ public class Game extends JFrame implements KeyListener {
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       getContentPane().setLayout(new BorderLayout());
       setBounds(0, 0, WIDTH, HEIGHT);
-        
-        // set initial last frame value
+
+      // set initial last frame value
       lastFrame = System.currentTimeMillis();
-        
-        // MENU/CHAT UI //
+
+      // MENU/CHAT UI //
       menu = new JPanel(new GridLayout(3, 1));
       JPanel BoarderjpPanel = new JPanel(new GridLayout(0, 1));
       JPanel jpPanel = new JPanel();
-      
-       //MenuBar object and details
+
+
+      // MenuBar object and details
       JMenuBar menu = new JMenuBar();
       JMenu help = new JMenu("Help");
       menu.add(help);
       setJMenuBar(menu);
-       
-       //MenuItem for object and details 
+
+      // MenuItem for object and details
       JMenuItem about = new JMenuItem("About");
       JMenuItem exit = new JMenuItem("Exit");
       help.add(about);
       help.add(exit);
-       
+
         //ActionListener method for exit only 
       exit.addActionListener(
          new ActionListener(){ 
@@ -154,41 +160,41 @@ public class Game extends JFrame implements KeyListener {
       jpAddress.add(jlAddress);
       jpAddress.add(jtfAddress);
       jpAddress.add(jbConnect);
-      
-      // Adding Name info to GUI 
+
+      // Adding Name info to GUI
       JPanel jpName = new JPanel();
       jpName.add(jlName);
       jpName.add(jtfName);
-      
-      //Join
+
+      // Join
       JPanel jpWhoIsIn = new JPanel();
       jpWhoIsIn.add(jbWhoIsIn);
-      
+
       JPanel jpJoin = new JPanel();
       jpJoin.add(jbJoin);
-      
-      //Start
+
+      // Start
       JPanel jpStart = new JPanel();
       jpStart.add(jbStart);
-       
+
       BoarderjpPanel.add(jpAddress);
       BoarderjpPanel.add(jpName);
       BoarderjpPanel.add(jpJoin);
       BoarderjpPanel.add(jpStart);
       BoarderjpPanel.add(jbWhoIsIn);
-      
+
       menu.add(BoarderjpPanel, BorderLayout.CENTER);
-      
-      //Panel button   
+
+      // Panel button
       JPanel jpButton = new JPanel(new FlowLayout());
-       
+
       jpAddress.add(jbConnect);
       jpButton.add(jbJoin);
       jpButton.add(jbStart);
       jpButton.add(jbWhoIsIn);
-      
+
       add(jpButton, BorderLayout.SOUTH);
-      
+
       JPanel jpNorth = new JPanel();
       JScrollPane scroll = new JScrollPane(jtaArea);
       scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -219,78 +225,76 @@ public class Game extends JFrame implements KeyListener {
          });
       // jbStart.addActionListener();
       // jbWhoIsIn.addActionListener();
-      
+
       menu.setVisible(true);
       this.getContentPane().add(menu, BorderLayout.CENTER);
-        // END MENU/CHAT UI //
-        
-        // CREATE UI //
-        
-        // END CREATE UI //
-        
-        // LEADERBOARD UI //
+      // END MENU/CHAT UI //
+
+      // CREATE UI //
+
+      // END CREATE UI //
+
+      // LEADERBOARD UI //
       leaderboard = new JPanel(new GridLayout(2, 1));
       scores = new JPanel(new GridLayout(0, 1));
       leaderboardButtons = new JPanel(new GridLayout(2, 1));
-        
+
       jlLeaderboardArray = new ArrayList<JLabel>();
-        
+
       JLabel test = new JLabel("Test");
-        
+
       scores.add(test);
-        
-        // TO IMPLEMENT -- LISTING SCORES PROPERLY
-        
-      leaderboardReturn = 
-         new JButton("Play Again") {
-            {
-               addActionListener(
-                  new ActionListener() {
-                     @Override
-                     public void actionPerformed(ActionEvent e) {
-                        leaderboard.setVisible(false);
-                        GameState = GAME_STATES.MENU;
-                     }
-                  });
-            }};
-      leaderboardQuit = 
-         new JButton("Quit") {
-            {
-               addActionListener(
-                  new ActionListener() {
-                     @Override
-                     public void actionPerformed(ActionEvent e) {
-                        System.exit(0);
-                     }
-                  });
-            }};
-        
+
+      // TO IMPLEMENT -- LISTING SCORES PROPERLY
+
+      leaderboardReturn = new JButton("Play Again") {
+         {
+            addActionListener(new ActionListener() {
+               @Override
+               public void actionPerformed(ActionEvent e) {
+                  leaderboard.setVisible(false);
+                  GameState = GAME_STATES.MENU;
+               }
+            });
+         }
+      };
+      leaderboardQuit = new JButton("Quit") {
+         {
+            addActionListener(new ActionListener() {
+               @Override
+               public void actionPerformed(ActionEvent e) {
+                  System.exit(0);
+               }
+            });
+         }
+      };
+
       leaderboardButtons.add(leaderboardReturn);
       leaderboardButtons.add(leaderboardQuit);
-        
+
       leaderboard.add(scores);
       leaderboard.add(leaderboardButtons);
-        
+
       leaderboard.setVisible(false);
       this.getContentPane().add(leaderboard, BorderLayout.CENTER);
-        // END LEADERBOARD UI //
-        
-        // finish initializing the frame
+      // END LEADERBOARD UI //
+
+      // finish initializing the frame
       setResizable(true);
       setVisible(true);
-        
+
       this.pack();
       setIgnoreRepaint(true);
-        
-        // add key listener
+
+      // add key listener
       addKeyListener(this);
       setFocusable(true);
-        
-        // create double buffer strategy
+
+      // create double buffer strategy
       createBufferStrategy(2);
       strategy = getBufferStrategy();
-        
-        // initialize game components
+
+      // initialize game components
       ResetGame();
         
       GameState = GAME_STATES.GAME;
@@ -299,21 +303,21 @@ public class Game extends JFrame implements KeyListener {
     
     private void update() {
       fps = (int) (1f / dt);
-      switch(GameState) {
-         case MENU:
-            break;
-         case CREATE:
-            break;
-         case GAME:
-            player.update(level);
-            level.update(player);
-            if (player.win) {
-               GameState = GAME_STATES.LEADERBOARD;
-               leaderboard.setVisible(true);
-            } // end if checking if player has won
-            break;
-         case LEADERBOARD:
-            break;
+      switch (GameState) {
+      case MENU:
+         break;
+      case CREATE:
+         break;
+      case GAME:
+         player.update(level);
+         level.update(player);
+         if (player.win) {
+            GameState = GAME_STATES.LEADERBOARD;
+            leaderboard.setVisible(true);
+         } // end if checking if player has won
+         break;
+      case LEADERBOARD:
+         break;
       } // end switch
     } // end update
     
@@ -353,25 +357,29 @@ public class Game extends JFrame implements KeyListener {
     } // end ResetGame
     
     public void run() {
+
       init();
-        
+
       while (isRunning) {
-            // new loop, clock the start
+         // new loop, clock the start
          startFrame = System.currentTimeMillis();
-            // calculate delta time
+         // calculate delta time
          dt = (float) (startFrame - lastFrame) / 1000;
-            // log the current time
+         // log the current time
          lastFrame = startFrame;
-            
-            // call update and draw methods
+
+         // call update and draw methods
          draw();
          update();
-            
-            // dynamic thread sleep, only sleep the time we need to cap framerate
+
+         // dynamic thread sleep, only sleep the time we need to cap framerate
          rest = (1000 / MAX_FPS) - (System.currentTimeMillis() - startFrame);
          if (rest > 0) {
-            try { Thread.sleep(rest); }
-            catch (InterruptedException ie) { ie.printStackTrace(); } // end try-catch
+            try {
+               Thread.sleep(rest);
+            } catch (InterruptedException ie) {
+               ie.printStackTrace();
+            } // end try-catch
          } // end if
       } // end while
     } // end run
@@ -410,64 +418,41 @@ public class Game extends JFrame implements KeyListener {
    
     //Connect to Server
     private void doConnect() {
-      try
-      {
+      try {
          cSocket = new Socket(jtfAddress.getText(), SERVER_PORT); // Create a socket for IP address and port number info
-         scan = new Scanner(new InputStreamReader(cSocket.getInputStream())); // Create a scanner object
-         pwt = new PrintWriter(new OutputStreamWriter(cSocket.getOutputStream())); // Create a print writer object
+         getServerData = new ObjectInputStream(cSocket.getInputStream());
+         sendServerData = new ObjectOutputStream(cSocket.getOutputStream());
+         //scan = new Scanner(new InputStreamReader(cSocket.getInputStream())); // Create a scanner object
+         //pwt = new PrintWriter(new OutputStreamWriter(cSocket.getOutputStream())); // Create a print writer object
+
          
-        
-         //Create a Thread object
-         //Users Recieve a message when it is sent by another user
-         Thread messageBroadcast = 
-            new Thread() 
-            {
-               public void run()
-               {
-                  while(true)
-                  {
-                     {
-                        receive();
-                     }
-                    
-                  }
-               }
-            };
-      
-         messageBroadcast.setDaemon(true);
-         messageBroadcast.start();
-         
+
       }
-      
-      catch (IOException ioe) // ioe Exception  
-      {
+
+      catch (IOException ioe) {
          jtaArea.append("IO Exception: " + ioe + "\n");
          return;
       }
-      
-      
+
       jtaArea.append("Connected!\n"); // Message when a user is connected to other users
       jbConnect.setText("Disconnect"); // When a user disconnect the session
-    } // end doConnect
-   
-    //@method doDisconnect - User clicks "disconnect" button
-    private void doDisconnect() {
-      
+   } // end doConnect
+
+   /**
+    * Disconnects from the server
+    */
+   private void doDisconnect() {
+
       // try and catch
-      try  
-      {
+      try {
          cSocket.close();
          scan.close();
          pwt.close();
          jtaArea.append("Disconnected!\n");
-      }
-      
-      catch(IOException ioe) // ioe Exception 
-      {
+      } catch (IOException ioe) {
          jtaArea.append("IO Exception: " + ioe + "\n");
          return;
       }
-      
       jbConnect.setText("Connect"); // If the user wish to re-connect the session      
     } // end doDisconnect
    

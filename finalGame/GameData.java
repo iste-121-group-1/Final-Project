@@ -39,7 +39,7 @@ public class GameData extends DataObject {
     }
 
     /**
-     * Constructor just for position data
+     * Constructor just for position data, gives it DataType.POS
      * @param _xpos
      * @param _ypos
      */
@@ -50,7 +50,7 @@ public class GameData extends DataObject {
     }
 
     /**
-     * Constructor for the game state and nothing else
+     * Constructor just for game satate, gives it DataType.STATE
      * @param _state
      */
     public GameData(GAME_STATES _state) {
