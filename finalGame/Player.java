@@ -60,7 +60,6 @@ public class Player extends GameObject {
         
         if (jump) {
             this.py += vy;
-            grounded = false;
         } else {
             this.py += vy;
         }
@@ -79,7 +78,6 @@ public class Player extends GameObject {
         }
         
         for (Rectangle r : ground) {
-            System.out.println("Grounded: " + grounded);
             if (r.intersects(player)) {
                 intersection = r.intersection(player);
                 
@@ -98,8 +96,7 @@ public class Player extends GameObject {
                         setY(player.getY() - intersection.getHeight());
                         grounded = true;
                         if (jump) {
-                            System.out.println("Correct conditional");
-                            setY(player.getY() - intersection.getHeight());
+                            setY(player.getY() - 150);
                             grounded = false;
                             jump = false;
                         }
