@@ -40,6 +40,41 @@ public class Player extends GameObject {
     public void update(GameObject o) {
         ArrayList<Rectangle> ground = null;
         
+        if (o instanceof Terrain) {
+            Terrain t = (Terrain) o;
+            ground = t.getTerrain();
+        }
+        
+        for (Rectangle r : ground) {
+            if (r.intersects(player)) {
+                Rectangle intersection = r.intersection(player);
+                System.out.println(intersection);
+                setX(intersection.getX());
+                setY(intersection.getY());
+                
+                if (jump) {
+                    setY(player.getY() + intersection.getHeight());
+                    System.out.println("You jumped and hit the top");
+                } else {
+                    System.out.println(player.getY());
+                    System.out.println(intersection.getY());
+                    setY(player.getY() - intersection.getHeight());
+                    System.out.println("You're touching the bottom");
+                }
+            
+                if (left && intersection.getWidth() > 1) {
+                    setX(player.getX() + intersection.getWidth());
+                    System.out.println("You're hitting on your left");
+                }
+            
+                if (right && intersection.getWidth() > 1) {
+                    setX(player.getX() - intersection.getWidth());
+                    System.out.println("You're hitting on your right");
+                }
+            }
+        }
+        
+        
         if (jump) {
             vy = -150;
         } else {
@@ -68,40 +103,6 @@ public class Player extends GameObject {
         
         if (left) {
             this.px += vx;
-        }
-        
-        if (o instanceof Terrain) {
-            Terrain t = (Terrain) o;
-            ground = t.getTerrain();
-        }
-        
-        for (Rectangle r : ground) {
-            if (r.intersects(player)) {
-                Rectangle intersection = r.intersection(player);
-                System.out.println(intersection);
-                this.px = (int) intersection.getX();
-                this.py = (int) intersection.getY();
-                
-                if (jump) {
-                    this.py = (int) (player.getY() + intersection.getHeight());
-                    System.out.println("You jumped and hit the top");
-                } else {
-                    System.out.println(player.getY());
-                    System.out.println(intersection.getY());
-                    this.py = (int) (player.getY() - intersection.getHeight());
-                    System.out.println("You're touching the bottom");
-                }
-            
-                if (left) {
-                    this.px = (int) (player.getX() + intersection.getWidth());
-                    System.out.println("You're hitting on your left");
-                }
-            
-                if (right) {
-                    this.px = (int) (player.getX() - intersection.getWidth());
-                    System.out.println("You're hitting on your right");
-                }
-            }
         }
         
         win = checkWin();

@@ -311,6 +311,7 @@ public class Game extends JFrame implements KeyListener {
       case GAME:
          player.update(level);
          level.update(player);
+         location.update(player);
          if (player.win) {
             GameState = GAME_STATES.LEADERBOARD;
             leaderboard.setVisible(true);
@@ -338,7 +339,7 @@ public class Game extends JFrame implements KeyListener {
             // draw images
             player.draw(g);
             level.draw(g);
-            // location.draw(g);
+            location.draw(g);
             
             // release resourcecs, show the buffer
             g.dispose();
@@ -353,7 +354,7 @@ public class Game extends JFrame implements KeyListener {
       level = new Terrain();
       Color playerC = new Color(255, 0, 0);
       player = new Player(50, 50, playerC);
-      location = new LocationView();
+      location = new LocationView(playerC);
     } // end ResetGame
     
     public void run() {
