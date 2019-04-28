@@ -5,13 +5,15 @@ import java.util.*;
 public class Terrain extends GameObject {
 
     private ArrayList<TerrainComponents> myGround;
+    private ArrayList<Rectangle> myRects;
     private int activeCollision;
     
     public Terrain() {
+        myRects = new ArrayList<Rectangle>();
         myGround = new ArrayList<TerrainComponents>();
-        // myGround.add(new TerrainComponents(0, 620, 4000, 100));
+        myGround.add(new TerrainComponents(0, 620, 4000, 100));
         myGround.add(new TerrainComponents(500, 420, 50, 50));
-        /* myGround.add(new TerrainComponents(750, 420, 250, 50));
+        myGround.add(new TerrainComponents(750, 420, 250, 50));
         myGround.add(new TerrainComponents(850, 270, 50, 50));
         myGround.add(new TerrainComponents(1100, 520, 100, 100));
         myGround.add(new TerrainComponents(1350, 470, 100, 150));
@@ -26,7 +28,7 @@ public class Terrain extends GameObject {
         myGround.add(new TerrainComponents(3600, 320, 200, 50));
         myGround.add(new TerrainComponents(3650, 270, 150, 50));
         myGround.add(new TerrainComponents(3700, 220, 100, 50));
-        myGround.add(new TerrainComponents(3750, 170, 50, 50)); */
+        myGround.add(new TerrainComponents(3750, 170, 50, 50));
     } // end Terrain constructor
     
     public void update(GameObject o) {
@@ -43,25 +45,9 @@ public class Terrain extends GameObject {
         g.drawLine(4000, 0, 4000, 620);
     }
     
-    public boolean checkCollision(Rectangle o) {
-        for (TerrainComponents ground : myGround) {
-            if (ground.checkCollision(o)) {
-                activeCollision = myGround.indexOf(ground);
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public Rectangle playerStop(int activeCollision) {
-        TerrainComponents colliding = myGround.get(activeCollision);
-        Rectangle o = new Rectangle(colliding.getX(), colliding.getY(), colliding.getW(), colliding.getH());
-        return colliding.playerStop(o);
-    } 
-    
-    public int getCollision() {
-        return activeCollision;
-    }
+    public ArrayList<Rectangle> getTerrain() {
+        return myRects;
+    } // end getTerrain
     
     class TerrainComponents extends GameObject {
     
@@ -74,6 +60,7 @@ public class Terrain extends GameObject {
             this.py = yPos;
             w = _w;
             h = _h;
+            myRects.add(new Rectangle(xPos, yPos, _w, _h));
         }
         
         public void update(GameObject o) {
@@ -91,14 +78,6 @@ public class Terrain extends GameObject {
         
         public int getH() {
             return h;
-        }
-        
-        public boolean checkCollision(Rectangle o) {
-            if (obstacle.intersects(o)) {
-                return true;
-            } else {
-                return false;
-            }
         }
         
         public Rectangle playerStop(Rectangle o) {

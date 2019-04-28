@@ -9,7 +9,7 @@ public class Player extends GameObject {
     //private float spawnY = 620;
     private float spawnY = 100;
     
-    private float winPos = 950;
+    private float winPos = 3950;
     
     private boolean jumping;
     
@@ -38,31 +38,22 @@ public class Player extends GameObject {
     } 
     
     public void update(GameObject o) {
-        Terrain check = null;
+        ArrayList<Rectangle> ground = null;
         
-        if (o instanceof Terrain) {
-            check = (Terrain) o;
-            colliding = check.checkCollision(player);
-        }
-        
-        Rectangle collidedWith = null;
-        if (colliding || check != null) {
-            collidedWith = check.playerStop(check.getCollision());
-        }
-        if (colliding) {
-            playerStop(collidedWith);
+        if (jump) {
+            vy = -150;
         } else {
-            // Jumping only possible if touching the ground
             vy = 1;
-            
-            if (left) {
-                vx = -1;
-            }
-            
-            if (right) {
-                vx = 1;
-            }
         }
+            
+        if (left) {
+            vx = -1;
+        }
+            
+        if (right) {
+            vx = 1;    
+        }
+        
         
         if (jump) {
             this.py += vy;
@@ -79,6 +70,40 @@ public class Player extends GameObject {
             this.px += vx;
         }
         
+        if (o instanceof Terrain) {
+            Terrain t = (Terrain) o;
+            ground = t.getTerrain();
+        }
+        
+        for (Rectangle r : ground) {
+            if (r.intersects(player)) {
+                Rectangle intersection = r.intersection(player);
+                System.out.println(intersection);
+                this.px = (int) intersection.getX();
+                this.py = (int) intersection.getY();
+                
+                if (jump) {
+                    this.py = (int) (player.getY() + intersection.getHeight());
+                    System.out.println("You jumped and hit the top");
+                } else {
+                    System.out.println(player.getY());
+                    System.out.println(intersection.getY());
+                    this.py = (int) (player.getY() - intersection.getHeight());
+                    System.out.println("You're touching the bottom");
+                }
+            
+                if (left) {
+                    this.px = (int) (player.getX() + intersection.getWidth());
+                    System.out.println("You're hitting on your left");
+                }
+            
+                if (right) {
+                    this.px = (int) (player.getX() - intersection.getWidth());
+                    System.out.println("You're hitting on your right");
+                }
+            }
+        }
+        
         win = checkWin();
     } // end update
     
@@ -88,112 +113,6 @@ public class Player extends GameObject {
         g.fillRect(this.getX(), this.getY(), h, w);
         player = new Rectangle(this.getX(), this.getY(), h, w);
     } // end draw
-    
-    public void playerStop(Rectangle o) {
-        
-        boolean bottomC = false;
-        boolean topC = false;
-        boolean leftC = false;
-        boolean rightC = false;
-        
-        // Check if collision is on player's bottom
-        if (!(player.getY() < o.getHeight() + o.getY() 
-        && player.getX() < o.getX() + o.getWidth()
-        && player.getX() + player.getWidth() > o.getX())) {
-            if (player.getY() + player.getHeight() > o.getY()) {
-                System.out.println("Player: " + player);
-                System.out.println("Obstacle: " + o);
-                setY(o.getY() - player.getHeight());
-                player.setLocation(getX(), getY());
-                System.out.println("Bottom collision");
-                bottomC = true;
-                if (jump) {
-                    vy = -150;
-                    bottomC = false;
-                } // end if
-            } // end if
-        } // end if
-        
-        /*// Check if collision is on player's top
-        if (player.getY() < o.getHeight() + o.getY()) {
-            setY(o.getHeight() + o.getY());
-            player.setLocation(getX(), getY());
-            System.out.println("Top collision");
-            topC = true;
-            // Making sure you can't jump through the top
-            if (jump) {
-                vy = 1;
-            }
-        }
-        
-       // Check if collision is on the player's left
-        if (player.getX() < o.getX() + o.getWidth()) {
-            setX(o.getX() + o.getWidth());
-            player.setLocation(getX(), getY());
-            System.out.println("Left collision");
-            leftC = true;
-            if (right) {
-                vx = 1;
-                leftC = false;
-            }
-        }
-        
-        // Check if collision is on the player's right
-        if (player.getX() + player.getWidth() > o.getX()) {
-            setX(o.getX() - player.getWidth());
-            player.setLocation(getX(), getY());
-            System.out.println("Right collision");
-            rightC = true;
-            if (left) {
-                vx = -1;
-                rightC = false;
-            }
-        } */
-        
-        if (bottomC && (!leftC || !rightC)) {
-            if (left) {
-                vx = -1;
-            }
-            if (right) {
-                vx = 1;
-            }
-        }/* else if (bottomC && leftC) {
-            if (left) {
-                vx = 0;
-            }
-            if (right) {
-                vx = 1;
-            }
-        } else if (bottomC && rightC) {
-            if (left) {
-                vx = -1;
-            }
-            if (right) {
-                vx = 0;
-            }
-        } // end checks for bottom + other collisions
-        
-       /* // If collision, check for what ways can be moved 
-        if (rightC || leftC) {
-            if (jump && !topC) {
-                vy = -50;
-            } else if (!bottomC) {
-                vy = 1;
-            } else if (bottomC) {
-                vy = 0;
-            }
-        } 
-        // If no collision, do regular movement
-        if (!(rightC && leftC)) {
-            if (right) {
-                vx = 1;
-            } else if (left) {
-                vx = -1;
-            } else {
-                vx = 0;    
-            }
-        } */
-    } // end playerStop
     
     public void setX(double x) {
         px = (float) x;

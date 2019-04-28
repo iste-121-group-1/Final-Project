@@ -346,9 +346,9 @@ public class Game extends JFrame implements KeyListener {
     } // end draw
     
     public void ResetGame() {
+      level = new Terrain();
       Color playerC = new Color(255, 0, 0);
       player = new Player(50, 50, playerC);
-      level = new Terrain();
       location = new LocationView();
     } // end ResetGame
     
