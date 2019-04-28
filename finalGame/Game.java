@@ -226,7 +226,7 @@ public class Game extends JFrame implements KeyListener {
       // jbStart.addActionListener();
       // jbWhoIsIn.addActionListener();
 
-      menu.setVisible(true);
+      menu.setVisible(false);
       this.getContentPane().add(menu, BorderLayout.CENTER);
       // END MENU/CHAT UI //
 
@@ -413,7 +413,7 @@ public class Game extends JFrame implements KeyListener {
     public void keyTyped(KeyEvent ke) {} // end keyTyped
     
     public static void main(String[] args) {
-      Game game = new Game(1080, 720, 60);
+      Game game = new Game(1080, 720, 30);
       game.run();
     } // end main
    

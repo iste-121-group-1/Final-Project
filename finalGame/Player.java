@@ -18,7 +18,8 @@ public class Player extends GameObject {
     int w;
     
     private Rectangle player;
-    private boolean colliding = false;
+    private Rectangle intersection;
+    private boolean grounded = false;
     
     public boolean jump = false; // jumping
     public boolean left = false; // moving left
@@ -40,45 +41,12 @@ public class Player extends GameObject {
     public void update(GameObject o) {
         ArrayList<Rectangle> ground = null;
         
-        if (o instanceof Terrain) {
-            Terrain t = (Terrain) o;
-            ground = t.getTerrain();
-        }
-        
-        for (Rectangle r : ground) {
-            if (r.intersects(player)) {
-                Rectangle intersection = r.intersection(player);
-                System.out.println(intersection);
-                setX(intersection.getX());
-                setY(intersection.getY());
-                
-                if (jump) {
-                    setY(player.getY() + intersection.getHeight());
-                    System.out.println("You jumped and hit the top");
-                } else {
-                    System.out.println(player.getY());
-                    System.out.println(intersection.getY());
-                    setY(player.getY() - intersection.getHeight());
-                    System.out.println("You're touching the bottom");
-                }
-            
-                if (left && intersection.getWidth() > 1) {
-                    setX(player.getX() + intersection.getWidth());
-                    System.out.println("You're hitting on your left");
-                }
-            
-                if (right && intersection.getWidth() > 1) {
-                    setX(player.getX() - intersection.getWidth());
-                    System.out.println("You're hitting on your right");
-                }
-            }
-        }
-        
-        
         if (jump) {
             vy = -150;
-        } else {
+        } else if (!grounded) {
             vy = 1;
+        } else {
+            vy = 0;
         }
             
         if (left) {
@@ -93,6 +61,7 @@ public class Player extends GameObject {
         if (jump) {
             this.py += vy;
             jump = false;
+            grounded = false;
         } else {
             this.py += vy;
         }
@@ -105,6 +74,44 @@ public class Player extends GameObject {
             this.px += vx;
         }
         
+        if (o instanceof Terrain) {
+            Terrain t = (Terrain) o;
+            ground = t.getTerrain();
+        }
+        
+        for (Rectangle r : ground) {
+            if (r.intersects(player)) {
+                intersection = r.intersection(player);
+                System.out.println(intersection);
+                // setX(intersection.getX());
+                
+                if (intersection.getHeight() == 1) {
+                    setY(intersection.getY());
+                    if (jump) {
+                        setY(player.getY() + intersection.getHeight());
+                        System.out.println("You jumped and hit the top");
+                    } else {
+                        setY(player.getY() - intersection.getHeight());
+                        System.out.println("You're touching the bottom");
+                        grounded = true;
+                    }
+                }
+                
+                if (intersection.getWidth() == 1) {
+                    // setX(intersection.getX());
+                    
+                    if (left) {
+                        setX(player.getX() + intersection.getWidth());
+                        this.px -= vx;
+                    } else if (right) {
+                        setX(player.getX() - intersection.getWidth());
+                        this.px += vx;
+                    }
+                }
+                
+            }
+        }
+        
         win = checkWin();
     } // end update
     
@@ -113,6 +120,11 @@ public class Player extends GameObject {
         g.setColor(c);
         g.fillRect(this.getX(), this.getY(), h, w);
         player = new Rectangle(this.getX(), this.getY(), h, w);
+        g.setColor(Color.BLUE);
+        if (intersection != null) {
+            g.fillRect((int) intersection.getX(), (int) intersection.getY(), 
+            (int) intersection.getWidth(), (int) intersection.getHeight());
+        }
     } // end draw
     
     public void setX(double x) {
