@@ -60,7 +60,6 @@ public class Player extends GameObject {
         
         if (jump) {
             this.py += vy;
-            jump = false;
             grounded = false;
         } else {
             this.py += vy;
@@ -80,20 +79,30 @@ public class Player extends GameObject {
         }
         
         for (Rectangle r : ground) {
+            System.out.println("Grounded: " + grounded);
             if (r.intersects(player)) {
                 intersection = r.intersection(player);
-                System.out.println(intersection);
-                // setX(intersection.getX());
+                
+                if (intersection.getHeight() == 1 && intersection.getWidth() == 1) {
+                    grounded = false;
+                    return;
+                }
                 
                 if (intersection.getHeight() == 1) {
                     setY(intersection.getY());
-                    if (jump) {
+                    
+                    if (jump && !grounded) {
                         setY(player.getY() + intersection.getHeight());
                         System.out.println("You jumped and hit the top");
                     } else {
                         setY(player.getY() - intersection.getHeight());
-                        System.out.println("You're touching the bottom");
                         grounded = true;
+                        if (jump) {
+                            System.out.println("Correct conditional");
+                            setY(player.getY() - intersection.getHeight());
+                            grounded = false;
+                            jump = false;
+                        }
                     }
                 }
                 
@@ -109,8 +118,17 @@ public class Player extends GameObject {
                     }
                 }
                 
+            } else if (grounded) {
+                setY(player.getY() + 1);
+                if (r.intersects(player)) {
+                    grounded = false;
+                } else {
+                    setY(player.getY());
+                }
             }
         }
+        
+        jump = false;
         
         win = checkWin();
     } // end update
