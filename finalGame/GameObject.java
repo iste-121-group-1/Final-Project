@@ -12,10 +12,6 @@ public abstract class GameObject {
     public abstract void update(GameObject o);
     public abstract void draw(Graphics2D g);
     
-    public boolean isColliding(int xPos, int yPos, int w, int h) {
-        return false;
-    } 
-    
     public int getX() {
         return (int) px;
     }
