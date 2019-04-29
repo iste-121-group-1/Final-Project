@@ -15,9 +15,10 @@ public class GameServer extends JFrame {
    // Vector objects for Socket and PrintWriter
    Vector<Socket> SocketConnection = new Vector<Socket>();
    Vector<ObjectOutputStream> clientWriters = new Vector<ObjectOutputStream>();
+   Vector<ObjectInputStream> clientReaders = new Vector<ObjectInputStream>();
 
    // ArrayLists for client data
-   ArrayList<GameData> clientData = new ArrayList<>();
+   ArrayList<GameData> clientData = new ArrayList<GameData>();
    // ArrayList<GAME_STATES> clientState = new ArrayList<GAME_STATES>();
 
    // store usernames and colors seperately, since they are only used once
@@ -184,7 +185,7 @@ public class GameServer extends JFrame {
           * }
           */
 
-         try {
+         try { // TODO wait this will happen every time wont it
             writeToClient("Disconnected");// Send (disconnect message) to clients before sockets are closed
             getClientData.close();
             sendClientData.close();
