@@ -193,7 +193,7 @@ public class Game extends JFrame implements KeyListener {
       jpButton.add(jbStart);
       jpButton.add(jbWhoIsIn);
 
-      add(jpButton, BorderLayout.SOUTH);
+      menu.add(jpButton, BorderLayout.SOUTH);
 
       JPanel jpNorth = new JPanel();
       JScrollPane scroll = new JScrollPane(jtaArea);
@@ -226,7 +226,7 @@ public class Game extends JFrame implements KeyListener {
       // jbStart.addActionListener();
       // jbWhoIsIn.addActionListener();
 
-      menu.setVisible(false);
+      menu.setVisible(true);
       this.getContentPane().add(menu, BorderLayout.CENTER);
       // END MENU/CHAT UI //
 
@@ -235,9 +235,10 @@ public class Game extends JFrame implements KeyListener {
       // END CREATE UI //
 
       // LEADERBOARD UI //
-      leaderboard = new JPanel(new GridLayout(2, 1));
+      leaderboard = new JPanel(new GridLayout(3, 1));
       scores = new JPanel(new GridLayout(0, 1));
-      leaderboardButtons = new JPanel(new GridLayout(2, 1));
+      JPanel blank = new JPanel();
+      leaderboardButtons = new JPanel(new GridLayout(1, 2));
 
       jlLeaderboardArray = new ArrayList<JLabel>();
 
@@ -258,6 +259,7 @@ public class Game extends JFrame implements KeyListener {
             });
          }
       };
+      
       leaderboardQuit = new JButton("Quit") {
          {
             addActionListener(new ActionListener() {
@@ -273,6 +275,7 @@ public class Game extends JFrame implements KeyListener {
       leaderboardButtons.add(leaderboardQuit);
 
       leaderboard.add(scores);
+      leaderboard.add(blank);
       leaderboard.add(leaderboardButtons);
 
       leaderboard.setVisible(false);
@@ -297,7 +300,7 @@ public class Game extends JFrame implements KeyListener {
       // initialize game components
       ResetGame();
         
-      GameState = GAME_STATES.GAME;
+      GameState = GAME_STATES.MENU;
       setLocationRelativeTo(null);
     } // end initialization
     

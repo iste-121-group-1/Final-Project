@@ -5,9 +5,8 @@ import java.util.*;
 public class Player extends GameObject {
 
     // location player appears on screen
-    private float spawnX = 420;
-    //private float spawnY = 620;
-    private float spawnY = 100;
+    private float spawnX = 100;
+    private float spawnY = 570;
     
     private float winPos = 3950;
     
@@ -16,6 +15,9 @@ public class Player extends GameObject {
     private Color c;
     int h;
     int w;
+    
+    private final int MAXLEFT = -5;
+    private final int MAXRIGHT = 5;
     
     private Rectangle player;
     private Rectangle intersection;
@@ -51,10 +53,18 @@ public class Player extends GameObject {
             
         if (left) {
             vx = -1;
+            /*vx -= 0.5;
+            if (vx < MAXLEFT) {
+                vx = MAXLEFT;
+            }*/
         }
             
         if (right) {
-            vx = 1;    
+            vx = 1;
+            /*vx += 0.5;   
+            if (vx > MAXRIGHT) {
+                vx = MAXRIGHT;
+            }*/
         }
         
         
