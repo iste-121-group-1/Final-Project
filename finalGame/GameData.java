@@ -23,11 +23,12 @@ public class GameData extends DataObject {
 
     /**
      * GameData consturctor
+     * 
      * @param _state the GAME_STATES passed from the client
-     * @param _name the client's username
+     * @param _name  the client's username
      * @param _color the client player's color
-     * @param _xpos player x position
-     * @param _ypos player y position
+     * @param _xpos  player x position
+     * @param _ypos  player y position
      */
     public GameData(GAME_STATES _state, String _name, Color _color, int _xpos, int _ypos) {
         type = DataType.GAME;
@@ -40,6 +41,7 @@ public class GameData extends DataObject {
 
     /**
      * Constructor just for position data, gives it DataType.POS
+     * 
      * @param _xpos
      * @param _ypos
      */
@@ -51,6 +53,7 @@ public class GameData extends DataObject {
 
     /**
      * Constructor just for game satate, gives it DataType.STATE
+     * 
      * @param _state
      */
     public GameData(GAME_STATES _state) {
@@ -58,18 +61,38 @@ public class GameData extends DataObject {
         state = _state;
     }
 
+    /**
+     * Updates the game state
+     * 
+     * @param _state
+     */
     public void updateGameState(GAME_STATES _state) {
         state = _state;
     }
 
+    /**
+     * Updates the x position
+     * 
+     * @param _xpos
+     */
     public void updateXpos(int _xpos) {
         xpos = _xpos;
     }
 
+    /**
+     * Updates the y position
+     * 
+     * @param _ypos
+     */
     public void updateYpos(int _ypos) {
         ypos = _ypos;
     }
 
+    /**
+     * Everything after this point is undocumented
+     * Its just getters for every attribute
+     * 
+     */
 
     public DataType getType() {
         return this.type;
@@ -94,5 +117,5 @@ public class GameData extends DataObject {
     public int getYpos() {
         return this.ypos;
     }
-    
+
 }
