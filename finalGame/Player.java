@@ -145,11 +145,6 @@ public class Player extends GameObject {
         g.setColor(c);
         g.fillRect(this.getX(), this.getY(), h, w);
         player = new Rectangle(this.getX(), this.getY(), h, w);
-        g.setColor(Color.BLUE);
-        if (intersection != null) {
-            g.fillRect((int) intersection.getX(), (int) intersection.getY(), 
-            (int) intersection.getWidth(), (int) intersection.getHeight());
-        }
     } // end draw
     
     public void setX(double x) {
