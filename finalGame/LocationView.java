@@ -25,8 +25,6 @@ public class LocationView extends GameObject {
 
     @Override
     public void draw(Graphics2D g) {
-        g.setColor(Color.WHITE);
-        g.fillRect(350, 50, 350, 50);
         g.setColor(Color.BLACK);
         g.drawRect(350, 50, 350, 50);
         

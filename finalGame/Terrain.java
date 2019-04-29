@@ -72,18 +72,6 @@ public class Terrain extends GameObject {
             obstacle = new Rectangle(getX(), getY(), w, h);
         }
         
-        public int getW() {
-            return w;
-        } 
-        
-        public int getH() {
-            return h;
-        }
-        
-        public Rectangle playerStop(Rectangle o) {
-            return o;
-        } 
-        
     }
 
 } // end Terrain

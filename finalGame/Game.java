@@ -226,7 +226,7 @@ public class Game extends JFrame implements KeyListener {
       // jbStart.addActionListener();
       // jbWhoIsIn.addActionListener();
 
-      menu.setVisible(true);
+      menu.setVisible(false);
       this.getContentPane().add(menu, BorderLayout.CENTER);
       // END MENU/CHAT UI //
 
@@ -300,7 +300,7 @@ public class Game extends JFrame implements KeyListener {
       // initialize game components
       ResetGame();
         
-      GameState = GAME_STATES.MENU;
+      GameState = GAME_STATES.GAME;
       setLocationRelativeTo(null);
     } // end initialization
     
@@ -342,6 +342,8 @@ public class Game extends JFrame implements KeyListener {
             // draw images
             player.draw(g);
             level.draw(g);
+            g.setColor(Color.WHITE);
+            g.fillRect(350, 50, 350, 50);
             location.draw(g);
             
             // release resourcecs, show the buffer
