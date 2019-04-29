@@ -53,7 +53,6 @@ public class Terrain extends GameObject {
     
         private int w;
         private int h;
-        private Rectangle obstacle;
     
         public TerrainComponents(int xPos, int yPos, int _w, int _h) {
             this.px = xPos;
@@ -69,7 +68,6 @@ public class Terrain extends GameObject {
         public void draw(Graphics2D g) {
             g.setColor(Color.BLACK);
             g.fillRect(getX(), getY(), w, h);
-            obstacle = new Rectangle(getX(), getY(), w, h);
         }
         
     }
