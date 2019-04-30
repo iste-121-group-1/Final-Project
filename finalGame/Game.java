@@ -50,14 +50,14 @@ public class Game extends JFrame implements KeyListener {
    JPanel jp, ip, jpCenter, jpSouthBorder, jpSNorth, jpSSouth;
    JLabel msgLabel;
    JScrollPane scroll;
-   JoinGame Join;
+   //JoinGame Join;
 
    // Name
    // Nickname Info
    JLabel jlName = new JLabel("Name:");
    JTextField jtfName = new JTextField(20);
 
-   private JButton jbJoin = new JButton("Join Game");
+   private JButton jbJoin;// = new JButton("Join Game");
    private JButton jbWhoIsIn = new JButton("Who is in");
    private JButton jbStart = new JButton("Start Game");
 
@@ -212,8 +212,8 @@ public class Game extends JFrame implements KeyListener {
       // Another panel
       jpSSouth = new JPanel();
 
-      JPanel jpJoin = new JPanel();
-      jpJoin.add(jbJoin);
+      //JPanel jpJoin = new JPanel();
+      //jpJoin.add(jbJoin);
 
       // Start
       JPanel jpStart = new JPanel();
@@ -221,7 +221,7 @@ public class Game extends JFrame implements KeyListener {
 
       BoarderjpPanel.add(jpAddress);
       BoarderjpPanel.add(jpName);
-      BoarderjpPanel.add(jpJoin);
+      //BoarderjpPanel.add(jpJoin);
       BoarderjpPanel.add(jpStart);
       BoarderjpPanel.add(jbWhoIsIn);
 
@@ -231,7 +231,7 @@ public class Game extends JFrame implements KeyListener {
       JPanel jpButton = new JPanel(new FlowLayout());
 
       jpAddress.add(jbConnect);
-      jpButton.add(jbJoin);
+      //jpButton.add(jbJoin);
       jpButton.add(jbStart);
       jpButton.add(jbWhoIsIn);
 
@@ -251,7 +251,10 @@ public class Game extends JFrame implements KeyListener {
 
       // Add the south part of the panel to the south border
       jpSouthBorder.add(jpSSouth, BorderLayout.SOUTH);
-      jbJoin.addActionListener(Join);
+      jbJoin.addActionListener(ae -> {
+         menu.setVisible(false);
+         GameState = GAME_STATES.GAME;
+      });
       // Add the south border area to the full panel
       jp.add(jpSouthBorder, BorderLayout.SOUTH);
       add(jp);
@@ -292,7 +295,7 @@ public class Game extends JFrame implements KeyListener {
       setVisible(true);
       menu.setVisible(true);
       // menu.setVisible(false);
-      jp.setVisible(true);
+      //jp.setVisible(true);
       this.getContentPane().add(menu, BorderLayout.CENTER);
       // END MENU/CHAT UI //
 
@@ -383,7 +386,7 @@ public class Game extends JFrame implements KeyListener {
          location.update(player);
          if (player.win) {
             GameState = GAME_STATES.LEADERBOARD;
-            leaderboard.setVisible(true);
+            //leaderboard.setVisible(true);
          } // end if checking if player has won
          break;
       case LEADERBOARD:
@@ -541,18 +544,18 @@ public class Game extends JFrame implements KeyListener {
       jtaArea.append(reply);
    } // end receive
 
-   class JoinGame implements ActionListener {
+  /* class JoinGame implements ActionListener {
 
       // ActionPerformed method
       public void actionPerformed(ActionEvent ae) {
-         if (ae.getActionCommand().equals("Join")) // Check If the 'Disconnect' button is pressed
-         {
+         if (ae.getActionCommand().equals("Join")) {
             menu.setVisible(false);
             GameState = GAME_STATES.GAME;
+            System.out.println("REEEEEEEEEEEEEEEEEEEE");
          }
 
       } // End of actionPerformed method
 
-   }
+   }*/
 
 } // end class Game
