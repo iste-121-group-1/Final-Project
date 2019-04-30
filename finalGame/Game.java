@@ -545,18 +545,4 @@ public class Game extends JFrame implements KeyListener {
       jtaArea.append(reply);
    } // end receive
 
-  /* class JoinGame implements ActionListener {
-
-      // ActionPerformed method
-      public void actionPerformed(ActionEvent ae) {
-         if (ae.getActionCommand().equals("Join")) {
-            menu.setVisible(false);
-            GameState = GAME_STATES.GAME;
-            System.out.println("REEEEEEEEEEEEEEEEEEEE");
-         }
-
-      } // End of actionPerformed method
-
-   }*/
-
 } // end class Game
