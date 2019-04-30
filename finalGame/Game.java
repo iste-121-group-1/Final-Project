@@ -254,12 +254,13 @@ public class Game extends JFrame implements KeyListener {
       jbJoin.addActionListener(ae -> {
          menu.setVisible(false);
          GameState = GAME_STATES.GAME;
+         jpSouthBorder.setVisible(false);
       });
       // Add the south border area to the full panel
-      jp.add(jpSouthBorder, BorderLayout.SOUTH);
-      add(jp);
+      add(jpSouthBorder, BorderLayout.SOUTH);
+      menu.add(jp);
 
-      setLocationRelativeTo(null);
+      //setLocationRelativeTo(null);
       // pack();
       setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -386,7 +387,7 @@ public class Game extends JFrame implements KeyListener {
          location.update(player);
          if (player.win) {
             GameState = GAME_STATES.LEADERBOARD;
-            //leaderboard.setVisible(true);
+            leaderboard.setVisible(true);
          } // end if checking if player has won
          break;
       case LEADERBOARD:

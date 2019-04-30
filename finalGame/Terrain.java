@@ -42,7 +42,7 @@ public class Terrain extends GameObject {
             ground.draw(g);
         }
         g.setColor(Color.RED);
-        g.drawLine(4000, 0, 4000, 620);
+        g.drawLine(1000, 0, 1000, 620);
     }
     
     public ArrayList<Rectangle> getTerrain() {

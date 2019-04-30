@@ -8,7 +8,7 @@ public class Player extends GameObject {
     private float spawnX = 100;
     private float spawnY = 570;
     
-    private float winPos = 3950;
+    private float winPos = 950;
     
     private boolean jumping;
     
