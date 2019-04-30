@@ -42,12 +42,21 @@ public class Terrain extends GameObject {
             ground.draw(g);
         }
         g.setColor(Color.RED);
-        g.drawLine(1000, 0, 1000, 620);
+        g.drawLine(3950, 0, 3950, 620);
     }
     
     public ArrayList<Rectangle> getTerrain() {
         return myRects;
     } // end getTerrain
+    
+    public void offsetCamera(int offsetPos) {
+        for (TerrainComponents comp : myGround) {
+            comp.setX(comp.getX() - offsetPos);
+        }
+        for (Rectangle rect : myRects) {
+            rect.setLocation((int) rect.getX() - offsetPos, (int) rect.getY());
+        }
+    } // end offsetCamera()
     
     class TerrainComponents extends GameObject {
     
@@ -63,6 +72,10 @@ public class Terrain extends GameObject {
         }
         
         public void update(GameObject o) {
+        }
+        
+        public void setX(int newX) {
+            this.px = newX;
         }
         
         public void draw(Graphics2D g) {

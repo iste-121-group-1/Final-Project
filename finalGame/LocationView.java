@@ -6,7 +6,7 @@ public class LocationView extends GameObject {
     Color playerC;
     int playerX;
     double relativeX;
-    final double COURSELENGTH = 950;
+    final double COURSELENGTH = 3950;
 
     public LocationView(Color c) {
         playerC = c;

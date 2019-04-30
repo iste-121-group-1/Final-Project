@@ -8,7 +8,7 @@ public class Player extends GameObject {
     private float spawnX = 100;
     private float spawnY = 570;
     
-    private float winPos = 950;
+    private float winPos = 3950;
     
     private boolean jumping;
     
@@ -82,8 +82,10 @@ public class Player extends GameObject {
             this.px += vx;
         }
         
+        Terrain t = null;
+        
         if (o instanceof Terrain) {
-            Terrain t = (Terrain) o;
+            t = (Terrain) o;
             ground = t.getTerrain();
         }
         
@@ -135,7 +137,13 @@ public class Player extends GameObject {
             }
         }
         
+        if (!left && !right) {
+            vx = 0;
+        }
+        
         jump = false;
+        
+        t.offsetCamera((int) vx);
         
         win = checkWin();
     } // end update
