@@ -152,7 +152,7 @@ public class Game extends JFrame implements KeyListener {
       about.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent ae) {
             // close();
-            System.exit(0);
+            JOptionPane.showMessageDialog(null, "You can write something :)");
          }
       });
 
