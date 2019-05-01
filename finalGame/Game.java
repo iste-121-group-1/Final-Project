@@ -128,6 +128,9 @@ public class Game extends JFrame implements KeyListener {
    private Player player;
    private Terrain level;
    private LocationView location;
+   
+   // Player color stuff
+   private Color playerC;
 
    public Game(int width, int height, int fps) {
    
@@ -296,9 +299,11 @@ public class Game extends JFrame implements KeyListener {
       
       jbJoin.addActionListener(
          ae -> {
+            ResetGame();
             menu.setVisible(false);
             GameState = GAME_STATES.GAME;
             jpSouthBorder.setVisible(false);
+            
          });
       // Add the south border area to the full panel
       //add(jpSouthBorder, BorderLayout.SOUTH);
@@ -394,9 +399,6 @@ public class Game extends JFrame implements KeyListener {
       createBufferStrategy(2);
       strategy = getBufferStrategy();
    
-      // initialize game components
-      ResetGame();
-   
       GameState = GAME_STATES.MENU;
       setLocationRelativeTo(null);
    } // end initialization
@@ -454,7 +456,7 @@ public class Game extends JFrame implements KeyListener {
 
    public void ResetGame() {
       level = new Terrain();
-      Color playerC = new Color(255, 0, 0);
+      playerC = new Color(255, 0, 0);
       player = new Player(50, 50, playerC);
       location = new LocationView(playerC);
    } // end ResetGame
