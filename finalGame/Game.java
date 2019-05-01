@@ -302,7 +302,8 @@ public class Game extends JFrame implements KeyListener {
             ResetGame();
             menu.setVisible(false);
             GameState = GAME_STATES.GAME;
-            jpSouthBorder.setVisible(false);
+            jpButton.setVisible(false);
+            jp.setVisible(false);
             
          });
       // Add the south border area to the full panel
@@ -490,28 +491,36 @@ public class Game extends JFrame implements KeyListener {
    } // end run
 
    public void keyPressed(KeyEvent ke) {
-      switch (ke.getKeyCode()) {
-         case KeyEvent.VK_LEFT:
-            player.left = true;
-            break;
-         case KeyEvent.VK_RIGHT:
-            player.right = true;
-            break;
+      switch (GameState) {
+        case GAME:
+          switch (ke.getKeyCode()) {
+            case KeyEvent.VK_LEFT:
+               player.left = true;
+               break;
+            case KeyEvent.VK_RIGHT:
+               player.right = true;
+               break;
+          }
+        break;
       }
    } // end keyPressed
 
    public void keyReleased(KeyEvent ke) {
-      switch (ke.getKeyCode()) {
-         case KeyEvent.VK_LEFT:
-            player.left = false;
-            break;
-         case KeyEvent.VK_RIGHT:
-            player.right = false;
-            break;
-         case KeyEvent.VK_SPACE:
-            player.jump = true;
-            break;
-      }
+    switch (GameState) {
+        case GAME:
+          switch (ke.getKeyCode()) {
+             case KeyEvent.VK_LEFT:
+                player.left = false;
+                break;
+             case KeyEvent.VK_RIGHT:
+                player.right = false;
+                break;
+             case KeyEvent.VK_SPACE:
+                player.jump = true;
+                break;
+          }
+        break;
+    }
    } // end keyReleased
 
    public void keyTyped(KeyEvent ke) {
