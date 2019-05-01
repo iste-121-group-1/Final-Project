@@ -302,7 +302,8 @@ public class Game extends JFrame implements KeyListener {
             ResetGame();
             menu.setVisible(false);
             GameState = GAME_STATES.GAME;
-            jpSouthBorder.setVisible(false);
+            jpButton.setVisible(false);
+            jp.setVisible(false);
             
          });
       // Add the south border area to the full panel
