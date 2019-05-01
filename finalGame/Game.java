@@ -578,29 +578,29 @@ public class Game extends JFrame implements KeyListener {
    } //End Connection constructor
 
    
-    class Login implements ActionListener
-    {
+   class Login implements ActionListener
+   {
       public void actionPerformed(ActionEvent ae){
          if(ae.getActionCommand().equals("Login"))
-            {
+         {
             //ActionPerformed method  
             
-               area.append("Client name set to : " + jtfName.getText() + "\n");
-               jbName.setText("Logout");
+            area.append("Client name set to : " + jtfName.getText() + "\n");
+            jbName.setText("Logout");
             
              //End of actionPerformed method
-            }
+         }
             
-            else if(ae.getActionCommand().equals("Logout"))
-            {
+         else if(ae.getActionCommand().equals("Logout"))
+         {
             //ActionPerformed method  
             
-               area.append("\n" + jtfName.getText() + "logged out");
-               jbName.setText("Login");
+            area.append("\n" + jtfName.getText() + "logged out");
+            jbName.setText("Login");
             
              //End of actionPerformed method
-            }
-   }
+         }
+      }
    }
    
    
@@ -691,13 +691,17 @@ public class Game extends JFrame implements KeyListener {
      
    } // End of close method
    
-   // class ButtonListener implements ActionListener {
-//     public void actionPerformed(ActionEvent e) {
-//       Color color = jbColor.showDialog(null, "Choose a Color", jbColor.getForeground());
-//       if (color != null)
-//         jbColor.setForeground(c);
-//     }
-//   }
-   
 } // end class Game
 
+class ButtonPress {
+  public static void main(String[] args) {
+  ArrayList<String> listColor = new ArrayList<String>();
+  ArrayList<String> Player = new ArrayList<String>();
+  listColor.add("Red");
+  listColor.add("Green");
+  listColor.add("Orange");
+  listColor.add("White");
+  listColor.add("Black");
+  System.out.println(listColor);
+ }
+}
