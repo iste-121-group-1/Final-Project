@@ -51,10 +51,10 @@ public class Terrain extends GameObject {
     
     public void offsetCamera(int offsetPos) {
         for (TerrainComponents comp : myGround) {
-            comp.setX(comp.getX() - (offsetPos * 1));
+            comp.setX(comp.getX() - (int) (offsetPos * 0.5));
         }
         for (Rectangle rect : myRects) {
-            rect.setLocation((int) rect.getX() - (offsetPos * 1), (int) rect.getY());
+            rect.setLocation((int) rect.getX() - (int) (offsetPos * 0.5), (int) rect.getY());
         }
     } // end offsetCamera()
     
