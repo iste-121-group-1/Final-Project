@@ -6,7 +6,7 @@ public class Terrain extends GameObject {
 
     private ArrayList<TerrainComponents> myGround;
     private ArrayList<Rectangle> myRects;
-    private int activeCollision;
+    private int finishLine;
     
     public Terrain() {
         myRects = new ArrayList<Rectangle>();
@@ -41,6 +41,7 @@ public class Terrain extends GameObject {
         for (TerrainComponents ground : myGround) {
             ground.draw(g);
         }
+        
         g.setColor(Color.RED);
         g.drawLine(3950, 0, 3950, 620);
     }
@@ -51,10 +52,10 @@ public class Terrain extends GameObject {
     
     public void offsetCamera(int offsetPos) {
         for (TerrainComponents comp : myGround) {
-            comp.setX(comp.getX() - (int) (offsetPos * 0.5));
+            comp.setX(comp.getX() - (int) (offsetPos * 3));
         }
         for (Rectangle rect : myRects) {
-            rect.setLocation((int) rect.getX() - (int) (offsetPos * 0.5), (int) rect.getY());
+            rect.setLocation((int) rect.getX() - (int) (offsetPos * 3), (int) rect.getY());
         }
     } // end offsetCamera()
     
