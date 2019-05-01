@@ -39,6 +39,9 @@ public class Game extends JFrame implements KeyListener {
       MENU, CREATE, GAME, LEADERBOARD
    } // end game_states enumeration
 
+   //List player
+   public ArrayList<Player> otherPlayers;
+   
    public GAME_STATES GameState;
 
    // player time
@@ -702,15 +705,25 @@ public class Game extends JFrame implements KeyListener {
    
 } // end class Game
 
-class ButtonPress {
-  public static void main(String[] args) {
-  ArrayList<String> listColor = new ArrayList<String>();
-  ArrayList<String> Player = new ArrayList<String>();
-  listColor.add("Red");
-  listColor.add("Green");
-  listColor.add("Orange");
-  listColor.add("White");
-  listColor.add("Black");
-  System.out.println(listColor);
- }
+// class ButtonPress {
+//   public static void main(String[] args) {
+//   ArrayList<String> listColor = new ArrayList<String>();
+//   ArrayList<String> Player = new ArrayList<String>();
+//   listColor.add("Red");
+//   listColor.add("Green");
+//   listColor.add("Orange");
+//   listColor.add("White");
+//   listColor.add("Black");
+//   System.out.println(listColor);
+//  }
+// }
+
+class GameList
+{
+   private ArrayList<GameList>gamelist = new ArrayList<GameList>();
+   
+   public GameList(ArrayList gamelis)
+   {
+      gamelist = gamelis;
+   }
 }
