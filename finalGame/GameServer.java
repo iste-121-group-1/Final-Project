@@ -27,6 +27,9 @@ public class GameServer extends JFrame {
    ArrayList<Color> clientColors = new ArrayList<Color>();
    // ArrayList<Integer> clientXpos = new ArrayList<Integer>();
    // ArrayList<Integer> clientYpos = new ArrayList<Integer>();
+   
+   // ArrayList to hold available colors
+   ArrayList<Color> availableColors = new ArrayList<Color>();
 
 
    JTextArea textArea = new JTextArea(20, 30);

@@ -8,17 +8,19 @@ public class Player extends GameObject {
     private float spawnX = 100;
     private float spawnY = 570;
     
+    // x coordinate player has to reach to win
     private float winPos = 3950;
     
-    private boolean jumping;
-    
+    // player info
     private Color c;
     int h;
     int w;
     
+    // max left and right speed
     private final int MAXLEFT = -5;
     private final int MAXRIGHT = 5;
     
+    // for collision
     private Rectangle player;
     private Rectangle intersection;
     private boolean grounded = false;
@@ -53,18 +55,10 @@ public class Player extends GameObject {
             
         if (left) {
             vx = -1;
-            /*vx -= 0.5;
-            if (vx < MAXLEFT) {
-                vx = MAXLEFT;
-            }*/
         }
             
         if (right) {
             vx = 1;
-            /*vx += 0.5;   
-            if (vx > MAXRIGHT) {
-                vx = MAXRIGHT;
-            }*/
         }
         
         
@@ -143,7 +137,7 @@ public class Player extends GameObject {
         
         jump = false;
         
-        t.offsetCamera((int) vx);
+        t.offsetCamera((int) vx * 4);
         
         win = checkWin();
     } // end update
