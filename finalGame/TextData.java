@@ -2,10 +2,12 @@ package finalGame;
 
 import static finalGame.DataObject.DataType.TEXT;
 
+import java.io.Serializable;
+
 /**
  * TextData
  */
-public class TextData extends DataObject {
+public class TextData extends DataObject implements Serializable {
 
     public DataType type;
     public String message;
