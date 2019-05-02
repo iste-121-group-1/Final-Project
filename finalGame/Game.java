@@ -90,7 +90,6 @@ public class Game extends JFrame implements KeyListener {
    private JPanel leaderboard;
    private JPanel scores;
    private JPanel leaderboardButtons;
-   private ArrayList<JLabel> jlLeaderboardArray;
    private JButton leaderboardReturn;
    private JButton leaderboardQuit;
 
@@ -314,12 +313,6 @@ public class Game extends JFrame implements KeyListener {
       scores = new JPanel(new GridLayout(0, 1));
       JPanel blank = new JPanel();
       leaderboardButtons = new JPanel(new GridLayout(1, 2));
-
-      jlLeaderboardArray = new ArrayList<JLabel>();
-
-      JLabel test = new JLabel("Test");
-
-      // scores.add(test);
 
       // TO IMPLEMENT -- LISTING SCORES PROPERLY
 
