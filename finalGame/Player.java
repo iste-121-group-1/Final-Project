@@ -133,7 +133,6 @@ public class Player extends GameObject {
                 
                 if (intersection.getHeight() == 1 && intersection.getWidth() - Math.abs(vx) < 0) {
                     grounded = false;
-                    System.out.println("Not grounded.");
                     
                 } else if (intersection.getHeight() <= 1) {
                     if (jump && !grounded) {
