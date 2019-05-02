@@ -131,60 +131,83 @@ public class GameServer extends JFrame {
          // thats it?
 
          // player data <- not sure why these have to be final, might cause problems?
-         final GAME_STATES state;
-         final String name;
-         final Color color;
-         final int xpos;
-         final int ypos;
+         GAME_STATES state;
+         String username;
+         Color color;
+         int xpos;
+         int ypos;
 
-         // getClientData will always recieve a TextData, GameData, or will die
-         // this whole block is gonna get copied to the client once it works
-         try {
-            System.out.println("so this happens, why not the switch");
-            // most of this switch statement should be considered a war crime, be warned
-            DataObject tempObject = (DataObject) getClientData.readObject();
-            switch (tempObject.DataType) {
-            case TEXT:
-               System.out.println("bitch does this work the fuck");
-               synchronized (lock) {
-                  String message = ((TextData) tempObject).message;
-                  writeToClient(message);
-               }
-               break;
+         while (true) {
 
-            case GAME:
-               System.out.println("how about this shit motherfucker");
-               state = ((GameData) tempObject).state;
-               name = ((GameData) tempObject).name;
-               color = ((GameData) tempObject).color;
-               if (clientColors.contains(color)) {
-                  // tell client to pick a different color
-                  writeToClient("Pick a different color " + name + "!");
-               } else {
-                  clientColors.add(color);
+            // getClientData will always recieve a TextData, GameData, or will die
+            // this whole block is gonna somewhat get copied to the client once it works
+            try {
+               System.out.println("recursion recursion");
+               Object tempObj = getClientData.readObject(); // create tempobj to allow typecasting
+               if (tempObj instanceof TextData) {
+                  System.out.println("message,, get send");
+                  synchronized (lock) {
+                     username = ((TextData) tempObj).username;
+                     String message = ((TextData) tempObj).message;
+                     clientMessage(username, message);
+                  }
+               } else if (tempObj instanceof GameData) {
+                  switch (((GameData) tempObj).DataType) {
+                  case GAME:
+                     System.out.println("how about this shit motherfucker");
+                     state = ((GameData) tempObj).state;
+                     username = ((GameData) tempObj).name;
+                     color = ((GameData) tempObj).color;
+                     if (clientColors.contains(color)) {
+                        // tell client to pick a different color
+                        writeToClient("Pick a different color " + username + "!");
+                     } else {
+                        clientColors.add(color);
+                     }
+                     xpos = ((GameData) tempObj).xpos;
+                     ypos = ((GameData) tempObj).ypos;
+                     break;
+                  // if a POS object is recieved, the username and pos data is stored and
+                  // immediately sent to all connected clients
+                  case POS:
+                     username = ((GameData) tempObj).name;
+                     xpos = ((GameData) tempObj).xpos;
+                     ypos = ((GameData) tempObj).ypos;
+                     synchronized (lock) {
+                        updateClientPos(username, xpos, ypos);
+                     }
+                     break;
+                  case STATE:
+                     break;
+                  default:
+                     break;
+                  }
                }
-               xpos = ((GameData) tempObject).xpos;
-               ypos = ((GameData) tempObject).ypos;
-               break;
-            // if a POS object is recieved, the username and pos data is stored and
-            // immediately sent to all connected clients
-            case POS:
-               name = ((GameData) tempObject).name;
-               xpos = ((GameData) tempObject).xpos;
-               ypos = ((GameData) tempObject).ypos;
-               synchronized (lock) {
-                  updateClientPos(name, xpos, ypos);
-               }
-               break;
-            case STATE:
-               break;
-            default:
-               // do nothing at all
-               break;
+               // TODO we gonna get rid of this whole block i thinnk - josh
+               // most of this switch statement should be considered a war crime, be warned
+               /*
+                * DataObject tempObject = (DataObject) getClientData.readObject(); switch
+                * (tempObject.DataType) { case TEXT:
+                * System.out.println("bitch does this work the fuck"); synchronized (lock) {
+                * String message = ((TextData) tempObject).message; writeToClient(message); }
+                * break;
+                * 
+                * case GAME: System.out.println("how about this shit motherfucker"); state =
+                * ((GameData) tempObject).state; name = ((GameData) tempObject).name; color =
+                * ((GameData) tempObject).color; if (clientColors.contains(color)) { // tell
+                * client to pick a different color writeToClient("Pick a different color " +
+                * name + "!"); } else { clientColors.add(color); } xpos = ((GameData)
+                * tempObject).xpos; ypos = ((GameData) tempObject).ypos; break; // if a POS
+                * object is recieved, the username and pos data is stored and // immediately
+                * sent to all connected clients case POS: name = ((GameData) tempObject).name;
+                * xpos = ((GameData) tempObject).xpos; ypos = ((GameData) tempObject).ypos;
+                * synchronized (lock) { updateClientPos(name, xpos, ypos); } break; case STATE:
+                * break; default: // do nothing at all break; }
+                */
+
+            } catch (Exception e) {
+               // TODO: handle exception
             }
-
-         } catch (Exception e) {
-            // TODO: handle exception
          }
 
          // TODO change this block to send username and message to client, as part of the
@@ -203,14 +226,12 @@ public class GameServer extends JFrame {
           * }
           */
 
-         /*try { // TODO wait this will happen every time wont it
-            writeToClient("Disconnected");// Send (disconnect message) to clients before sockets are closed
-            getClientData.close();
-            sendClientData.close();
-            cs.close();
-         } catch (IOException ie) {
-            writeToClient("Disconnected");
-         }*/
+         /*
+          * try { // TODO wait this will happen every time wont it
+          * writeToClient("Disconnected");// Send (disconnect message) to clients before
+          * sockets are closed getClientData.close(); sendClientData.close(); cs.close();
+          * } catch (IOException ie) { writeToClient("Disconnected"); }
+          */
 
       }
 
@@ -260,8 +281,9 @@ public class GameServer extends JFrame {
     * @param _message  the message that is being sent
     */
    public void clientMessage(String _username, String _message) {
+      String builderString = _username + ": " + _message;
+      textArea.append(builderString + "\n");
       for (ObjectOutputStream sender : clientWriters) {
-         String builderString = _username + ": " + _message;
          try {
             sender.writeObject(new TextData(builderString));
          } catch (IOException ioe) {
