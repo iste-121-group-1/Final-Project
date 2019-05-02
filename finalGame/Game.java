@@ -492,6 +492,58 @@ public class Game extends JFrame implements KeyListener {
          this.get = get;
       }
 
+      public void run() {
+         while (true) {
+
+            // getClientData will always recieve a TextData, GameData, or will die
+            // this whole block is gonna somewhat get copied to the client once it works
+            try {
+               System.out.println("recursion recursion");
+               Object tempObj = get.readObject(); // create tempobj to allow typecasting
+               if (tempObj instanceof TextData) {
+                  System.out.println("message,, get send");
+                     username = ((TextData) tempObj).username;
+                     String message = ((TextData) tempObj).message;
+                     clientMessage(username, message);
+                  
+               } else if (tempObj instanceof GameData) {
+                  switch (((GameData) tempObj).DataType) {
+                  case GAME:
+                     System.out.println("how about this shit motherfucker");
+                     state = ((GameData) tempObj).state;
+                     username = ((GameData) tempObj).name;
+                     color = ((GameData) tempObj).color;
+                     if (clientColors.contains(color)) {
+                        // tell client to pick a different color
+                        writeToClient("Pick a different color " + username + "!");
+                     } else {
+                        clientColors.add(color);
+                     }
+                     xpos = ((GameData) tempObj).xpos;
+                     ypos = ((GameData) tempObj).ypos;
+                     break;
+                  // if a POS object is recieved, the username and pos data is stored and
+                  // immediately sent to all connected clients
+                  case POS:
+                     username = ((GameData) tempObj).name;
+                     xpos = ((GameData) tempObj).xpos;
+                     ypos = ((GameData) tempObj).ypos;
+                        updateClientPos(username, xpos, ypos);
+                     
+                     break;
+                  case STATE:
+                     break;
+                  default:
+                     break;
+                  }
+               }
+
+            } catch (Exception e) {
+               // TODO: handle exception
+            }
+         }
+      }
+
       public void sendMessage(String username, String message) {
          try {
             send.writeObject(new TextData(username, message));
