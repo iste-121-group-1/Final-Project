@@ -10,16 +10,6 @@ import java.io.*;
 import javax.swing.border.*;
 import javax.swing.*;
 
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JColorChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 /**
  *
  * Basic game demo. Code based off of and build from a game engine by Davis
@@ -35,7 +25,7 @@ public class Game extends JFrame implements KeyListener {
 
    // game states
    public enum GAME_STATES {
-      MENU, CREATE, GAME, LEADERBOARD
+      MENU, GAME, LEADERBOARD
    } // end game_states enumeration
 
    // List player
@@ -369,8 +359,6 @@ public class Game extends JFrame implements KeyListener {
       switch (GameState) {
       case MENU:
          break;
-      case CREATE:
-         break;
       case GAME:
          player.update(level);
          level.update(player);
@@ -393,8 +381,6 @@ public class Game extends JFrame implements KeyListener {
    public void draw() {
       switch (GameState) {
       case MENU:
-         break;
-      case CREATE:
          break;
       case GAME:
          // get canvas
