@@ -178,6 +178,11 @@ public class GameServer extends JFrame {
                      }
                      break;
                   case STATE:
+                     state = ((GameData) tempObj).state;
+                     username = ((GameData) tempObj).name;
+                     synchronized (lock) {
+                        updateClientState(username, state);
+                     }
                      break;
                   default:
                      break;
