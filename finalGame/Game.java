@@ -238,6 +238,7 @@ public class Game extends JFrame implements KeyListener {
                sendServerData = new ObjectOutputStream(cSocket.getOutputStream());
                getServerData = new ObjectInputStream(cSocket.getInputStream());
                connect = new Connection(cSocket, sendServerData, getServerData);
+               connect.start();
             } catch (Exception e) {
                e.printStackTrace();// die?
             }
@@ -290,7 +291,7 @@ public class Game extends JFrame implements KeyListener {
          startGame = System.nanoTime();
          menub.setVisible(false);
          menu.setVisible(false);
-         
+
       });
 
       menu.setVisible(true);
@@ -393,6 +394,8 @@ public class Game extends JFrame implements KeyListener {
 
          // draw images
          player.draw(g);
+         // send the position data to the server every time it changes
+         connect.sendPos(username, player.getX(), player.getY());
          level.draw(g);
          g.setColor(Color.WHITE);
          g.fillRect(350, 50, 350, 50);
@@ -410,7 +413,7 @@ public class Game extends JFrame implements KeyListener {
    public void ResetGame() {
       level = new Terrain();
       if (playerC == null) {
-        playerC = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
+         playerC = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
       }
       player = new Player(50, 50, playerC);
       location = new LocationView(playerC);
@@ -441,13 +444,6 @@ public class Game extends JFrame implements KeyListener {
                ie.printStackTrace();
             } // end try-catch
          } // end if
-
-         // do some checks to get some server comms working
-         System.out.println("main loop test");
-         if (!(connect == null)) {
-            connect.run();
-         }
-
       } // end while
    } // end run
 
@@ -497,6 +493,12 @@ public class Game extends JFrame implements KeyListener {
       ObjectOutputStream send;
       ObjectInputStream get;
 
+      /**
+       * Creates a new connection object
+       * @param ss The server socket
+       * @param send A stream to send data to the client
+       * @param get A stream to recieve data from the client
+       */
       public Connection(Socket ss, ObjectOutputStream send, ObjectInputStream get) {
          this.send = send;
          this.get = get;
@@ -507,20 +509,20 @@ public class Game extends JFrame implements KeyListener {
 
             // getClientData will always recieve a TextData, GameData, or will die
             // this whole block is "gonna somewhat get copied to the client once it works"
-            // now in the client idiot
             try {
                System.out.println("this helpful message means that the getting data loop is in fact working");
                Object tempObj = get.readObject(); // create tempobj to allow typecasting
                if (tempObj instanceof TextData) {
                   System.out.println("message,, get got");
-                  //DONT NEED -> String localUser = ((TextData) tempObj).username;
+                  // DONT NEED -> String localUser = ((TextData) tempObj).username;
                   String localMessage = ((TextData) tempObj).message;
                   messageArea.append(localMessage + "\n");
 
                } else if (tempObj instanceof GameData) {
                   switch (((GameData) tempObj).DataType) {
                   case GAME:
-                     System.out.println("how about this shit motherfucker");
+                     System.out.println("this one's a game data");
+                     // TODO udpate the OtherPlayers and also
                      /*
                       * state = ((GameData) tempObj).state; username = ((GameData) tempObj).name;
                       * color = ((GameData) tempObj).color; if (clientColors.contains(color)) { //
@@ -532,12 +534,11 @@ public class Game extends JFrame implements KeyListener {
                   // if a POS object is recieved, the username and pos data is stored and
                   // immediately sent to all connected clients
                   case POS:
-                     /*
-                      * username = ((GameData) tempObj).name; xpos = ((GameData) tempObj).xpos; ypos
-                      * = ((GameData) tempObj).ypos; updateClientPos(username, xpos, ypos);
-                      */
+                     System.out.println("this one's a pos data");
+                     // TODO this needs to pass the positions to respective OtherPlayers
                      break;
                   case STATE:
+                     System.out.println("this one's a state data");
                      break;
                   default:
                      break;
@@ -550,11 +551,31 @@ public class Game extends JFrame implements KeyListener {
          }
       }
 
+      /**
+       * Sends a message to the server
+       * @param username The client's username
+       * @param message The message being sent
+       */
       public void sendMessage(String username, String message) {
          try {
             send.writeObject(new TextData(username, message));
          } catch (IOException e) {
             e.printStackTrace(); // also die?
+         }
+      }
+
+      /**
+       * Sends the position data of the player to the server
+       * @param username The username of the client whos data is being sent
+       * @param xpos The xpos being sent 
+       * @param ypos The ypos being sent
+       */
+      public void sendPos(String username, int xpos, int ypos) {
+         try {
+            send.writeObject(new GameData(username, xpos, ypos));
+         } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
          }
       }
    } // End Connection constructor
