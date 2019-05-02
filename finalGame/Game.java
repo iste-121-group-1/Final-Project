@@ -339,11 +339,17 @@ public class Game extends JFrame implements KeyListener {
       setResizable(false);
       setVisible(true);
 
+<<<<<<< HEAD
       setIgnoreRepaint(true);
+=======
+      this.pack();
+      //setIgnoreRepaint(true);
+>>>>>>> 33777ea94cba532eb30cde9a5370243be00c6bc8
 
       // add key listener
       addKeyListener(this);
       setFocusable(true);
+      //setFocusable(true);
 
       // create double buffer strategy
       createBufferStrategy(2);

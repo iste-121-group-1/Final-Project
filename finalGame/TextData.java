@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public class TextData extends DataObject implements Serializable {
 
-    public DataType type;
+    public DataType DataType;
     public String message;
     public String username;
 
@@ -17,7 +17,7 @@ public class TextData extends DataObject implements Serializable {
      * Constructor for creating an empty message
      */
     public TextData() {
-        type = TEXT;
+        DataType = TEXT;
         message = "";
     }
     
@@ -26,7 +26,7 @@ public class TextData extends DataObject implements Serializable {
      * @param _message the message being sent
      */
     public TextData(String _message) {
-        type = TEXT;
+        DataType = TEXT;
         message = _message;
     }
 
@@ -36,7 +36,7 @@ public class TextData extends DataObject implements Serializable {
      * @param _message the message being sent
      */
     public TextData(String _username, String _message) {
-        type = TEXT;
+        DataType = TEXT;
         username = _username;
         message = _message;
     }

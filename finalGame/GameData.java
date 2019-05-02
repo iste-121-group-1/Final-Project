@@ -15,7 +15,7 @@ public class GameData extends DataObject implements Serializable {
     // Player Name
     // Player Color
     // Player Position -> seperated as xpos and ypos
-    public DataType type;
+    public DataType DataType;
     public GAME_STATES state;
     public String name;
     public Color color;
@@ -32,7 +32,7 @@ public class GameData extends DataObject implements Serializable {
      * @param _ypos  player y position
      */
     public GameData(GAME_STATES _state, String _name, Color _color, int _xpos, int _ypos) {
-        type = DataType.GAME;
+        DataType = DataType.GAME;
         state = _state;
         name = _name;
         color = _color;
@@ -47,7 +47,7 @@ public class GameData extends DataObject implements Serializable {
      * @param _ypos
      */
     public GameData(int _xpos, int _ypos) {
-        type = DataType.POS;
+        DataType = DataType.POS;
         xpos = _xpos;
         ypos = _ypos;
     }
@@ -58,7 +58,7 @@ public class GameData extends DataObject implements Serializable {
      * @param _state
      */
     public GameData(GAME_STATES _state) {
-        type = DataType.STATE;
+        DataType = DataType.STATE;
         state = _state;
     }
 
@@ -70,7 +70,7 @@ public class GameData extends DataObject implements Serializable {
      * @param _ypos
      */
     public GameData(String username, int _xpos, int _ypos) {
-        type = DataType.POS;
+        DataType = DataType.POS;
         xpos = _xpos;
         ypos = _ypos;
     }
@@ -82,7 +82,7 @@ public class GameData extends DataObject implements Serializable {
      * @param _state
      */
     public GameData(String username, GAME_STATES _state) {
-        type = DataType.STATE;
+        DataType = DataType.STATE;
         state = _state;
     }
 
@@ -120,7 +120,7 @@ public class GameData extends DataObject implements Serializable {
      */
 
     public DataType getType() {
-        return this.type;
+        return this.DataType;
     }
 
     public GAME_STATES getState() {
