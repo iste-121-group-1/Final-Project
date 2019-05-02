@@ -259,7 +259,7 @@ public class Game extends JFrame implements KeyListener {
       jbName.addActionListener(ae -> {
          if (jbName.getText() == "Login") {
             if (jtfName.getText().equals("")) {
-                username = "Default Username";
+                username = "Player";
             } else {
                 username = jtfName.getText();
             }
