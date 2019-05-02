@@ -132,7 +132,7 @@ public class GameServer extends JFrame {
 
          // player data <- not sure why these have to be final, might cause problems?
          GAME_STATES state;
-         String name;
+         String username;
          Color color;
          int xpos;
          int ypos;
@@ -140,26 +140,27 @@ public class GameServer extends JFrame {
          while (true) {
 
             // getClientData will always recieve a TextData, GameData, or will die
-            // this whole block is gonna get copied to the client once it works
+            // this whole block is gonna somewhat get copied to the client once it works
             try {
                System.out.println("recursion recursion");
                Object tempObj = getClientData.readObject(); // create tempobj to allow typecasting
                if (tempObj instanceof TextData) {
                   System.out.println("message,, get send");
                   synchronized (lock) {
+                     username = ((TextData) tempObj).username;
                      String message = ((TextData) tempObj).message;
-                     writeToClient(message);
+                     clientMessage(username, message);
                   }
                } else if (tempObj instanceof GameData) {
                   switch (((GameData) tempObj).DataType) {
                   case GAME:
                      System.out.println("how about this shit motherfucker");
                      state = ((GameData) tempObj).state;
-                     name = ((GameData) tempObj).name;
+                     username = ((GameData) tempObj).name;
                      color = ((GameData) tempObj).color;
                      if (clientColors.contains(color)) {
                         // tell client to pick a different color
-                        writeToClient("Pick a different color " + name + "!");
+                        writeToClient("Pick a different color " + username + "!");
                      } else {
                         clientColors.add(color);
                      }
@@ -169,11 +170,11 @@ public class GameServer extends JFrame {
                   // if a POS object is recieved, the username and pos data is stored and
                   // immediately sent to all connected clients
                   case POS:
-                     name = ((GameData) tempObj).name;
+                     username = ((GameData) tempObj).name;
                      xpos = ((GameData) tempObj).xpos;
                      ypos = ((GameData) tempObj).ypos;
                      synchronized (lock) {
-                        updateClientPos(name, xpos, ypos);
+                        updateClientPos(username, xpos, ypos);
                      }
                      break;
                   case STATE:
@@ -280,8 +281,9 @@ public class GameServer extends JFrame {
     * @param _message  the message that is being sent
     */
    public void clientMessage(String _username, String _message) {
+      String builderString = _username + ": " + _message;
+      textArea.append(builderString + "\n");
       for (ObjectOutputStream sender : clientWriters) {
-         String builderString = _username + ": " + _message;
          try {
             sender.writeObject(new TextData(builderString));
          } catch (IOException ioe) {
