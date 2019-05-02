@@ -12,6 +12,7 @@ public abstract class DataObject implements Serializable {
         GAME,
         POS,
         STATE,
+        WIN,
     }
 
 	public DataType DataType;

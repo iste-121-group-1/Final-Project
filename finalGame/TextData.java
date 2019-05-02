@@ -40,4 +40,15 @@ public class TextData extends DataObject implements Serializable {
         username = _username;
         message = _message;
     }
+
+    /**
+     * Constructor for sending a message from a specific user to all clients
+     * @param _username the user the message is being sent from
+     * @param _message the message being sent
+     */
+    public TextData(String _username, String _message) {
+        DataType = WIN;
+        username = _username;
+        message = _message;
+    }
 }
