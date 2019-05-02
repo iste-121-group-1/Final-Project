@@ -58,7 +58,7 @@ public class Game extends JFrame implements KeyListener {
    // JButton send;
    JMenu file;
    JMenuItem exit;
-   JPanel jp, ip, jpCenter, jpSouthBorder, jpSNorth, jpSSouth;
+   JPanel jpCenter;
    // JLabel msgLabel;
    JScrollPane scroll;
 
@@ -299,7 +299,7 @@ public class Game extends JFrame implements KeyListener {
          menub.setVisible(false);
          GameState = GAME_STATES.GAME;
          jpButton.setVisible(false);
-         jp.setVisible(false);
+         jpSSouth.setVisible(false);
 
       });
       // END MENU/CHAT UI //
