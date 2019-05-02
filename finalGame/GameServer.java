@@ -11,6 +11,9 @@ import finalGame.GameData;
 import java.awt.*;
 
 public class GameServer extends JFrame {
+
+   String lock = "";
+
    JPanel jpTextArea;
    JLabel jlTextArea;
    JPanel ipPanel;
@@ -135,17 +138,22 @@ public class GameServer extends JFrame {
          final int ypos;
 
          // getClientData will always recieve a TextData, GameData, or will die
+         // this whole block is gonna get copied to the client once it works
          try {
+            System.out.println("so this happens, why not the switch");
             // most of this switch statement should be considered a war crime, be warned
             DataObject tempObject = (DataObject) getClientData.readObject();
             switch (tempObject.DataType) {
             case TEXT:
-               synchronized ("lock") {
-                  writeToClient(((TextData) tempObject).message);
+               System.out.println("bitch does this work the fuck");
+               synchronized (lock) {
+                  String message = ((TextData) tempObject).message;
+                  writeToClient(message);
                }
                break;
 
             case GAME:
+               System.out.println("how about this shit motherfucker");
                state = ((GameData) tempObject).state;
                name = ((GameData) tempObject).name;
                color = ((GameData) tempObject).color;
@@ -164,7 +172,9 @@ public class GameServer extends JFrame {
                name = ((GameData) tempObject).name;
                xpos = ((GameData) tempObject).xpos;
                ypos = ((GameData) tempObject).ypos;
-               updateClientPos(name, xpos, ypos);
+               synchronized (lock) {
+                  updateClientPos(name, xpos, ypos);
+               }
                break;
             case STATE:
                break;
