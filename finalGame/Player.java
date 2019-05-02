@@ -9,7 +9,7 @@ public class Player extends GameObject {
     private float spawnY = 570;
     
     // x coordinate player has to reach to win
-    private float winPos = 950;
+    private float winPos = 3820;
     
     // player info
     private Color c;
@@ -29,6 +29,9 @@ public class Player extends GameObject {
     public boolean left = false; // moving left
     public boolean right = false; // moving right
     public boolean win = false; // winner
+    
+    private boolean cameraMove = true;
+    private float distanceTravelled = 0;
 
     public Player(int h, int w, Color c) {
         this.h = h;
@@ -54,11 +57,11 @@ public class Player extends GameObject {
         }
             
         if (left) {
-            vx = -1;
+            vx = -10;
         }
             
         if (right) {
-            vx = 1;
+            vx = 10;
         }
         
         
@@ -77,6 +80,7 @@ public class Player extends GameObject {
             
         if (right) {
             this.px += vx;
+            distanceTravelled += vx;
             // Check to make you don't go off the screen from the right
             if (this.px > 1027) {
                 this.px = 1027;
@@ -85,6 +89,7 @@ public class Player extends GameObject {
         
         if (left) {
             this.px += vx;
+            distanceTravelled += vx;
             // Check to make sure you don't go off the screen from the left
             if (this.px < 3) {
                 this.px = 3;    
@@ -95,8 +100,12 @@ public class Player extends GameObject {
         
         if (o instanceof Terrain) {
             t = (Terrain) o;
-            // t.offsetCamera((int) vx * 4);
+            cameraMove = t.offsetCamera((int) vx, (int) getDistance());
             ground = t.getTerrain();
+        }
+        
+        if (cameraMove) {
+            this.px -= vx;
         }
         
         for (Rectangle r : ground) {
@@ -157,7 +166,6 @@ public class Player extends GameObject {
     } // end update
     
     public void draw(Graphics2D g) {
-        // g.translate(this.getX(), this.getY());
         g.setColor(c);
         g.fillRect(this.getX(), this.getY(), h, w);
         player = new Rectangle(this.getX(), this.getY(), h, w);
@@ -171,8 +179,12 @@ public class Player extends GameObject {
         py = (float) y;
     } // end setY
     
+    public float getDistance() {
+        return distanceTravelled;
+    }
+    
     public boolean checkWin() {
-        if (getX() >= winPos) {
+        if (getDistance() >= winPos) {
             return true;
         } else {
             return false;

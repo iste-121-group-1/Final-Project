@@ -6,7 +6,7 @@ public class LocationView extends GameObject {
     Color playerC;
     int playerX;
     double relativeX;
-    final double COURSELENGTH = 3950;
+    final double COURSELENGTH = 3850;
 
     public LocationView(Color c) {
         playerC = c;
@@ -17,7 +17,7 @@ public class LocationView extends GameObject {
         Player p;
         if (o instanceof Player) {
             p = (Player) o;
-            playerX = p.getX();
+            playerX = (int) p.getDistance();
             
             relativeX = (playerX / COURSELENGTH) * 350;
         }
