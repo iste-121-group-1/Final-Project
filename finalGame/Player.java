@@ -180,8 +180,14 @@ public class Player extends GameObject {
         // Makes jittering happen on outside, not inside
         if (leftC && !cameraMove) {
             leftC = false;
+        } else if (leftC && cameraMove) {
+            distanceTravelled -= vx;
+            leftC = false;
         }
         if (rightC && !cameraMove) {
+            rightC = false;
+        } else if (rightC && cameraMove) {
+            distanceTravelled -= vx;
             rightC = false;
         }
         
