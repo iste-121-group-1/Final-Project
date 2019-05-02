@@ -225,24 +225,25 @@ public class Game extends JFrame implements KeyListener {
             connect.sendMessage(username, msgBox.getText());
             msgBox.setText("");
          } catch (NullPointerException e) {
-           JOptionPane.showMessageDialog(null, "You probably aren't connected!");
+            JOptionPane.showMessageDialog(null, "You probably aren't connected!");
          }
       });
 
       jbConnect.addActionListener(ae -> {
          if (jbConnect.getText() == "Connect") {
-            try {cSocket = new Socket(jtfAddress.getText(), SERVER_PORT);
-                sendServerData = new ObjectOutputStream(cSocket.getOutputStream());
-                getServerData = new ObjectInputStream(cSocket.getInputStream());
-                connect = new Connection(cSocket, sendServerData, getServerData);
-                jbConnect.setText("Disconnect");
-                jtfAddress.setEnabled(false);
+            try {
+               cSocket = new Socket(jtfAddress.getText(), SERVER_PORT);
+               sendServerData = new ObjectOutputStream(cSocket.getOutputStream());
+               getServerData = new ObjectInputStream(cSocket.getInputStream());
+               connect = new Connection(cSocket, sendServerData, getServerData);
+               jbConnect.setText("Disconnect");
+               jtfAddress.setEnabled(false);
             } catch (ConnectException ce) {
-                JOptionPane.showMessageDialog(null, "Connection refused.");
+               JOptionPane.showMessageDialog(null, "Connection refused.");
             } catch (UnknownHostException uhe) {
-                JOptionPane.showMessageDialog(null, "Unknown host while connecting.");
+               JOptionPane.showMessageDialog(null, "Unknown host while connecting.");
             } catch (IOException ioe) {
-                 JOptionPane.showMessageDialog(null, "Input/output exception while connecting.");
+               JOptionPane.showMessageDialog(null, "Input/output exception while connecting.");
             }
          } else if (jbConnect.getText() == "Disconnect") {
             jbConnect.setText("Connect");
@@ -259,9 +260,9 @@ public class Game extends JFrame implements KeyListener {
       jbName.addActionListener(ae -> {
          if (jbName.getText() == "Login") {
             if (jtfName.getText().equals("")) {
-                username = "Player";
+               username = "Player";
             } else {
-                username = jtfName.getText();
+               username = jtfName.getText();
             }
             messageArea.append("Client name set to : " + username + "\n");
             jbName.setText("Logout");
@@ -288,7 +289,9 @@ public class Game extends JFrame implements KeyListener {
                playerlist += player.getName() + " ";
             }
             JOptionPane.showMessageDialog(null, playerlist);
-         } catch (NullPointerException npe) { JOptionPane.showMessageDialog(null, "No list of players available."); }
+         } catch (NullPointerException npe) {
+            JOptionPane.showMessageDialog(null, "No list of players available.");
+         }
       });
 
       jbColor.addActionListener(colorChooser);
@@ -456,8 +459,7 @@ public class Game extends JFrame implements KeyListener {
    } // end run
 
    public void keyPressed(KeyEvent ke) {
-      switch (GameState) {
-      case GAME:
+      if (GameState == GAME_STATES.GAME) {
          switch (ke.getKeyCode()) {
          case KeyEvent.VK_LEFT:
             player.left = true;
@@ -466,13 +468,11 @@ public class Game extends JFrame implements KeyListener {
             player.right = true;
             break;
          }
-         break;
       }
    } // end keyPressed
 
    public void keyReleased(KeyEvent ke) {
-      switch (GameState) {
-      case GAME:
+      if (GameState == GAME_STATES.GAME) {
          switch (ke.getKeyCode()) {
          case KeyEvent.VK_LEFT:
             player.left = false;
@@ -484,7 +484,6 @@ public class Game extends JFrame implements KeyListener {
             player.jump = true;
             break;
          }
-         break;
       }
    } // end keyReleased
 
@@ -503,9 +502,10 @@ public class Game extends JFrame implements KeyListener {
 
       /**
        * Creates a new connection object
-       * @param ss The server socket
+       * 
+       * @param ss   The server socket
        * @param send A stream to send data to the client
-       * @param get A stream to recieve data from the client
+       * @param get  A stream to recieve data from the client
        */
       public Connection(Socket ss, ObjectOutputStream send, ObjectInputStream get) {
          this.send = send;
@@ -561,8 +561,9 @@ public class Game extends JFrame implements KeyListener {
 
       /**
        * Sends a message to the server
+       * 
        * @param username The client's username
-       * @param message The message being sent
+       * @param message  The message being sent
        */
       public void sendMessage(String username, String message) {
          try {
@@ -574,9 +575,10 @@ public class Game extends JFrame implements KeyListener {
 
       /**
        * Sends the position data of the player to the server
+       * 
        * @param username The username of the client whos data is being sent
-       * @param xpos The xpos being sent 
-       * @param ypos The ypos being sent
+       * @param xpos     The xpos being sent
+       * @param ypos     The ypos being sent
        */
       public void sendPos(String username, int xpos, int ypos) {
          try {
@@ -587,26 +589,25 @@ public class Game extends JFrame implements KeyListener {
          }
       }
    } // End Connection constructor
-   
+
    class ColorChooser extends JFrame implements ActionListener {
-   JButton jbColor;
-   Container container;
+      JButton jbColor;
+      Container container;
 
-   ColorChooser() {
-      container = getContentPane();
-      container.setLayout(new FlowLayout());
-      jbColor = new JButton("Choose color");
-      jbColor.addActionListener(this);
-      container.add(jbColor);
+      ColorChooser() {
+         container = getContentPane();
+         container.setLayout(new FlowLayout());
+         jbColor = new JButton("Choose color");
+         jbColor.addActionListener(this);
+         container.add(jbColor);
+      }
+
+      public void actionPerformed(ActionEvent e) {
+         Color initialcolor = Color.RED;
+         Color color = JColorChooser.showDialog(this, "Select a color", initialcolor);
+         playerC = color;
+      }
+
    }
-
-   public void actionPerformed(ActionEvent e) {
-      Color initialcolor = Color.RED;
-      Color color = JColorChooser.showDialog(this, "Select a color", initialcolor);
-      playerC = color;
-   }
-
-}
 
 } // end class Game
-
