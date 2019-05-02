@@ -185,10 +185,6 @@ public class Game extends JFrame implements KeyListener {
       jpSSouth.add(jpName);
       jpSSouth.add(jpMessage);
 
-      // Join
-      JPanel jpWhoIsIn = new JPanel();
-      jpWhoIsIn.add(jbWhoIsIn);
-
       // Create a panel for the center of the frame
       jpCenter = new JPanel(new FlowLayout());
       // Set up TextArea
@@ -201,6 +197,11 @@ public class Game extends JFrame implements KeyListener {
       area.setWrapStyleWord(true);
       jpCenter.add(scroll); // Add scroll pane to the panel
 
+      
+      // Join
+      JPanel jpWhoIsIn = new JPanel();
+      jpWhoIsIn.add(jbWhoIsIn);
+      
       // Panel button
       JPanel jpButton = new JPanel(new FlowLayout());
 
@@ -288,14 +289,12 @@ public class Game extends JFrame implements KeyListener {
          ResetGame();
          startGame = System.nanoTime();
          menub.setVisible(false);
-         menu.setVisible(false);
+         this.getContentPane().remove(menu);
          GameState = GAME_STATES.GAME;
-
       });
       
-      
       menu.setVisible(true);
-      this.getContentPane().add(menu, BorderLayout.CENTER);
+      this.getContentPane().add(menu);
       // END MENU/CHAT UI //
 
       // LEADERBOARD UI //
@@ -314,9 +313,9 @@ public class Game extends JFrame implements KeyListener {
 
       leaderboardReturn = new JButton("Play Again");
       leaderboardReturn.addActionListener(ae -> {
-         leaderboard.setVisible(false);
          GameState = GAME_STATES.MENU;
-         menu.setVisible(true);
+         this.getContentPane().add(menu);
+         this.getContentPane().remove(leaderboard);
       });
 
       leaderboardQuit = new JButton("Quit");
@@ -332,7 +331,6 @@ public class Game extends JFrame implements KeyListener {
       leaderboard.add(leaderboardButtons);
 
       leaderboard.setVisible(false);
-      this.getContentPane().add(leaderboard, BorderLayout.CENTER);
       // END LEADERBOARD UI //
 
       // finish initializing the frame
@@ -366,7 +364,7 @@ public class Game extends JFrame implements KeyListener {
          location.update(player);
          if (player.win) {
             GameState = GAME_STATES.LEADERBOARD;
-            leaderboard.setVisible(true);
+            this.getContentPane().add(leaderboard);
             endGame = System.nanoTime();
             menub.setVisible(false);
             long elapsedTime = endGame - startGame;
