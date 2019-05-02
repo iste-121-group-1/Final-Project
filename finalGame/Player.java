@@ -30,7 +30,7 @@ public class Player extends GameObject {
     public boolean right = false; // moving right
     public boolean win = false; // winner
     
-    private boolean cameraMove = true;
+    private boolean cameraMove = false;
     private float distanceTravelled = 0;
 
     public Player(int h, int w, Color c) {
@@ -50,18 +50,34 @@ public class Player extends GameObject {
         
         if (jump) {
             vy = -150;
+          
+            if (left) {
+                vx = -1;
+            }
+            
+            if (right) {
+                vx = 1;
+            }
         } else if (!grounded) {
             vy = 1;
+          
+            if (left) {
+                vx = -1;
+            }
+            
+            if (right) {
+                vx = 1;
+            }
         } else {
             vy = 0;
-        }
+          
+            if (left) {
+                vx = -2;
+            }
             
-        if (left) {
-            vx = -10;
-        }
-            
-        if (right) {
-            vx = 10;
+            if (right) {
+                vx = 2;
+            }
         }
         
         
@@ -73,6 +89,7 @@ public class Player extends GameObject {
             }
         } else {
             this.py += vy;
+            // Check to make sure you don't go off the screen from the bottom
             if (this.py > 669) {
                 this.py = 669;
             }

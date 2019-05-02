@@ -44,7 +44,7 @@ public class Terrain extends GameObject {
         }
         if (!offsetCamera) {
             g.setColor(Color.BLUE);
-            g.drawLine(1050, 0, 1050, 620);
+            g.drawLine(1055, 0, 1055, 620);
         }
     }
     
