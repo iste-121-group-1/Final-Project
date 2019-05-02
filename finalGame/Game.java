@@ -33,6 +33,7 @@ public class Game extends JFrame implements KeyListener {
    private final int MAX_FPS;
    private final int WIDTH;
    private final int HEIGHT;
+   
 
    // game states
    public enum GAME_STATES {
@@ -41,6 +42,9 @@ public class Game extends JFrame implements KeyListener {
 
    //List player
    public ArrayList<Player> otherPlayers;
+   private JColorChooser chipColor;
+   private ArrayList<Player> playerArray;
+   private Container container;
    
    public GAME_STATES GameState;
 
@@ -78,6 +82,7 @@ public class Game extends JFrame implements KeyListener {
    JButton send = new JButton("Send");
 
    //private JButton jbJoin;// = new JButton("Join Game");
+   
    private JButton jbWhoIsIn = new JButton("Who is in");
    private JButton jbColor = new JButton("Choose Color");
    private JButton jbJoin = new JButton("Join");
@@ -95,6 +100,7 @@ public class Game extends JFrame implements KeyListener {
    private WHOISIN whoIsIn;
    private Connection connect;
    private Login login;
+   private ColorChooser colorChooser;
    private BufferedReader br = null;
 
    // Setting attributes to null
@@ -263,23 +269,11 @@ public class Game extends JFrame implements KeyListener {
    
       // Another panel
       jpSSouth = new JPanel();
-   
-      // Start
-      JPanel jpStart = new JPanel();
-      jpStart.add(jbColor);
-   
-      //BoarderjpPanel.add(jpAddress);
-      //BoarderjpPanel.add(jpName);
-      //BoarderjpPanel.add(jpStart);
-      //BoarderjpPanel.add(jbWhoIsIn);
-   
-      //menu.add(BoarderjpPanel, BorderLayout.CENTER);
+      
    
       // Panel button
       JPanel jpButton = new JPanel(new FlowLayout());
-   
-      //jpAddress.add(jbConnect);
-      //jpButton.add(jbJoin);
+      
       jpButton.add(jbColor);
       jpButton.add(jbWhoIsIn);
       jpButton.add(jbJoin);
@@ -290,6 +284,7 @@ public class Game extends JFrame implements KeyListener {
       connect = new Connection();
       whoIsIn = new WHOISIN();
       login = new Login();
+      colorChooser = new ColorChooser();
       
       
       //Add it to ActionListener
@@ -297,7 +292,8 @@ public class Game extends JFrame implements KeyListener {
       jbConnect.addActionListener(connect);
       jbName.addActionListener(login);
       jbWhoIsIn.addActionListener(whoIsIn);
-      jbName.addKeyListener(this);
+      jbColor.addActionListener(colorChooser);
+      //jbName.addKeyListener(this);
       
       
       jbJoin.addActionListener(
@@ -532,6 +528,7 @@ public class Game extends JFrame implements KeyListener {
    public static void main(String[] args) {
       Game game = new Game(1080, 720, 30);
       game.run();
+
    } // end main
 
 
@@ -639,7 +636,7 @@ public class Game extends JFrame implements KeyListener {
      
    } //End of sendMessage constructor
    
-   
+  
    //Who is in
    class WHOISIN implements ActionListener
    {
@@ -705,25 +702,22 @@ public class Game extends JFrame implements KeyListener {
    
 } // end class Game
 
-// class ButtonPress {
-//   public static void main(String[] args) {
-//   ArrayList<String> listColor = new ArrayList<String>();
-//   ArrayList<String> Player = new ArrayList<String>();
-//   listColor.add("Red");
-//   listColor.add("Green");
-//   listColor.add("Orange");
-//   listColor.add("White");
-//   listColor.add("Black");
-//   System.out.println(listColor);
-//  }
-// }
 
-class GameList
-{
-   private ArrayList<GameList>gamelist = new ArrayList<GameList>();
+class ColorChooser extends JFrame implements ActionListener {    
+   JButton jbColor;    
+   Container container;    
+   ColorChooser()
+   {    
+      container=getContentPane();    
+      container.setLayout(new FlowLayout());         
+      jbColor =new JButton("Choose color");    
+      jbColor.addActionListener(this);         
+      container.add(jbColor);    
+   }    
+   public void actionPerformed(ActionEvent e) {    
+      Color initialcolor = Color.RED;    
+      Color color = JColorChooser.showDialog(this,"Select a color",initialcolor);    
+      container.setBackground(color);    
+   }    
    
-   public GameList(ArrayList gamelis)
-   {
-      gamelist = gamelis;
-   }
 }
