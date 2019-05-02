@@ -115,7 +115,7 @@ public class GameServer extends JFrame {
       public void run() {
 
          // TODO The server also needs to keep track of the GameState of each connected
-         // player, as well as their username.
+         // player, as well as their username. <- it does - josh
 
          // PLAN TODO
          // client will send Objects,
@@ -130,7 +130,7 @@ public class GameServer extends JFrame {
          // Player Position
          // thats it?
 
-         // player data <- not sure why these have to be final, might cause problems?
+         // player data not final anymore, works now for some reason
          GAME_STATES state;
          String username;
          Color color;
@@ -145,7 +145,7 @@ public class GameServer extends JFrame {
                System.out.println("recursion recursion");
                Object tempObj = getClientData.readObject(); // create tempobj to allow typecasting
                if (tempObj instanceof TextData) {
-                  System.out.println("message,, get send");
+                  System.out.println("message got sent");
                   synchronized (lock) {
                      username = ((TextData) tempObj).username;
                      String message = ((TextData) tempObj).message;
@@ -154,7 +154,7 @@ public class GameServer extends JFrame {
                } else if (tempObj instanceof GameData) {
                   switch (((GameData) tempObj).DataType) {
                   case GAME:
-                     System.out.println("how about this shit motherfucker");
+                     System.out.println("gamedata getting sent");
                      state = ((GameData) tempObj).state;
                      username = ((GameData) tempObj).name;
                      color = ((GameData) tempObj).color;
@@ -183,7 +183,7 @@ public class GameServer extends JFrame {
                      break;
                   }
                }
-               // TODO we gonna get rid of this whole block i thinnk - josh
+               // DONE its,, got
                // most of this switch statement should be considered a war crime, be warned
                /*
                 * DataObject tempObject = (DataObject) getClientData.readObject(); switch
@@ -209,29 +209,6 @@ public class GameServer extends JFrame {
                // TODO: handle exception
             }
          }
-
-         // TODO change this block to send username and message to client, as part of the
-         // chat program
-         // TODO change this whole block to use the object io bits that are passed in
-         // not really sure if I will end up using this ↓ <- wont
-         // inReader = new BufferedReader(new InputStreamReader(cs.getInputStream()));
-         // outWriter = new PrintWriter(new OutputStreamWriter(cs.getOutputStream()));
-         /*
-          * while ((message = inReader.readLine()) != null) {
-          * textArea.append("Server read: " + message + "\n");
-          * 
-          * // Loop for PrintWriter object from Vector list for (PrintWriter writer :
-          * clientWriters) { writer.println(message); writer.flush(); }
-          * 
-          * }
-          */
-
-         /*
-          * try { // TODO wait this will happen every time wont it
-          * writeToClient("Disconnected");// Send (disconnect message) to clients before
-          * sockets are closed getClientData.close(); sendClientData.close(); cs.close();
-          * } catch (IOException ie) { writeToClient("Disconnected"); }
-          */
 
       }
 
