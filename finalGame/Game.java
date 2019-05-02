@@ -410,7 +410,9 @@ public class Game extends JFrame implements KeyListener {
 
    public void ResetGame() {
       level = new Terrain();
-      playerC = new Color(255, 0, 0);
+      if (playerC == null) {
+        playerC = new Color(255, 0, 0);
+      }
       player = new Player(50, 50, playerC);
       location = new LocationView(playerC);
    } // end ResetGame
@@ -503,10 +505,8 @@ public class Game extends JFrame implements KeyListener {
          }
       }
    } // End Connection constructor
-
-} // end class Game
-
-class ColorChooser extends JFrame implements ActionListener {
+   
+   class ColorChooser extends JFrame implements ActionListener {
    JButton jbColor;
    Container container;
 
@@ -521,7 +521,10 @@ class ColorChooser extends JFrame implements ActionListener {
    public void actionPerformed(ActionEvent e) {
       Color initialcolor = Color.RED;
       Color color = JColorChooser.showDialog(this, "Select a color", initialcolor);
-      container.setBackground(color);
+      playerC = color;
    }
 
 }
+
+} // end class Game
+
