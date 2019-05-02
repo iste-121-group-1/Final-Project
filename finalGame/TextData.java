@@ -1,6 +1,7 @@
 package finalGame;
 
 import static finalGame.DataObject.DataType.TEXT;
+import static finalGame.DataObject.DataType.WIN;
 
 import java.io.Serializable;
 
@@ -46,7 +47,7 @@ public class TextData extends DataObject implements Serializable {
      * @param _username the user the message is being sent from
      * @param _message the message being sent
      */
-    public TextData(String _username, String _message) {
+    public TextData(String _username, String _message, String justMakeThisOneNull) {
         DataType = WIN;
         username = _username;
         message = _message;
