@@ -130,7 +130,6 @@ public class Player extends GameObject {
         for (Rectangle r : ground) {
             if (r.intersects(player)) {
                 intersection = r.intersection(player);
-                System.out.println(intersection);
                 
                 if (intersection.getHeight() == 1 && intersection.getWidth() - Math.abs(vx) < 0) {
                     grounded = false;
