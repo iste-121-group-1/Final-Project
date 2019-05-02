@@ -411,7 +411,7 @@ public class Game extends JFrame implements KeyListener {
    public void ResetGame() {
       level = new Terrain();
       if (playerC == null) {
-        playerC = new Color(255, 0, 0);
+        playerC = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
       }
       player = new Player(50, 50, playerC);
       location = new LocationView(playerC);
