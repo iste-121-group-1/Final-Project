@@ -67,7 +67,7 @@ public class GameServer extends JFrame {
       try {
 
          sSocket = new ServerSocket(16789);
-         ipLabel.setText(sSocket.getInetAddress().toString());
+         ipLabel.setText(InetAddress.getLocalHost().toString());
          ObjectInputStream getClientData;
          ObjectOutputStream sendClientData;
 
