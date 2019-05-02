@@ -10,16 +10,6 @@ import java.io.*;
 import javax.swing.border.*;
 import javax.swing.*;
 
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JColorChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 /**
  *
  * Basic game demo. Code based off of and build from a game engine by Davis
@@ -35,7 +25,7 @@ public class Game extends JFrame implements KeyListener {
 
    // game states
    public enum GAME_STATES {
-      MENU, CREATE, GAME, LEADERBOARD
+      MENU, GAME, LEADERBOARD
    } // end game_states enumeration
 
    // List player
@@ -46,12 +36,6 @@ public class Game extends JFrame implements KeyListener {
    private Container container;
 
    public GAME_STATES GameState;
-
-   // player time
-   public static long TIME;
-
-   // pause
-   public boolean isPaused = false;
 
    JTextArea area;
    // JTextField msgBox, nameField;
@@ -79,8 +63,6 @@ public class Game extends JFrame implements KeyListener {
    JLabel msgLabel = new JLabel("Message");
    JTextField msgBox = new JTextField(20);
    JButton send = new JButton("Send");
-
-   // private JButton jbJoin;// = new JButton("Join Game");
 
    private JButton jbWhoIsIn = new JButton("Who is in");
    private JButton jbColor = new JButton("Choose Color");
@@ -212,7 +194,8 @@ public class Game extends JFrame implements KeyListener {
       // Create a panel for the center of the frame
       jpCenter = new JPanel(new FlowLayout());
       // Set up TextArea
-      area = new JTextArea(10, 20);
+      area = new JTextArea(20, 20);
+      area.setText("Please for the love of god work");
       // Scroll pane object details
       scroll = new JScrollPane(area);
       scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -308,6 +291,7 @@ public class Game extends JFrame implements KeyListener {
          GameState = GAME_STATES.GAME;
          jpButton.setVisible(false);
          jpSSouth.setVisible(false);
+         jpCenter.setVisible(false);
 
       });
       // END MENU/CHAT UI //
@@ -330,6 +314,9 @@ public class Game extends JFrame implements KeyListener {
       leaderboardReturn.addActionListener(ae -> {
          leaderboard.setVisible(false);
          GameState = GAME_STATES.MENU;
+         jpButton.setVisible(true);
+         jpSSouth.setVisible(true);
+         jpCenter.setVisible(true);
       });
 
       leaderboardQuit = new JButton("Quit");
@@ -372,8 +359,6 @@ public class Game extends JFrame implements KeyListener {
       switch (GameState) {
       case MENU:
          break;
-      case CREATE:
-         break;
       case GAME:
          player.update(level);
          level.update(player);
@@ -382,6 +367,7 @@ public class Game extends JFrame implements KeyListener {
             GameState = GAME_STATES.LEADERBOARD;
             leaderboard.setVisible(true);
             endGame = System.nanoTime();
+            menub.setVisible(false);
             long elapsedTime = endGame - startGame;
             gameTotal = (double) elapsedTime / 1000000000.0;
             System.out.println(gameTotal);
@@ -395,8 +381,6 @@ public class Game extends JFrame implements KeyListener {
    public void draw() {
       switch (GameState) {
       case MENU:
-         break;
-      case CREATE:
          break;
       case GAME:
          // get canvas
