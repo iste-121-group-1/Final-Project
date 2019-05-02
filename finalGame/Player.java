@@ -71,8 +71,6 @@ public class Player extends GameObject {
                 vx = 2;
             }
         } else {
-            vy = 0;
-          
             if (left) {
                 vx = -4;
             }
@@ -131,11 +129,10 @@ public class Player extends GameObject {
             if (r.intersects(player)) {
                 intersection = r.intersection(player);
                 
-                if (intersection.getHeight() == 1 && intersection.getWidth() - Math.abs(vx) < 0) {
+                if (intersection.getHeight() == 1 && intersection.getWidth() - Math.abs(vx) <= 0) {
                     grounded = false;
-                    System.out.println("Not grounded.");
                     
-                } else if (intersection.getHeight() <= 1) {
+                } else if (intersection.getHeight() == 1) {
                     if (jump && !grounded) {
                         setY(intersection.getHeight() + intersection.getY());
                     } else {

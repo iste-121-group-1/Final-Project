@@ -286,18 +286,15 @@ public class Game extends JFrame implements KeyListener {
 
       jbJoin.addActionListener(ae -> {
          ResetGame();
-         GameState = GAME_STATES.LEADERBOARD;
-         this.getContentPane().remove(menu);
-         this.getContentPane().add(leaderboard);
-         /*
-          * GameState = GAME_STATES.GAME; startGame = System.nanoTime();
-          * menub.setVisible(false); menu.setVisible(false);
-          */
-
+         GameState = GAME_STATES.GAME;
+         startGame = System.nanoTime();
+         menub.setVisible(false);
+         menu.setVisible(false);
+         
       });
 
       menu.setVisible(true);
-      this.getContentPane().add(menu);
+      this.getContentPane().add(menu, BorderLayout.CENTER);
       // END MENU/CHAT UI //
 
       // LEADERBOARD UI //
@@ -310,15 +307,15 @@ public class Game extends JFrame implements KeyListener {
 
       JLabel test = new JLabel("Test");
 
-      scores.add(test);
+      // scores.add(test);
 
       // TO IMPLEMENT -- LISTING SCORES PROPERLY
 
       leaderboardReturn = new JButton("Play Again");
       leaderboardReturn.addActionListener(ae -> {
          GameState = GAME_STATES.MENU;
-         this.getContentPane().add(menu);
-         this.getContentPane().remove(leaderboard);
+         menu.setVisible(true);
+         leaderboard.setVisible(false);
       });
 
       leaderboardQuit = new JButton("Quit");
@@ -334,6 +331,7 @@ public class Game extends JFrame implements KeyListener {
       leaderboard.add(leaderboardButtons);
 
       leaderboard.setVisible(false);
+      this.getContentPane().add(leaderboard, BorderLayout.SOUTH);
       // END LEADERBOARD UI //
 
       // finish initializing the frame
@@ -345,7 +343,8 @@ public class Game extends JFrame implements KeyListener {
       this.pack();
 
       // add key listener
-      addKeyListener(this);
+      this.getContentPane().addKeyListener(this);
+      this.getContentPane().setFocusable(true);
 
       // create double buffer strategy
       createBufferStrategy(2);
@@ -366,10 +365,10 @@ public class Game extends JFrame implements KeyListener {
          location.update(player);
          if (player.win) {
             GameState = GAME_STATES.LEADERBOARD;
-            this.getContentPane().add(leaderboard);
+            leaderboard.setVisible(true);
             endGame = System.nanoTime();
-            menub.setVisible(false);
-            this.getContentPane().remove(menu);
+            menub.setVisible(true);
+            menu.setVisible(false);
             long elapsedTime = endGame - startGame;
             gameTotal = (double) elapsedTime / 1000000000.0;
             System.out.println(gameTotal);
@@ -410,7 +409,9 @@ public class Game extends JFrame implements KeyListener {
 
    public void ResetGame() {
       level = new Terrain();
-      playerC = new Color(255, 0, 0);
+      if (playerC == null) {
+        playerC = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
+      }
       player = new Player(50, 50, playerC);
       location = new LocationView(playerC);
    } // end ResetGame
@@ -557,10 +558,8 @@ public class Game extends JFrame implements KeyListener {
          }
       }
    } // End Connection constructor
-
-} // end class Game
-
-class ColorChooser extends JFrame implements ActionListener {
+   
+   class ColorChooser extends JFrame implements ActionListener {
    JButton jbColor;
    Container container;
 
@@ -575,7 +574,10 @@ class ColorChooser extends JFrame implements ActionListener {
    public void actionPerformed(ActionEvent e) {
       Color initialcolor = Color.RED;
       Color color = JColorChooser.showDialog(this, "Select a color", initialcolor);
-      container.setBackground(color);
+      playerC = color;
    }
 
 }
+
+} // end class Game
+
