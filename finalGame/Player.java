@@ -9,7 +9,7 @@ public class Player extends GameObject {
     private float spawnY = 570;
     
     // x coordinate player has to reach to win
-    private float winPos = 3820;
+    private float winPos = 3800;
     
     // player info
     private Color c;
@@ -32,6 +32,8 @@ public class Player extends GameObject {
     
     private boolean cameraMove = false;
     private float distanceTravelled = 0;
+    private boolean leftC;
+    private boolean rightC;
 
     public Player(int h, int w, Color c) {
         this.h = h;
@@ -52,24 +54,14 @@ public class Player extends GameObject {
             vy = -150;
           
             if (left) {
-                vx = -1;
+                vx = -2;
             }
             
             if (right) {
-                vx = 1;
+                vx = 2;
             }
         } else if (!grounded) {
             vy = 1;
-          
-            if (left) {
-                vx = -1;
-            }
-            
-            if (right) {
-                vx = 1;
-            }
-        } else {
-            vy = 0;
           
             if (left) {
                 vx = -2;
@@ -77,6 +69,16 @@ public class Player extends GameObject {
             
             if (right) {
                 vx = 2;
+            }
+        } else {
+            vy = 0;
+          
+            if (left) {
+                vx = -4;
+            }
+            
+            if (right) {
+                vx = 4;
             }
         }
         
@@ -121,27 +123,24 @@ public class Player extends GameObject {
             ground = t.getTerrain();
         }
         
-        if (cameraMove) {
+        if (cameraMove && distanceTravelled > 0) {
             this.px -= vx;
         }
         
         for (Rectangle r : ground) {
             if (r.intersects(player)) {
                 intersection = r.intersection(player);
+                System.out.println(intersection);
                 
-                if (intersection.getHeight() == 1 && intersection.getWidth() == 1) {
+                if (intersection.getHeight() == 1 && intersection.getWidth() - Math.abs(vx) < 0) {
                     grounded = false;
-                    return;
-                }
-                
-                if (intersection.getHeight() == 1) {
-                    setY(intersection.getY());
+                    System.out.println("Not grounded.");
                     
+                } else if (intersection.getHeight() <= 1) {
                     if (jump && !grounded) {
-                        setY(player.getY() + intersection.getHeight());
-                        System.out.println("You jumped and hit the top");
+                        setY(intersection.getHeight() + intersection.getY());
                     } else {
-                        setY(player.getY() - intersection.getHeight());
+                        setY(intersection.getHeight() - h);
                         grounded = true;
                         if (jump) {
                             setY(player.getY() - 150);
@@ -149,22 +148,20 @@ public class Player extends GameObject {
                             jump = false;
                         }
                     }
-                }
-                
-                if (intersection.getWidth() == 1) {
-                    // setX(intersection.getX());
-                    
+                } else {
                     if (left) {
-                        setX(player.getX() + intersection.getWidth());
-                        this.px -= vx;
-                    } else if (right) {
-                        setX(player.getX() - intersection.getWidth());
-                        this.px += vx;
+                        setX(intersection.getWidth() + intersection.getX());
+                        rightC = true;
+                    }
+                    
+                    if (right) {
+                        setX(intersection.getX() - w);
+                        leftC = true;
                     }
                 }
                 
             } else if (grounded) {
-                setY(player.getY() + 1);
+                setY(player.getY() + vy);
                 if (r.intersects(player)) {
                     grounded = false;
                 } else {
@@ -173,12 +170,22 @@ public class Player extends GameObject {
             }
         }
         
+        // Make sure camera doesn't move when player isn't moving
         if (!left && !right) {
             vx = 0;
         }
         
         jump = false;
         
+        // Makes jittering happen on outside, not inside
+        if (leftC && !cameraMove) {
+            leftC = false;
+        }
+        if (rightC && !cameraMove) {
+            rightC = false;
+        }
+        
+        // Check to see if the player has won
         win = checkWin();
     } // end update
     

@@ -441,7 +441,7 @@ public class Game extends JFrame implements KeyListener {
          strategy.show();
          break;
       case LEADERBOARD:
-         break;
+          break;
       } // end switch
    } // end draw
 

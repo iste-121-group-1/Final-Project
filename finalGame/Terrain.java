@@ -44,7 +44,7 @@ public class Terrain extends GameObject {
         }
         if (!offsetCamera) {
             g.setColor(Color.BLUE);
-            g.drawLine(1055, 0, 1055, 620);
+            g.drawLine(1030, 0, 1030, 619);
         }
     }
     
@@ -53,13 +53,14 @@ public class Terrain extends GameObject {
     } // end getTerrain
     
     public boolean offsetCamera(int offsetPos, int disTravelled) {
-        if (offsetCamera) {
+        if (disTravelled > 0 && offsetCamera) {
             for (TerrainComponents comp : myGround) {
                 comp.setX(comp.getX() - offsetPos);
             }
             for (Rectangle rect : myRects) {
                 rect.setLocation((int) rect.getX() - offsetPos, (int) rect.getY());
             }
+        
             if (disTravelled >= 2920) {
                 offsetCamera = false;
             }
