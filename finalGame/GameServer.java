@@ -13,6 +13,8 @@ import java.awt.*;
 public class GameServer extends JFrame {
    JPanel jpTextArea;
    JLabel jlTextArea;
+   JPanel ipPanel;
+   JLabel ipLabel;
    // Vector objects for Socket and PrintWriter
    Vector<Socket> SocketConnection = new Vector<Socket>();
    Vector<ObjectOutputStream> clientWriters = new Vector<ObjectOutputStream>();
@@ -33,6 +35,7 @@ public class GameServer extends JFrame {
 
 
    JTextArea textArea = new JTextArea(20, 30);
+   ServerSocket sSocket;
 
    public GameServer() {
 
@@ -46,6 +49,10 @@ public class GameServer extends JFrame {
 
       jpTextArea.add(jlTextArea); // Add label to the panel
 
+      ipPanel = new JPanel();
+      ipLabel = new JLabel();
+      ipPanel.add(ipLabel);
+
       // Scroll panel object
       JScrollPane scroll = new JScrollPane(textArea);
       scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -53,6 +60,7 @@ public class GameServer extends JFrame {
       textArea.setEditable(false);
       jpTextArea.add(scroll);
 
+      add(ipPanel, BorderLayout.NORTH);
       add(jpTextArea, BorderLayout.CENTER);
 
       setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -61,7 +69,8 @@ public class GameServer extends JFrame {
 
       try {
 
-         ServerSocket sSocket = new ServerSocket(16789);
+         sSocket = new ServerSocket(16789);
+         ipLabel.setText(sSocket.getInetAddress().toString());
          ObjectInputStream getClientData;
          ObjectOutputStream sendClientData;
 
