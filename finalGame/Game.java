@@ -275,10 +275,9 @@ public class Game extends JFrame implements KeyListener {
                getServerData = new ObjectInputStream(cSocket.getInputStream());
                connect = new Connection(cSocket, sendServerData, getServerData);
             } catch (Exception e) {
-               // die?
+               e.printStackTrace();// die?
             }
-         }
-         if (jbConnect.getText() == "Disconnect") {
+         } else if (jbConnect.getText() == "Disconnect") {
             jbConnect.setText("Connect");
             try {
                cSocket.close();
@@ -287,15 +286,18 @@ public class Game extends JFrame implements KeyListener {
             }
          }
       });
+
+      // "Login", set the client's username
       jbName.addActionListener(ae -> {
          if (jbName.getText() == "Login") {
             username = jtfName.getText();
             area.append("Client name set to : " + username + "\n");
             jbName.setText("Logout");
-         }
-         if (jbName.getText() == "Logout") {
+         } else if (jbName.getText() == "Logout") {
             area.append(username + " disconnected");
             jbName.setText("Login");
+         } else {
+            System.exit(0);
          }
       });
       jbWhoIsIn.addActionListener(ae -> {

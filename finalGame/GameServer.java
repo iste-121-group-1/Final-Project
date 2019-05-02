@@ -193,14 +193,14 @@ public class GameServer extends JFrame {
           * }
           */
 
-         try { // TODO wait this will happen every time wont it
+         /*try { // TODO wait this will happen every time wont it
             writeToClient("Disconnected");// Send (disconnect message) to clients before sockets are closed
             getClientData.close();
             sendClientData.close();
             cs.close();
          } catch (IOException ie) {
             writeToClient("Disconnected");
-         }
+         }*/
 
       }
 
