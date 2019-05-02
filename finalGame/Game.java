@@ -47,12 +47,6 @@ public class Game extends JFrame implements KeyListener {
 
    public GAME_STATES GameState;
 
-   // player time
-   public static long TIME;
-
-   // pause
-   public boolean isPaused = false;
-
    JTextArea area;
    // JTextField msgBox, nameField;
    // JButton send;
@@ -79,8 +73,6 @@ public class Game extends JFrame implements KeyListener {
    JLabel msgLabel = new JLabel("Message");
    JTextField msgBox = new JTextField(20);
    JButton send = new JButton("Send");
-
-   // private JButton jbJoin;// = new JButton("Join Game");
 
    private JButton jbWhoIsIn = new JButton("Who is in");
    private JButton jbColor = new JButton("Choose Color");
@@ -212,7 +204,8 @@ public class Game extends JFrame implements KeyListener {
       // Create a panel for the center of the frame
       jpCenter = new JPanel(new FlowLayout());
       // Set up TextArea
-      area = new JTextArea(10, 20);
+      area = new JTextArea(20, 20);
+      area.setText("Please for the love of god work");
       // Scroll pane object details
       scroll = new JScrollPane(area);
       scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -300,6 +293,7 @@ public class Game extends JFrame implements KeyListener {
          GameState = GAME_STATES.GAME;
          jpButton.setVisible(false);
          jpSSouth.setVisible(false);
+         jpCenter.setVisible(false);
 
       });
       // END MENU/CHAT UI //
@@ -322,6 +316,9 @@ public class Game extends JFrame implements KeyListener {
       leaderboardReturn.addActionListener(ae -> {
          leaderboard.setVisible(false);
          GameState = GAME_STATES.MENU;
+         jpButton.setVisible(true);
+         jpSSouth.setVisible(true);
+         jpCenter.setVisible(true);
       });
 
       leaderboardQuit = new JButton("Quit");
@@ -374,6 +371,7 @@ public class Game extends JFrame implements KeyListener {
             GameState = GAME_STATES.LEADERBOARD;
             leaderboard.setVisible(true);
             endGame = System.nanoTime();
+            menub.setVisible(false);
             long elapsedTime = endGame - startGame;
             gameTotal = (double) elapsedTime / 1000000000.0;
             System.out.println(gameTotal);
