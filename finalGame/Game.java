@@ -91,7 +91,7 @@ public class Game extends JFrame implements KeyListener {
    private JTextArea jtaArea = new JTextArea(20, 30);
 
    // Attributes
-   public static final int SERVER_PORT = 32001;
+   public static final int SERVER_PORT = 16789; // dont change this again - josh
    private Socket cSocket = null;
    public String username;
    private Connection connect;
@@ -135,7 +135,7 @@ public class Game extends JFrame implements KeyListener {
 
    // Player color stuff
    private Color playerC;
-   
+
    // Timing stuff
    private long startGame;
    private long endGame;
@@ -255,20 +255,38 @@ public class Game extends JFrame implements KeyListener {
       add(jpButton, BorderLayout.NORTH);
 
       // An object
-      // sendMsg = new SendMessage();
-      connect = new Connection();
       colorChooser = new ColorChooser();
 
       // Add it to ActionListener
       send.addActionListener(ae -> {
          // send a message
          try {
-            // TODO sendMessage(username, msgBox.getText());
+            connect.sendMessage(username, msgBox.getText());
          } catch (Exception e) {
             // die?
          }
       });
-      jbConnect.addActionListener(connect);
+      jbConnect.addActionListener(ae -> {
+         if (jbConnect.getText() == "Connect") {
+            jbConnect.setText("Disconnect");
+            try {
+               cSocket = new Socket(jtfAddress.getText(), SERVER_PORT);
+               sendServerData = new ObjectOutputStream(cSocket.getOutputStream());
+               getServerData = new ObjectInputStream(cSocket.getInputStream());
+               connect = new Connection(cSocket, sendServerData, getServerData);
+            } catch (Exception e) {
+               // die?
+            }
+         }
+         if (jbConnect.getText() == "Disconnect") {
+            jbConnect.setText("Connect");
+            try {
+               cSocket.close();
+            } catch (IOException e) {
+               e.printStackTrace(); // do we even want this?
+            }
+         }
+      });
       jbName.addActionListener(ae -> {
          if (jbName.getText() == "Login") {
             username = jtfName.getText();
@@ -287,16 +305,15 @@ public class Game extends JFrame implements KeyListener {
       });
       jbColor.addActionListener(colorChooser);
 
-      jbJoin.addActionListener(
-         ae -> {
-            ResetGame();
-            startGame = System.nanoTime();
-            menub.setVisible(false);
-            GameState = GAME_STATES.GAME;
-            jpButton.setVisible(false);
-            jp.setVisible(false);
-            
-         });
+      jbJoin.addActionListener(ae -> {
+         ResetGame();
+         startGame = System.nanoTime();
+         menub.setVisible(false);
+         GameState = GAME_STATES.GAME;
+         jpButton.setVisible(false);
+         jp.setVisible(false);
+
+      });
       // Add the south border area to the full panel
       // add(jpSouthBorder, BorderLayout.SOUTH);
       // jp.add(menu);
@@ -376,25 +393,25 @@ public class Game extends JFrame implements KeyListener {
    private void update() {
       fps = (int) (1f / dt);
       switch (GameState) {
-         case MENU:
-            break;
-         case CREATE:
-            break;
-         case GAME:
-            player.update(level);
-            level.update(player);
-            location.update(player);
-            if (player.win) {
-               GameState = GAME_STATES.LEADERBOARD;
-               leaderboard.setVisible(true);
-               endGame = System.nanoTime();
-               long elapsedTime = endGame - startGame;
-               gameTotal = (double) elapsedTime / 1000000000.0;
-               System.out.println(gameTotal);
-            } // end if checking if player has won
-            break;
-         case LEADERBOARD:
-            break;
+      case MENU:
+         break;
+      case CREATE:
+         break;
+      case GAME:
+         player.update(level);
+         level.update(player);
+         location.update(player);
+         if (player.win) {
+            GameState = GAME_STATES.LEADERBOARD;
+            leaderboard.setVisible(true);
+            endGame = System.nanoTime();
+            long elapsedTime = endGame - startGame;
+            gameTotal = (double) elapsedTime / 1000000000.0;
+            System.out.println(gameTotal);
+         } // end if checking if player has won
+         break;
+      case LEADERBOARD:
+         break;
       } // end switch
    } // end update
 
@@ -506,65 +523,23 @@ public class Game extends JFrame implements KeyListener {
    } // end main
 
    // Connection Constructor with ActionListener
-   class Connection implements ActionListener {
+   class Connection extends Thread {
+      ObjectOutputStream send;
+      ObjectInputStream get;
 
-      // ActionPerformed method
-      public void actionPerformed(ActionEvent ae) {
-         if (ae.getActionCommand().equals("Connect"))// If the 'Connect' button is pressed
-         {
-            try {
-               cSocket = new Socket(jtfAddress.getText(), 32001);// Create a client socket with IP address and port
-                                                                 // number
-               br = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
-               pw = new PrintWriter(new OutputStreamWriter(cSocket.getOutputStream()));
-               System.out.println("Connecting to Server");
+      public Connection(Socket ss, ObjectOutputStream send, ObjectInputStream get) {
+         this.send = send;
+         this.get = get;
+      }
 
-               // Start threading for message
-               // Thread multiThread = new Thread(new SendReceiveMsg());
-               // multiThread.start();
-            }
-
-            // Exceptions
-            catch (IOException ioe) {
-               System.out.println("Error connection");
-            }
-
-            catch (Exception e) {
-               System.out.println("Error connection");
-            }
-
-            jbConnect.setText("Disconnect");
+      public void sendMessage(String username, String message) {
+         try {
+            send.writeObject(new TextData(username, message));
+         } catch (IOException e) {
+            e.printStackTrace(); //also die?
          }
-
-         else if (ae.getActionCommand().equals("Disconnect")) // Check If the 'Disconnect' button is pressed
-         {
-            try {
-               cSocket.close();
-               pw.close();
-               area.append("Disconnected!\n");
-            } catch (IOException ioe) {
-               area.append("IO Exception: " + ioe + "\n");
-               return;
-            }
-            jbConnect.setText("Connect");
-         }
-
-      } // End actionPerformed method
-
+      }
    } // End Connection constructor
-
-   public void close() {
-      try {
-         cSocket.close(); // Close client socket
-      }
-
-      catch (IOException ioe) {
-         area.append("Unable to disconnect\n");
-      } catch (Exception e) {
-         area.append("Unable to disconnect\n");
-      }
-
-   } // End of close method
 
 } // end class Game
 
