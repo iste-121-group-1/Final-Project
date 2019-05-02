@@ -348,7 +348,6 @@ public class Game extends JFrame implements KeyListener {
 
       // add key listener
       addKeyListener(this);
-      setFocusable(true);
       //setFocusable(true);
 
       // create double buffer strategy
