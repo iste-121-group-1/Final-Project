@@ -48,6 +48,7 @@ public class Game extends JFrame implements KeyListener {
 
    // Menu UI elements
    private JMenuBar menub;
+   private JPanel menu;
 
    // Address
    private JLabel jlAddress = new JLabel("Server IP");
@@ -159,6 +160,8 @@ public class Game extends JFrame implements KeyListener {
          JOptionPane.showMessageDialog(null, "Cool Platformer by Cool Team.");
       });
 
+      menu = new JPanel();
+      
       // Address
       JPanel jpAddress = new JPanel();
       jpAddress.add(jlAddress);
@@ -171,8 +174,6 @@ public class Game extends JFrame implements KeyListener {
       jpName.add(jtfName);
       jpName.add(jbName);
 
-      // Add the following objects to the panel
-
       // Message
       JPanel jpMessage = new JPanel();
       jpMessage.add(msgLabel);
@@ -184,9 +185,6 @@ public class Game extends JFrame implements KeyListener {
       jpSSouth.add(jpName);
       jpSSouth.add(jpMessage);
 
-      // Add the south part of the panel to the south border
-      add(jpSSouth, BorderLayout.SOUTH);
-
       // Join
       JPanel jpWhoIsIn = new JPanel();
       jpWhoIsIn.add(jbWhoIsIn);
@@ -194,8 +192,7 @@ public class Game extends JFrame implements KeyListener {
       // Create a panel for the center of the frame
       jpCenter = new JPanel(new FlowLayout());
       // Set up TextArea
-      area = new JTextArea(20, 20);
-      area.setText("Please for the love of god work");
+      area = new JTextArea(30, 70);
       // Scroll pane object details
       scroll = new JScrollPane(area);
       scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -203,7 +200,6 @@ public class Game extends JFrame implements KeyListener {
       area.setLineWrap(true);
       area.setWrapStyleWord(true);
       jpCenter.add(scroll); // Add scroll pane to the panel
-      add(jpCenter, BorderLayout.CENTER);
 
       // Panel button
       JPanel jpButton = new JPanel(new FlowLayout());
@@ -211,13 +207,17 @@ public class Game extends JFrame implements KeyListener {
       jpButton.add(jbColor);
       jpButton.add(jbWhoIsIn);
       jpButton.add(jbJoin);
-      add(jpButton, BorderLayout.NORTH);
-
+      
+      menu.add(jpButton);
+      menu.add(jpCenter);
+      menu.add(jpSSouth);
+      
       // An object
       colorChooser = new ColorChooser();
 
       send.setEnabled(false);
       msgBox.setEnabled(false);
+      
       // Add it to ActionListener
       send.addActionListener(ae -> {
          // send a message
@@ -288,12 +288,14 @@ public class Game extends JFrame implements KeyListener {
          ResetGame();
          startGame = System.nanoTime();
          menub.setVisible(false);
+         menu.setVisible(false);
          GameState = GAME_STATES.GAME;
-         jpButton.setVisible(false);
-         jpSSouth.setVisible(false);
-         jpCenter.setVisible(false);
 
       });
+      
+      
+      menu.setVisible(true);
+      this.getContentPane().add(menu, BorderLayout.CENTER);
       // END MENU/CHAT UI //
 
       // LEADERBOARD UI //
@@ -314,9 +316,7 @@ public class Game extends JFrame implements KeyListener {
       leaderboardReturn.addActionListener(ae -> {
          leaderboard.setVisible(false);
          GameState = GAME_STATES.MENU;
-         jpButton.setVisible(true);
-         jpSSouth.setVisible(true);
-         jpCenter.setVisible(true);
+         menu.setVisible(true);
       });
 
       leaderboardQuit = new JButton("Quit");
@@ -339,7 +339,6 @@ public class Game extends JFrame implements KeyListener {
       setResizable(false);
       setVisible(true);
 
-      this.pack();
       setIgnoreRepaint(true);
 
       // add key listener
