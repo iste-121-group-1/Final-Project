@@ -58,7 +58,7 @@ public class Game extends JFrame implements KeyListener {
    // JButton send;
    JMenu file;
    JMenuItem exit;
-   JPanel jp, ip, jpCenter, jpSouthBorder, jpSNorth, jpSSouth;
+   JPanel jpCenter;
    // JLabel msgLabel;
    JScrollPane scroll;
 
@@ -85,10 +85,6 @@ public class Game extends JFrame implements KeyListener {
    private JButton jbWhoIsIn = new JButton("Who is in");
    private JButton jbColor = new JButton("Choose Color");
    private JButton jbJoin = new JButton("Join");
-
-   // Text Area
-   private JLabel jlaArea;
-   private JTextArea jtaArea = new JTextArea(20, 30);
 
    // Attributes
    public static final int SERVER_PORT = 16789; // dont change this again - josh
@@ -143,7 +139,7 @@ public class Game extends JFrame implements KeyListener {
 
    public Game(int width, int height, int fps) {
 
-      super("Race Demo");
+      super("Cool Platformer");
       this.MAX_FPS = fps;
       this.WIDTH = width;
       this.HEIGHT = height;
@@ -161,9 +157,6 @@ public class Game extends JFrame implements KeyListener {
       lastFrame = System.currentTimeMillis();
 
       // MENU/CHAT UI //
-      // menu = new JPanel();
-      JPanel BoarderjpPanel = new JPanel(new GridLayout(0, 1));
-      JPanel jpPanel = new JPanel();
 
       // MenuBar object and details
       menub = new JMenuBar();
@@ -183,16 +176,6 @@ public class Game extends JFrame implements KeyListener {
       about.addActionListener(ae -> {
          JOptionPane.showMessageDialog(null, "Cool Platformer by Cool Team.");
       });
-
-      // Create panels for the frame
-      jp = new JPanel(new GridLayout(0, 1));
-
-      // Add information related to IP address and connection
-      // jlAddress = new JLabel("IP Address");
-      // jtfAddress = new JTextField(20);
-      // jbConnect = new JButton("Connect");
-
-      // Set up label, field and button objects for messages
 
       // Address
       JPanel jpAddress = new JPanel();
@@ -227,7 +210,7 @@ public class Game extends JFrame implements KeyListener {
       jpWhoIsIn.add(jbWhoIsIn);
 
       // Create a panel for the center of the frame
-      jpCenter = new JPanel();
+      jpCenter = new JPanel(new FlowLayout());
       // Set up TextArea
       area = new JTextArea(10, 20);
       // Scroll pane object details
@@ -237,14 +220,7 @@ public class Game extends JFrame implements KeyListener {
       area.setLineWrap(true);
       area.setWrapStyleWord(true);
       jpCenter.add(scroll); // Add scroll pane to the panel
-      jp.add(jpCenter, BorderLayout.CENTER);
-
-      // More panels
-      jpSouthBorder = new JPanel(new BorderLayout(0, 1));
-      jpSNorth = new JPanel();
-
-      // Another panel
-      jpSSouth = new JPanel();
+      add(jpCenter, BorderLayout.CENTER);
 
       // Panel button
       JPanel jpButton = new JPanel(new FlowLayout());
@@ -269,6 +245,7 @@ public class Game extends JFrame implements KeyListener {
             // die?
          }
       });
+      
       jbConnect.addActionListener(ae -> {
          if (jbConnect.getText() == "Connect") {
             jtfAddress.setEnabled(false);
@@ -313,6 +290,7 @@ public class Game extends JFrame implements KeyListener {
             System.exit(0);
          }
       });
+      
       jbWhoIsIn.addActionListener(ae -> {
         String playerlist = "Connected: ";
          for (GameData player : connectedPlayers) {
@@ -320,6 +298,7 @@ public class Game extends JFrame implements KeyListener {
          }
          JOptionPane.showMessageDialog(null, playerlist);
       });
+      
       jbColor.addActionListener(colorChooser);
 
       jbJoin.addActionListener(ae -> {
@@ -328,20 +307,9 @@ public class Game extends JFrame implements KeyListener {
          menub.setVisible(false);
          GameState = GAME_STATES.GAME;
          jpButton.setVisible(false);
-         jp.setVisible(false);
+         jpSSouth.setVisible(false);
 
       });
-
-      setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-      JPanel jpNorth = new JPanel();
-      JScrollPane scroll = new JScrollPane(jtaArea);
-      scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-      jtaArea.setLineWrap(true);
-      jtaArea.setEditable(false);
-      jpNorth.add(scroll);
-      add(jpNorth, BorderLayout.CENTER);
-
       // END MENU/CHAT UI //
 
       // LEADERBOARD UI //
