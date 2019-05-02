@@ -64,7 +64,7 @@ public class Game extends JFrame implements KeyListener {
    JScrollPane scroll;
    
    // Menu UI elements
-   private JPanel menu;
+   private JMenuBar menub;
    
    //Address
    private JLabel jlAddress = new JLabel("Server IP");
@@ -166,10 +166,10 @@ public class Game extends JFrame implements KeyListener {
       JPanel jpPanel = new JPanel();
    
       // MenuBar object and details
-      JMenuBar menu = new JMenuBar();
+      menub = new JMenuBar();
       JMenu help = new JMenu("Help");
-      menu.add(help);
-      setJMenuBar(menu);
+      menub.add(help);
+      setJMenuBar(menub);
       JMenuItem about = new JMenuItem("About");
       JMenuItem exit = new JMenuItem("Exit");
       help.add(about);
@@ -299,7 +299,7 @@ public class Game extends JFrame implements KeyListener {
       jbJoin.addActionListener(
          ae -> {
             ResetGame();
-            menu.setVisible(false);
+            menub.setVisible(false);
             GameState = GAME_STATES.GAME;
             jpButton.setVisible(false);
             jp.setVisible(false);
@@ -307,7 +307,7 @@ public class Game extends JFrame implements KeyListener {
          });
       // Add the south border area to the full panel
       //add(jpSouthBorder, BorderLayout.SOUTH);
-      jp.add(menu);
+      // jp.add(menu);
    
       //setLocationRelativeTo(null);
       // pack();
@@ -322,15 +322,10 @@ public class Game extends JFrame implements KeyListener {
       add(jpNorth, BorderLayout.CENTER);
    
    
-      setVisible(true);
       //menu.setVisible(true);
       //jp.setVisible(true);
-      this.getContentPane().add(menu, BorderLayout.CENTER);
+      // this.getContentPane().add(menu, BorderLayout.CENTER);
       // END MENU/CHAT UI //
-   
-      // CREATE UI //
-   
-      // END CREATE UI //
    
       // LEADERBOARD UI //
       leaderboard = new JPanel(new GridLayout(3, 1));
@@ -385,7 +380,7 @@ public class Game extends JFrame implements KeyListener {
       // END LEADERBOARD UI //
    
       // finish initializing the frame
-      setResizable(true);
+      setResizable(false);
       setVisible(true);
    
       this.pack();

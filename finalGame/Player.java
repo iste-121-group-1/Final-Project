@@ -9,7 +9,7 @@ public class Player extends GameObject {
     private float spawnY = 570;
     
     // x coordinate player has to reach to win
-    private float winPos = 3950;
+    private float winPos = 150;
     
     // player info
     private Color c;
@@ -64,16 +64,28 @@ public class Player extends GameObject {
         
         if (jump) {
             this.py += vy;
+            // Check to make sure you don't go off the screen
+            if (this.py < 30) {
+                this.py = 30;
+            }
         } else {
             this.py += vy;
         }
             
         if (right) {
             this.px += vx;
+            // Check to make you don't go off the screen, though it shouldn't be possible
+            if (this.px > 4000) {
+                this.px = 4000;
+            }
         }
         
         if (left) {
             this.px += vx;
+            // Check to make sure you don't go off the screen
+            if (this.px < 8) {
+                this.px = 8;    
+            }
         }
         
         Terrain t = null;
@@ -137,7 +149,7 @@ public class Player extends GameObject {
         
         jump = false;
         
-        t.offsetCamera((int) vx * 4);
+        // t.offsetCamera((int) vx * 4);
         
         win = checkWin();
     } // end update
