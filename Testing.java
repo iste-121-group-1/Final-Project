@@ -14,6 +14,7 @@ class Testing extends JFrame
       area.setEditable(false);
       JScrollPane scrol = new JScrollPane();
       pack();
+      setLocationRelativeTo(null);
       
       try
       {
@@ -22,9 +23,10 @@ class Testing extends JFrame
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
          
-            while (line != null) {
+            while (!(line.equals(""))) {
                sb.append(line);
                line = br.readLine();
+               System.out.println(line);
             }
             String everything = sb.toString();
          } finally {
