@@ -24,14 +24,9 @@ public class GameServer extends JFrame {
    ArrayList<GameData> clientData = new ArrayList<GameData>();
    // ArrayList<GAME_STATES> clientState = new ArrayList<GAME_STATES>();
 
-   // store usernames and colors seperately, since they are only used once
+   // store usernames and colors seperately?
    ArrayList<String> clientNames = new ArrayList<String>();
    ArrayList<Color> clientColors = new ArrayList<Color>();
-   // ArrayList<Integer> clientXpos = new ArrayList<Integer>();
-   // ArrayList<Integer> clientYpos = new ArrayList<Integer>();
-
-   // ArrayList to hold available colors
-   ArrayList<Color> availableColors = new ArrayList<Color>();
 
    JTextArea textArea = new JTextArea(20, 30);
    ServerSocket sSocket;
@@ -116,18 +111,11 @@ public class GameServer extends JFrame {
 
       public void run() {
 
-         // TODO The server needs to both send and recieve a Pair() of x and y locations
-         // CONSTANTLY
-         // This will let the client both send where its player is and recieve where the
-         // other players are.
          // TODO The server also needs to keep track of the GameState of each connected
          // player, as well as their username.
-         // seperate socket?
-         // switch statements for recieved data types
-         // something else?
 
          // PLAN TODO
-         // for now, assume client will send Objects,
+         // client will send Objects,
          // a TextData for the messaging client
          // and
          // a GameData for the game client
@@ -138,10 +126,6 @@ public class GameServer extends JFrame {
          // Player Color
          // Player Position
          // thats it?
-
-         // getClientData // = new ObjectInputStream(cs.getInputStream()); these are now
-         // passed in to prevent duplication
-         // sendClientData// = new ObjectOutputStream(cs.getOutputStream());
 
          // player data <- not sure why these have to be final, might cause problems?
          final GAME_STATES state;

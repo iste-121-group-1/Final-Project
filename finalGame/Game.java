@@ -10,7 +10,6 @@ import java.io.*;
 import javax.swing.border.*;
 import javax.swing.*;
 
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,19 +32,19 @@ public class Game extends JFrame implements KeyListener {
    private final int MAX_FPS;
    private final int WIDTH;
    private final int HEIGHT;
-   
 
    // game states
    public enum GAME_STATES {
       MENU, CREATE, GAME, LEADERBOARD
    } // end game_states enumeration
 
-   //List player
+   // List player
+   public ArrayList<GameData> connectedPlayers;
    public ArrayList<Player> otherPlayers;
    private JColorChooser chipColor;
    private ArrayList<Player> playerArray;
    private Container container;
-   
+
    public GAME_STATES GameState;
 
    // player time
@@ -53,20 +52,20 @@ public class Game extends JFrame implements KeyListener {
 
    // pause
    public boolean isPaused = false;
-   
+
    JTextArea area;
-   //JTextField msgBox, nameField;
-   //JButton send;
+   // JTextField msgBox, nameField;
+   // JButton send;
    JMenu file;
    JMenuItem exit;
    JPanel jp, ip, jpCenter, jpSouthBorder, jpSNorth, jpSSouth;
-   //JLabel msgLabel;
+   // JLabel msgLabel;
    JScrollPane scroll;
-   
+
    // Menu UI elements
    private JMenuBar menub;
-   
-   //Address
+
+   // Address
    private JLabel jlAddress = new JLabel("Server IP");
    private JTextField jtfAddress = new JTextField(20);
    private JButton jbConnect = new JButton("Connect");
@@ -75,18 +74,17 @@ public class Game extends JFrame implements KeyListener {
    JLabel jlName = new JLabel("Name:");
    JTextField jtfName = new JTextField(20);
    JButton jbName = new JButton("Login");
-   
-   //Message
+
+   // Message
    JLabel msgLabel = new JLabel("Message");
    JTextField msgBox = new JTextField(20);
    JButton send = new JButton("Send");
 
-   //private JButton jbJoin;// = new JButton("Join Game");
-   
+   // private JButton jbJoin;// = new JButton("Join Game");
+
    private JButton jbWhoIsIn = new JButton("Who is in");
    private JButton jbColor = new JButton("Choose Color");
    private JButton jbJoin = new JButton("Join");
-   
 
    // Text Area
    private JLabel jlaArea;
@@ -95,11 +93,8 @@ public class Game extends JFrame implements KeyListener {
    // Attributes
    public static final int SERVER_PORT = 32001;
    private Socket cSocket = null;
-   public String name = "";
-   private SendMessage sendMsg;
-   private WHOISIN whoIsIn;
+   public String username;
    private Connection connect;
-   private Login login;
    private ColorChooser colorChooser;
    private BufferedReader br = null;
 
@@ -137,7 +132,7 @@ public class Game extends JFrame implements KeyListener {
    private Player player;
    private Terrain level;
    private LocationView location;
-   
+
    // Player color stuff
    private Color playerC;
    
@@ -147,12 +142,12 @@ public class Game extends JFrame implements KeyListener {
    private double gameTotal;
 
    public Game(int width, int height, int fps) {
-   
+
       super("Race Demo");
       this.MAX_FPS = fps;
       this.WIDTH = width;
       this.HEIGHT = height;
-   
+
    } // End constructor
 
    void init() {
@@ -161,15 +156,15 @@ public class Game extends JFrame implements KeyListener {
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       getContentPane().setLayout(new BorderLayout());
       setBounds(0, 0, WIDTH, HEIGHT);
-   
+
       // set initial last frame value
       lastFrame = System.currentTimeMillis();
-   
-      //MENU/CHAT UI //
-      //menu = new JPanel();
+
+      // MENU/CHAT UI //
+      // menu = new JPanel();
       JPanel BoarderjpPanel = new JPanel(new GridLayout(0, 1));
       JPanel jpPanel = new JPanel();
-   
+
       // MenuBar object and details
       menub = new JMenuBar();
       JMenu help = new JMenu("Help");
@@ -179,81 +174,58 @@ public class Game extends JFrame implements KeyListener {
       JMenuItem exit = new JMenuItem("Exit");
       help.add(about);
       help.add(exit);
-      
-      
-   
-      //MenuItem for object and details
-      //JMenuItem about = new JMenuItem("About");
-      //JMenuItem exit = new JMenuItem("Exit");
-      //help.add(about);
-      //help.add(exit);
-   
+
       // ActionListener method for exit only
-      exit.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-            // close();
-               System.exit(0);
-            }
-         });
-   
-      about.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-            // close();
-               JOptionPane.showMessageDialog(null, "You can write something :)");
-            }
-         });
-      
-      
-      
+      exit.addActionListener(ae -> {
+         System.exit(0);
+      });
+
+      about.addActionListener(ae -> {
+         JOptionPane.showMessageDialog(null, "You can write something :)");
+      });
+
       // Create panels for the frame
-      jp = new JPanel(new GridLayout(0,1));
-   
+      jp = new JPanel(new GridLayout(0, 1));
+
       // Add information related to IP address and connection
       // jlAddress = new JLabel("IP Address");
-   //       jtfAddress = new JTextField(20);
-   //       jbConnect = new JButton("Connect");
-      
+      // jtfAddress = new JTextField(20);
+      // jbConnect = new JButton("Connect");
+
       // Set up label, field and button objects for messages
-      
-      
+
       // Address
       JPanel jpAddress = new JPanel();
       jpAddress.add(jlAddress);
       jpAddress.add(jtfAddress);
       jpAddress.add(jbConnect);
-   
+
       // Adding Name info to GUI
       JPanel jpName = new JPanel();
       jpName.add(jlName);
       jpName.add(jtfName);
       jpName.add(jbName);
-   
+
       // Add the following objects to the panel
-      
-      
-      //Message
+
+      // Message
       JPanel jpMessage = new JPanel();
       jpMessage.add(msgLabel);
       jpMessage.add(msgBox);
       jpMessage.add(send);
-      
-      JPanel jpSSouth = new JPanel(new GridLayout(0,1));
+
+      JPanel jpSSouth = new JPanel(new GridLayout(0, 1));
       jpSSouth.add(jpAddress);
       jpSSouth.add(jpName);
       jpSSouth.add(jpMessage);
-     
-   
+
       // Add the south part of the panel to the south border
       add(jpSSouth, BorderLayout.SOUTH);
-      
+
       // Join
       JPanel jpWhoIsIn = new JPanel();
       jpWhoIsIn.add(jbWhoIsIn);
-      
-      
-   
+
       // Create a panel for the center of the frame
       jpCenter = new JPanel();
       // Set up TextArea
@@ -266,41 +238,55 @@ public class Game extends JFrame implements KeyListener {
       area.setWrapStyleWord(true);
       jpCenter.add(scroll); // Add scroll pane to the panel
       jp.add(jpCenter, BorderLayout.CENTER);
-   
+
       // More panels
-      jpSouthBorder = new JPanel(new BorderLayout(0,1));
+      jpSouthBorder = new JPanel(new BorderLayout(0, 1));
       jpSNorth = new JPanel();
-   
-   
+
       // Another panel
       jpSSouth = new JPanel();
-      
-   
+
       // Panel button
       JPanel jpButton = new JPanel(new FlowLayout());
-      
+
       jpButton.add(jbColor);
       jpButton.add(jbWhoIsIn);
       jpButton.add(jbJoin);
       add(jpButton, BorderLayout.NORTH);
-      
-      //An object 
-      sendMsg = new SendMessage();
+
+      // An object
+      // sendMsg = new SendMessage();
       connect = new Connection();
-      whoIsIn = new WHOISIN();
-      login = new Login();
       colorChooser = new ColorChooser();
-      
-      
-      //Add it to ActionListener
-      send.addActionListener(sendMsg);
+
+      // Add it to ActionListener
+      send.addActionListener(ae -> {
+         // send a message
+         try {
+            // TODO sendMessage(username, msgBox.getText());
+         } catch (Exception e) {
+            // die?
+         }
+      });
       jbConnect.addActionListener(connect);
-      jbName.addActionListener(login);
-      jbWhoIsIn.addActionListener(whoIsIn);
+      jbName.addActionListener(ae -> {
+         if (jbName.getText() == "Login") {
+            username = jtfName.getText();
+            area.append("Client name set to : " + username + "\n");
+            jbName.setText("Logout");
+         }
+         if (jbName.getText() == "Logout") {
+            area.append(username + " disconnected");
+            jbName.setText("Login");
+         }
+      });
+      jbWhoIsIn.addActionListener(ae -> {
+         for (GameData player : connectedPlayers) {
+            JOptionPane.showMessageDialog(null, player.getName());
+         }
+      });
       jbColor.addActionListener(colorChooser);
-      //jbName.addKeyListener(this);
-      
-      
+
       jbJoin.addActionListener(
          ae -> {
             ResetGame();
@@ -312,13 +298,13 @@ public class Game extends JFrame implements KeyListener {
             
          });
       // Add the south border area to the full panel
-      //add(jpSouthBorder, BorderLayout.SOUTH);
+      // add(jpSouthBorder, BorderLayout.SOUTH);
       // jp.add(menu);
-   
-      //setLocationRelativeTo(null);
+
+      // setLocationRelativeTo(null);
       // pack();
       setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-   
+
       JPanel jpNorth = new JPanel();
       JScrollPane scroll = new JScrollPane(jtaArea);
       scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -326,80 +312,63 @@ public class Game extends JFrame implements KeyListener {
       jtaArea.setEditable(false);
       jpNorth.add(scroll);
       add(jpNorth, BorderLayout.CENTER);
-   
-   
-      //menu.setVisible(true);
-      //jp.setVisible(true);
+
+      // menu.setVisible(true);
+      // jp.setVisible(true);
       // this.getContentPane().add(menu, BorderLayout.CENTER);
       // END MENU/CHAT UI //
-   
+
       // LEADERBOARD UI //
       leaderboard = new JPanel(new GridLayout(3, 1));
       scores = new JPanel(new GridLayout(0, 1));
       JPanel blank = new JPanel();
       leaderboardButtons = new JPanel(new GridLayout(1, 2));
-   
+
       jlLeaderboardArray = new ArrayList<JLabel>();
-   
+
       JLabel test = new JLabel("Test");
-   
+
       scores.add(test);
-   
+
       // TO IMPLEMENT -- LISTING SCORES PROPERLY
-   
-      leaderboardReturn = 
-         new JButton("Play Again") {
-            {
-               addActionListener(
-                  new ActionListener() {
-                     @Override
-                     public void actionPerformed(ActionEvent e) {
-                        leaderboard.setVisible(false);
-                        GameState = GAME_STATES.MENU;
-                     }
-                  });
-            }
-         };
-   
-      leaderboardQuit = 
-         new JButton("Quit") {
-            {
-               addActionListener(
-                  new ActionListener() {
-                     @Override
-                     public void actionPerformed(ActionEvent e) {
-                        System.exit(0);
-                     }
-                  });
-            }
-         };
-   
+
+      leaderboardReturn = new JButton("Play Again");
+      leaderboardReturn.addActionListener(ae -> {
+         leaderboard.setVisible(false);
+         GameState = GAME_STATES.MENU;
+      });
+
+      leaderboardQuit = new JButton("Quit");
+      leaderboardQuit.addActionListener(ae -> {
+         System.exit(0);
+      });
+
       leaderboardButtons.add(leaderboardReturn);
       leaderboardButtons.add(leaderboardQuit);
-   
+
       leaderboard.add(scores);
       leaderboard.add(blank);
       leaderboard.add(leaderboardButtons);
-   
+
       leaderboard.setVisible(false);
       this.getContentPane().add(leaderboard, BorderLayout.CENTER);
       // END LEADERBOARD UI //
-   
+
       // finish initializing the frame
       setResizable(false);
       setVisible(true);
-   
+
       this.pack();
       setIgnoreRepaint(true);
-   
+
       // add key listener
       addKeyListener(this);
       setFocusable(true);
-   
+
       // create double buffer strategy
       createBufferStrategy(2);
       strategy = getBufferStrategy();
-   
+
       GameState = GAME_STATES.MENU;
       setLocationRelativeTo(null);
    } // end initialization
@@ -431,31 +400,31 @@ public class Game extends JFrame implements KeyListener {
 
    public void draw() {
       switch (GameState) {
-         case MENU:
-            break;
-         case CREATE:
-            break;
-         case GAME:
+      case MENU:
+         break;
+      case CREATE:
+         break;
+      case GAME:
          // get canvas
-            Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
-         
+         Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
+
          // clear screen
-            g.setColor(Color.white);
-            g.fillRect(0, 0, WIDTH, HEIGHT);
-         
+         g.setColor(Color.white);
+         g.fillRect(0, 0, WIDTH, HEIGHT);
+
          // draw images
-            player.draw(g);
-            level.draw(g);
-            g.setColor(Color.WHITE);
-            g.fillRect(350, 50, 350, 50);
-            location.draw(g);
-         
+         player.draw(g);
+         level.draw(g);
+         g.setColor(Color.WHITE);
+         g.fillRect(350, 50, 350, 50);
+         location.draw(g);
+
          // release resourcecs, show the buffer
-            g.dispose();
-            strategy.show();
-            break;
-         case LEADERBOARD:
-            break;
+         g.dispose();
+         strategy.show();
+         break;
+      case LEADERBOARD:
+         break;
       } // end switch
    } // end draw
 
@@ -467,9 +436,9 @@ public class Game extends JFrame implements KeyListener {
    } // end ResetGame
 
    public void run() {
-   
+
       init();
-   
+
       while (isRunning) {
          // new loop, clock the start
          startFrame = System.currentTimeMillis();
@@ -477,11 +446,11 @@ public class Game extends JFrame implements KeyListener {
          dt = (float) (startFrame - lastFrame) / 1000;
          // log the current time
          lastFrame = startFrame;
-      
+
          // call update and draw methods
          draw();
          update();
-      
+
          // dynamic thread sleep, only sleep the time we need to cap framerate
          rest = (1000 / MAX_FPS) - (System.currentTimeMillis() - startFrame);
          if (rest > 0) {
@@ -496,35 +465,35 @@ public class Game extends JFrame implements KeyListener {
 
    public void keyPressed(KeyEvent ke) {
       switch (GameState) {
-        case GAME:
-          switch (ke.getKeyCode()) {
-            case KeyEvent.VK_LEFT:
-               player.left = true;
-               break;
-            case KeyEvent.VK_RIGHT:
-               player.right = true;
-               break;
-          }
-        break;
+      case GAME:
+         switch (ke.getKeyCode()) {
+         case KeyEvent.VK_LEFT:
+            player.left = true;
+            break;
+         case KeyEvent.VK_RIGHT:
+            player.right = true;
+            break;
+         }
+         break;
       }
    } // end keyPressed
 
    public void keyReleased(KeyEvent ke) {
-    switch (GameState) {
-        case GAME:
-          switch (ke.getKeyCode()) {
-             case KeyEvent.VK_LEFT:
-                player.left = false;
-                break;
-             case KeyEvent.VK_RIGHT:
-                player.right = false;
-                break;
-             case KeyEvent.VK_SPACE:
-                player.jump = true;
-                break;
-          }
-        break;
-    }
+      switch (GameState) {
+      case GAME:
+         switch (ke.getKeyCode()) {
+         case KeyEvent.VK_LEFT:
+            player.left = false;
+            break;
+         case KeyEvent.VK_RIGHT:
+            player.right = false;
+            break;
+         case KeyEvent.VK_SPACE:
+            player.jump = true;
+            break;
+         }
+         break;
+      }
    } // end keyReleased
 
    public void keyTyped(KeyEvent ke) {
@@ -536,193 +505,85 @@ public class Game extends JFrame implements KeyListener {
 
    } // end main
 
+   // Connection Constructor with ActionListener
+   class Connection implements ActionListener {
 
-//Connection Constructor with ActionListener
-   class Connection implements ActionListener
-   {
-     
-      //ActionPerformed method
-      public void actionPerformed(ActionEvent ae)
-      {
-         if(ae.getActionCommand().equals("Connect"))//If the 'Connect' button is pressed 
+      // ActionPerformed method
+      public void actionPerformed(ActionEvent ae) {
+         if (ae.getActionCommand().equals("Connect"))// If the 'Connect' button is pressed
          {
-            try
-            {
-               cSocket = new Socket(jtfAddress.getText(), 32001);//Create a client socket with IP address and port number
+            try {
+               cSocket = new Socket(jtfAddress.getText(), 32001);// Create a client socket with IP address and port
+                                                                 // number
                br = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
                pw = new PrintWriter(new OutputStreamWriter(cSocket.getOutputStream()));
                System.out.println("Connecting to Server");
-            
-            //Start threading for message
-               Thread multiThread = new Thread(new SendReceiveMsg());
-               multiThread.start();
+
+               // Start threading for message
+               // Thread multiThread = new Thread(new SendReceiveMsg());
+               // multiThread.start();
             }
-            
-            
-            //Exceptions
-            catch(IOException ioe)
-            {
+
+            // Exceptions
+            catch (IOException ioe) {
                System.out.println("Error connection");
             }
-            
-            catch(Exception e)
-            {
+
+            catch (Exception e) {
                System.out.println("Error connection");
             }
-         
+
             jbConnect.setText("Disconnect");
          }
-         
-         else if(ae.getActionCommand().equals("Disconnect")) // Check If the 'Disconnect' button is pressed 
+
+         else if (ae.getActionCommand().equals("Disconnect")) // Check If the 'Disconnect' button is pressed
          {
             try {
                cSocket.close();
                pw.close();
                area.append("Disconnected!\n");
-            }
-            catch(IOException ioe) {
+            } catch (IOException ioe) {
                area.append("IO Exception: " + ioe + "\n");
                return;
             }
             jbConnect.setText("Connect");
          }
-      
-      } //End actionPerformed method
-   
-   } //End Connection constructor
 
-   
-   class Login implements ActionListener
-   {
-      public void actionPerformed(ActionEvent ae){
-         if(ae.getActionCommand().equals("Login"))
-         {
-            //ActionPerformed method  
-            
-            area.append("Client name set to : " + jtfName.getText() + "\n");
-            jbName.setText("Logout");
-            
-             //End of actionPerformed method
-         }
-            
-         else if(ae.getActionCommand().equals("Logout"))
-         {
-            //ActionPerformed method  
-            
-            area.append("\n" + jtfName.getText() + "logged out");
-            jbName.setText("Login");
-            
-             //End of actionPerformed method
-         }
+      } // End actionPerformed method
+
+   } // End Connection constructor
+
+   public void close() {
+      try {
+         cSocket.close(); // Close client socket
       }
-   }
-   
-   
-   //SendMessage Constructor with ActionListener
-   class SendMessage implements ActionListener
-   {
-     
-      //ActionPerformed method  
-      public void actionPerformed(ActionEvent ae)
-      {
-         try 
-         {
-            pw.println(jtfName.getText() + ": " + msgBox.getText());
-            pw.flush();
-            msgBox.setText("");
-         }
-         
-         catch(NullPointerException npe)
-         {
-            System.out.println("Not connected to server"); //Printing message says that client is not conencted to server yet
-         }
-      
-      } //End of actionPerformed method
-     
-   } //End of sendMessage constructor
-   
-  
-   //Who is in
-   class WHOISIN implements ActionListener
-   {
-     
-      //ActionPerformed method  
-      public void actionPerformed(ActionEvent ae)
-      {            
-         area.append(jtfName.getText() + "joined game\n");
-      
-      } //End of actionPerformed method
-     
-   } //End of WhoIsIn constructor
-   
-   
-   //SendReceiveMsg constructor for Runnable Thread
-   class SendReceiveMsg implements Runnable
-   {   
-      //Run method 
-      public void run()
-      {      
-         String msg;
-         
-         try
-         {
-            while((msg = br.readLine()) != null)
-            {
-               area.append(msg + "\n");
-            }
-         }
-         catch(IOException ioe)
-         {
-            area.append("Server disconnected\n");
-         }
-         catch(Exception e)
-         {
-            System.out.println("Not connected to Server\n");
-         }
-       
-      } //End of run method 
-     
-   } //End of SendReceiveMsg constructor
-   
-   
-   public void close() 
-   {
-      try
-      {
-         cSocket.close(); //Close client socket 
+
+      catch (IOException ioe) {
+         area.append("Unable to disconnect\n");
+      } catch (Exception e) {
+         area.append("Unable to disconnect\n");
       }
-      
-      
-      catch(IOException ioe)
-      {
-         area.append("Unable to disconnect\n");        
-      }
-      catch(Exception e)
-      {
-         area.append("Unable to disconnect\n");        
-      }
-      
-     
+
    } // End of close method
-   
+
 } // end class Game
 
+class ColorChooser extends JFrame implements ActionListener {
+   JButton jbColor;
+   Container container;
 
-class ColorChooser extends JFrame implements ActionListener {    
-   JButton jbColor;    
-   Container container;    
-   ColorChooser()
-   {    
-      container=getContentPane();    
-      container.setLayout(new FlowLayout());         
-      jbColor =new JButton("Choose color");    
-      jbColor.addActionListener(this);         
-      container.add(jbColor);    
-   }    
-   public void actionPerformed(ActionEvent e) {    
-      Color initialcolor = Color.RED;    
-      Color color = JColorChooser.showDialog(this,"Select a color",initialcolor);    
-      container.setBackground(color);    
-   }    
-   
+   ColorChooser() {
+      container = getContentPane();
+      container.setLayout(new FlowLayout());
+      jbColor = new JButton("Choose color");
+      jbColor.addActionListener(this);
+      container.add(jbColor);
+   }
+
+   public void actionPerformed(ActionEvent e) {
+      Color initialcolor = Color.RED;
+      Color color = JColorChooser.showDialog(this, "Select a color", initialcolor);
+      container.setBackground(color);
+   }
+
 }
