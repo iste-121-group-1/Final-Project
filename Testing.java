@@ -10,7 +10,6 @@ class Testing extends JFrame {
       JTextArea area = new JTextArea(20,40);
       getContentPane().add(new JScrollPane(area));
       area.setEditable(false);
-      JScrollPane scrol = new JScrollPane();
       pack();
       setLocationRelativeTo(null);
       
@@ -21,7 +20,6 @@ class Testing extends JFrame {
          
             while ((line = br.readLine()) != null) {
                area.append(line + "\n");
-               System.out.println(line);
             }
          } finally {
             br.close();
