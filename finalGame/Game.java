@@ -226,6 +226,8 @@ public class Game extends JFrame implements KeyListener {
       // An object
       colorChooser = new ColorChooser();
 
+      send.setEnabled(false);
+      msgBox.setEnabled(false);
       // Add it to ActionListener
       send.addActionListener(ae -> {
          // send a message
@@ -267,10 +269,16 @@ public class Game extends JFrame implements KeyListener {
             area.append("Client name set to : " + username + "\n");
             jbName.setText("Logout");
             jtfName.setEnabled(false);
+            // able to send messages after connected and logged in
+            send.setEnabled(true);
+            msgBox.setEnabled(true);
          } else if (jbName.getText() == "Logout") {
             area.append(username + " disconnected");
             jbName.setText("Login");
             jtfName.setEnabled(true);
+            // no longer logged in, no longer able to send messages
+            send.setEnabled(false);
+            msgBox.setEnabled(false);
          } else {
             System.exit(0);
          }
