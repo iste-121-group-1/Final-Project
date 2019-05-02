@@ -130,7 +130,7 @@ public class GameServer extends JFrame {
          // Player Position
          // thats it?
 
-         // player data <- not sure why these have to be final, might cause problems?
+         // player data not final anymore, works now for some reason
          GAME_STATES state;
          String username;
          Color color;
@@ -145,7 +145,7 @@ public class GameServer extends JFrame {
                System.out.println("recursion recursion");
                Object tempObj = getClientData.readObject(); // create tempobj to allow typecasting
                if (tempObj instanceof TextData) {
-                  System.out.println("message,, get send");
+                  System.out.println("message got sent");
                   synchronized (lock) {
                      username = ((TextData) tempObj).username;
                      String message = ((TextData) tempObj).message;
@@ -154,7 +154,7 @@ public class GameServer extends JFrame {
                } else if (tempObj instanceof GameData) {
                   switch (((GameData) tempObj).DataType) {
                   case GAME:
-                     System.out.println("how about this shit motherfucker");
+                     System.out.println("gamedata getting sent");
                      state = ((GameData) tempObj).state;
                      username = ((GameData) tempObj).name;
                      color = ((GameData) tempObj).color;

@@ -161,7 +161,7 @@ public class Game extends JFrame implements KeyListener {
       });
 
       menu = new JPanel();
-      
+
       // Address
       JPanel jpAddress = new JPanel();
       jpAddress.add(jlAddress);
@@ -197,28 +197,27 @@ public class Game extends JFrame implements KeyListener {
       messageArea.setWrapStyleWord(true);
       jpCenter.add(scroll); // Add scroll pane to the panel
 
-      
       // Join
       JPanel jpWhoIsIn = new JPanel();
       jpWhoIsIn.add(jbWhoIsIn);
-      
+
       // Panel button
       JPanel jpButton = new JPanel(new FlowLayout());
 
       jpButton.add(jbColor);
       jpButton.add(jbWhoIsIn);
       jpButton.add(jbJoin);
-      
+
       menu.add(jpButton);
       menu.add(jpCenter);
       menu.add(jpSSouth);
-      
+
       // An object
       colorChooser = new ColorChooser();
 
       send.setEnabled(false);
       msgBox.setEnabled(false);
-      
+
       // Add it to ActionListener
       send.addActionListener(ae -> {
          // send a message
@@ -229,7 +228,7 @@ public class Game extends JFrame implements KeyListener {
             // die?
          }
       });
-      
+
       jbConnect.addActionListener(ae -> {
          if (jbConnect.getText() == "Connect") {
             jtfAddress.setEnabled(false);
@@ -274,15 +273,15 @@ public class Game extends JFrame implements KeyListener {
             System.exit(0);
          }
       });
-      
+
       jbWhoIsIn.addActionListener(ae -> {
-        String playerlist = "Connected: ";
+         String playerlist = "Connected: ";
          for (GameData player : connectedPlayers) {
             playerlist += player.getName() + " ";
          }
          JOptionPane.showMessageDialog(null, playerlist);
       });
-      
+
       jbColor.addActionListener(colorChooser);
 
       jbJoin.addActionListener(ae -> {
@@ -291,13 +290,12 @@ public class Game extends JFrame implements KeyListener {
          this.getContentPane().remove(menu);
          this.getContentPane().add(leaderboard);
          /*
-         GameState = GAME_STATES.GAME;
-         startGame = System.nanoTime();
-         menub.setVisible(false);
-         menu.setVisible(false);*/
-         
+          * GameState = GAME_STATES.GAME; startGame = System.nanoTime();
+          * menub.setVisible(false); menu.setVisible(false);
+          */
+
       });
-      
+
       menu.setVisible(true);
       this.getContentPane().add(menu);
       // END MENU/CHAT UI //
@@ -343,7 +341,7 @@ public class Game extends JFrame implements KeyListener {
       setVisible(true);
 
       setIgnoreRepaint(true);
-      
+
       this.pack();
 
       // add key listener
@@ -406,7 +404,7 @@ public class Game extends JFrame implements KeyListener {
          strategy.show();
          break;
       case LEADERBOARD:
-          break;
+         break;
       } // end switch
    } // end draw
 
@@ -442,6 +440,13 @@ public class Game extends JFrame implements KeyListener {
                ie.printStackTrace();
             } // end try-catch
          } // end if
+
+         // do some checks to get some server comms working
+         System.out.println("main loop test");
+         if (!(connect == null)) {
+            connect.run();
+         }
+
       } // end while
    } // end run
 
@@ -484,11 +489,6 @@ public class Game extends JFrame implements KeyListener {
    public static void main(String[] args) {
       Game game = new Game(1080, 720, 30);
       game.run();
-      while (true) {
-         if (jbConnect.getText() == "Disconnect") {
-            connect.run();
-         }
-      }
    } // end main
 
    // Connection Constructor with ActionListener
@@ -505,40 +505,36 @@ public class Game extends JFrame implements KeyListener {
          while (true) {
 
             // getClientData will always recieve a TextData, GameData, or will die
-            // this whole block is "gonna somewhat get copied to the client once it works" now in the client idiot
+            // this whole block is "gonna somewhat get copied to the client once it works"
+            // now in the client idiot
             try {
                System.out.println("this helpful message means that the getting data loop is in fact working");
                Object tempObj = get.readObject(); // create tempobj to allow typecasting
                if (tempObj instanceof TextData) {
                   System.out.println("message,, get got");
-                     String localUser = ((TextData) tempObj).username;
-                     String localMessage = ((TextData) tempObj).message;
-                     messageArea.append(localUser + ": " + localMessage + "\n");
-                  
+                  //DONT NEED -> String localUser = ((TextData) tempObj).username;
+                  String localMessage = ((TextData) tempObj).message;
+                  messageArea.append(localMessage + "\n");
+
                } else if (tempObj instanceof GameData) {
                   switch (((GameData) tempObj).DataType) {
                   case GAME:
                      System.out.println("how about this shit motherfucker");
-                     /*state = ((GameData) tempObj).state;
-                     username = ((GameData) tempObj).name;
-                     color = ((GameData) tempObj).color;
-                     if (clientColors.contains(color)) {
-                        // tell client to pick a different color
-                        writeToClient("Pick a different color " + username + "!");
-                     } else {
-                        clientColors.add(color);
-                     }
-                     xpos = ((GameData) tempObj).xpos;
-                     ypos = ((GameData) tempObj).ypos;*/
+                     /*
+                      * state = ((GameData) tempObj).state; username = ((GameData) tempObj).name;
+                      * color = ((GameData) tempObj).color; if (clientColors.contains(color)) { //
+                      * tell client to pick a different color writeToClient("Pick a different color "
+                      * + username + "!"); } else { clientColors.add(color); } xpos = ((GameData)
+                      * tempObj).xpos; ypos = ((GameData) tempObj).ypos;
+                      */
                      break;
                   // if a POS object is recieved, the username and pos data is stored and
                   // immediately sent to all connected clients
                   case POS:
-                     /*username = ((GameData) tempObj).name;
-                     xpos = ((GameData) tempObj).xpos;
-                     ypos = ((GameData) tempObj).ypos;
-                        updateClientPos(username, xpos, ypos);
-                     */
+                     /*
+                      * username = ((GameData) tempObj).name; xpos = ((GameData) tempObj).xpos; ypos
+                      * = ((GameData) tempObj).ypos; updateClientPos(username, xpos, ypos);
+                      */
                      break;
                   case STATE:
                      break;
@@ -557,7 +553,7 @@ public class Game extends JFrame implements KeyListener {
          try {
             send.writeObject(new TextData(username, message));
          } catch (IOException e) {
-            e.printStackTrace(); //also die?
+            e.printStackTrace(); // also die?
          }
       }
    } // End Connection constructor
