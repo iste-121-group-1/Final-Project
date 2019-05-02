@@ -134,6 +134,11 @@ public class Game extends JFrame implements KeyListener {
    
    // Player color stuff
    private Color playerC;
+   
+   // Timing stuff
+   private long startGame;
+   private long endGame;
+   private double gameTotal;
 
    public Game(int width, int height, int fps) {
    
@@ -303,6 +308,7 @@ public class Game extends JFrame implements KeyListener {
       jbJoin.addActionListener(
          ae -> {
             ResetGame();
+            startGame = System.nanoTime();
             menub.setVisible(false);
             GameState = GAME_STATES.GAME;
             jpButton.setVisible(false);
@@ -416,6 +422,10 @@ public class Game extends JFrame implements KeyListener {
             if (player.win) {
                GameState = GAME_STATES.LEADERBOARD;
                leaderboard.setVisible(true);
+               endGame = System.nanoTime();
+               long elapsedTime = endGame - startGame;
+               gameTotal = (double) elapsedTime / 1000000000.0;
+               System.out.println(gameTotal);
             } // end if checking if player has won
             break;
          case LEADERBOARD:
