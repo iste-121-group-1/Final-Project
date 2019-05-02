@@ -221,12 +221,12 @@ public class Game extends JFrame implements KeyListener {
       // Add it to ActionListener
       send.addActionListener(ae -> {
          // send a message
-         try {
+         //try { <-- what is this needed for?
             connect.sendMessage(username, msgBox.getText());
             msgBox.setText("");
-         } catch (Exception e) {
-            // die?
-         }
+         //} catch (IOException e) {
+           // JOptionPane.showMessageDialog(null, "Input/output exception while sending message.");
+         // }
       });
 
       jbConnect.addActionListener(ae -> {
@@ -250,7 +250,7 @@ public class Game extends JFrame implements KeyListener {
             try {
                cSocket.close();
             } catch (IOException e) {
-               e.printStackTrace(); // do we even want this?
+               JOptionPane.showMessageDialog(null, "Input/output exception while disconnecting.");
             }
          }
       });
@@ -258,7 +258,11 @@ public class Game extends JFrame implements KeyListener {
       // "Login", set the client's username
       jbName.addActionListener(ae -> {
          if (jbName.getText() == "Login") {
-            username = jtfName.getText();
+            if (jtfName.getText().equals("")) {
+                username = "Default Username";
+            } else {
+                username = jtfName.getText();
+            }
             messageArea.append("Client name set to : " + username + "\n");
             jbName.setText("Logout");
             jtfName.setEnabled(false);
@@ -278,11 +282,13 @@ public class Game extends JFrame implements KeyListener {
       });
 
       jbWhoIsIn.addActionListener(ae -> {
-         String playerlist = "Connected: ";
-         for (GameData player : connectedPlayers) {
-            playerlist += player.getName() + " ";
-         }
-         JOptionPane.showMessageDialog(null, playerlist);
+         try {
+            String playerlist = "Connected: ";
+            for (GameData player : connectedPlayers) {
+               playerlist += player.getName() + " ";
+            }
+            JOptionPane.showMessageDialog(null, playerlist);
+         } catch (NullPointerException npe) { JOptionPane.showMessageDialog(null, "No list of players available."); }
       });
 
       jbColor.addActionListener(colorChooser);
