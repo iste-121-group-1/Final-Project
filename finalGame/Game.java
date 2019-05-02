@@ -298,7 +298,7 @@ public class Game extends JFrame implements KeyListener {
 
       jbJoin.addActionListener(ae -> {
          ResetGame();
-         GameState = GAME_STATES.GAME;
+         stateChange(GAME_STATES.GAME);
          startGame = System.nanoTime();
          menub.setVisible(false);
          menu.setVisible(false);
@@ -325,7 +325,7 @@ public class Game extends JFrame implements KeyListener {
 
       leaderboardReturn = new JButton("Play Again");
       leaderboardReturn.addActionListener(ae -> {
-         GameState = GAME_STATES.MENU;
+         stateChange(GAME_STATES.MENU);
          menu.setVisible(true);
          leaderboard.setVisible(false);
       });
@@ -362,7 +362,7 @@ public class Game extends JFrame implements KeyListener {
       createBufferStrategy(2);
       strategy = getBufferStrategy();
 
-      GameState = GAME_STATES.MENU;
+      stateChange(GAME_STATES.MENU);
       setLocationRelativeTo(null);
    } // end initialization
 
@@ -376,7 +376,7 @@ public class Game extends JFrame implements KeyListener {
          level.update(player);
          location.update(player);
          if (player.win) {
-            GameState = GAME_STATES.LEADERBOARD;
+            stateChange(GAME_STATES.LEADERBOARD);
             leaderboard.setVisible(true);
             endGame = System.nanoTime();
             menub.setVisible(true);
@@ -489,6 +489,10 @@ public class Game extends JFrame implements KeyListener {
 
    public void keyTyped(KeyEvent ke) {
    } // end keyTyped
+
+   public void stateChange(GAME_STATES state) {
+      GameState = state;
+   }
 
    public static void main(String[] args) {
       Game game = new Game(1080, 720, 30);
