@@ -221,12 +221,12 @@ public class Game extends JFrame implements KeyListener {
       // Add it to ActionListener
       send.addActionListener(ae -> {
          // send a message
-         //try { <-- what is this needed for?
+         try {
             connect.sendMessage(username, msgBox.getText());
             msgBox.setText("");
-         //} catch (IOException e) {
-           // JOptionPane.showMessageDialog(null, "Input/output exception while sending message.");
-         // }
+         } catch (NullPointerException e) {
+           JOptionPane.showMessageDialog(null, "You probably aren't connected!");
+         }
       });
 
       jbConnect.addActionListener(ae -> {
