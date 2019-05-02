@@ -29,8 +29,7 @@ public class Game extends JFrame implements KeyListener {
    } // end game_states enumeration
 
    // List player
-   public ArrayList<GameData> connectedPlayers;
-   public ArrayList<Player> otherPlayers;
+   public ArrayList<GameData> otherPlayers;
    private JColorChooser chipColor;
    private ArrayList<Player> playerArray;
    private Container container;
@@ -285,7 +284,7 @@ public class Game extends JFrame implements KeyListener {
       jbWhoIsIn.addActionListener(ae -> {
          try {
             String playerlist = "Connected: ";
-            for (GameData player : connectedPlayers) {
+            for (GameData player : otherPlayers) {
                playerlist += player.getName() + " ";
             }
             JOptionPane.showMessageDialog(null, playerlist);
@@ -535,22 +534,31 @@ public class Game extends JFrame implements KeyListener {
                   case GAME:
                      System.out.println("this one's a game data");
                      // TODO udpate the OtherPlayers and also
-                     /*
-                      * state = ((GameData) tempObj).state; username = ((GameData) tempObj).name;
-                      * color = ((GameData) tempObj).color; if (clientColors.contains(color)) { //
-                      * tell client to pick a different color writeToClient("Pick a different color "
-                      * + username + "!"); } else { clientColors.add(color); } xpos = ((GameData)
-                      * tempObj).xpos; ypos = ((GameData) tempObj).ypos;
-                      */
+                     if (((GameData) tempObj).name == username) {
+                        // do nothing
+                     } else {
+                        //int index = 
+                        if (otherPlayers.contains(((GameData) tempObj).name)) {
+                           int index = otherPlayers.indexOf(((GameData) tempObj).name);
+                           otherPlayers.add(index, ((GameData) tempObj));
+                        } else {
+                           otherPlayers.add((GameData) tempObj);
+                        }
+                        // pass that good shit to OtherPlayers
+                        //state = ((GameData) tempObj).state;  
+                        //color = ((GameData) tempObj).color;
+                        //xpos = ((GameData) tempObj).xpos;
+                        //ypos = ((GameData) tempObj).ypos;
+                     }
                      break;
-                  // if a POS object is recieved, the username and pos data is stored and
-                  // immediately sent to all connected clients
+                  // gets a pos, compares usernames to make sure its an OtherPlayer's, updates that player
                   case POS:
                      System.out.println("this one's a pos data");
                      // TODO this needs to pass the positions to respective OtherPlayers
                      break;
                   case STATE:
                      System.out.println("this one's a state data");
+                     stateChange(((GameData) tempObj).state);
                      break;
                   default:
                      break;
