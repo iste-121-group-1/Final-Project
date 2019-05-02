@@ -61,7 +61,7 @@ public class Player extends GameObject {
                 vx = 2;
             }
         } else if (!grounded) {
-            vy = 1;
+            vy = 2;
           
             if (left) {
                 vx = -2;
@@ -83,6 +83,7 @@ public class Player extends GameObject {
         
         if (jump) {
             this.py += vy;
+            System.out.println("Current height: " + py);
             // Check to make sure you don't go off the screen from the top
             if (this.py < 30) {
                 this.py = 30;
@@ -129,10 +130,10 @@ public class Player extends GameObject {
             if (r.intersects(player)) {
                 intersection = r.intersection(player);
                 
-                if (intersection.getHeight() == 1 && intersection.getWidth() - Math.abs(vx) <= 0) {
+                if (intersection.getHeight() <= 2 && intersection.getWidth() - Math.abs(vx) <= 0) {
                     grounded = false;
                     
-                } else if (intersection.getHeight() == 1) {
+                } else if (intersection.getHeight() <= 2) {
                     if (jump && !grounded) {
                         setY(intersection.getHeight() + intersection.getY());
                     } else {
