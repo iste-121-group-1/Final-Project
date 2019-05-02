@@ -37,7 +37,7 @@ public class Game extends JFrame implements KeyListener {
 
    public GAME_STATES GameState;
 
-   JTextArea area;
+   JTextArea messageArea;
    // JTextField msgBox, nameField;
    // JButton send;
    JMenu file;
@@ -188,13 +188,13 @@ public class Game extends JFrame implements KeyListener {
       // Create a panel for the center of the frame
       jpCenter = new JPanel(new FlowLayout());
       // Set up TextArea
-      area = new JTextArea(30, 70);
+      messageArea = new JTextArea(30, 70);
       // Scroll pane object details
-      scroll = new JScrollPane(area);
+      scroll = new JScrollPane(messageArea);
       scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-      area.setEditable(false);
-      area.setLineWrap(true);
-      area.setWrapStyleWord(true);
+      messageArea.setEditable(false);
+      messageArea.setLineWrap(true);
+      messageArea.setWrapStyleWord(true);
       jpCenter.add(scroll); // Add scroll pane to the panel
 
       
@@ -257,14 +257,14 @@ public class Game extends JFrame implements KeyListener {
       jbName.addActionListener(ae -> {
          if (jbName.getText() == "Login") {
             username = jtfName.getText();
-            area.append("Client name set to : " + username + "\n");
+            messageArea.append("Client name set to : " + username + "\n");
             jbName.setText("Logout");
             jtfName.setEnabled(false);
             // able to send messages after connected and logged in
             send.setEnabled(true);
             msgBox.setEnabled(true);
          } else if (jbName.getText() == "Logout") {
-            area.append(username + " disconnected");
+            messageArea.append(username + " disconnected");
             jbName.setText("Login");
             jtfName.setEnabled(true);
             // no longer logged in, no longer able to send messages
@@ -287,10 +287,15 @@ public class Game extends JFrame implements KeyListener {
 
       jbJoin.addActionListener(ae -> {
          ResetGame();
+         GameState = GAME_STATES.LEADERBOARD;
+         this.getContentPane().remove(menu);
+         this.getContentPane().add(leaderboard);
+         /*
+         GameState = GAME_STATES.GAME;
          startGame = System.nanoTime();
          menub.setVisible(false);
-         this.getContentPane().remove(menu);
-         GameState = GAME_STATES.GAME;
+         menu.setVisible(false);*/
+         
       });
       
       menu.setVisible(true);
@@ -343,7 +348,6 @@ public class Game extends JFrame implements KeyListener {
 
       // add key listener
       addKeyListener(this);
-      //setFocusable(true);
 
       // create double buffer strategy
       createBufferStrategy(2);
@@ -367,6 +371,7 @@ public class Game extends JFrame implements KeyListener {
             this.getContentPane().add(leaderboard);
             endGame = System.nanoTime();
             menub.setVisible(false);
+            this.getContentPane().remove(menu);
             long elapsedTime = endGame - startGame;
             gameTotal = (double) elapsedTime / 1000000000.0;
             System.out.println(gameTotal);
