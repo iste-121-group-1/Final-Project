@@ -181,7 +181,7 @@ public class Game extends JFrame implements KeyListener {
       });
 
       about.addActionListener(ae -> {
-         JOptionPane.showMessageDialog(null, "You can write something :)");
+         JOptionPane.showMessageDialog(null, "Cool Platformer by Cool Team.");
       });
 
       // Create panels for the frame
@@ -306,9 +306,11 @@ public class Game extends JFrame implements KeyListener {
          }
       });
       jbWhoIsIn.addActionListener(ae -> {
+        String playerlist = "Connected: ";
          for (GameData player : connectedPlayers) {
-            JOptionPane.showMessageDialog(null, player.getName());
+            playerlist += player.getName() + " ";
          }
+         JOptionPane.showMessageDialog(null, playerlist);
       });
       jbColor.addActionListener(colorChooser);
 
@@ -337,9 +339,6 @@ public class Game extends JFrame implements KeyListener {
       jpNorth.add(scroll);
       add(jpNorth, BorderLayout.CENTER);
 
-      // menu.setVisible(true);
-      // jp.setVisible(true);
-      // this.getContentPane().add(menu, BorderLayout.CENTER);
       // END MENU/CHAT UI //
 
       // LEADERBOARD UI //
