@@ -1,10 +1,8 @@
 import java.awt.*;
 import javax.swing.*;
 import java.io.*;
-class Testing extends JFrame
-{
-   public Testing()
-   {
+class Testing extends JFrame {
+   public Testing() {
       //BufferedReader br = null;
       File file = new File("file.txt");
       setLocation(300,200);
@@ -16,30 +14,23 @@ class Testing extends JFrame
       pack();
       setLocationRelativeTo(null);
       
-      try
-      {
+      try {
          BufferedReader br = new BufferedReader(new FileReader(file));
          try {
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
+            String line;
          
-            while (!(line.equals(""))) {
-               sb.append(line);
-               line = br.readLine();
+            while ((line = br.readLine()) != null) {
+               area.append(line + "\n");
                System.out.println(line);
             }
-            String everything = sb.toString();
          } finally {
             br.close();
          }
-      }
-      catch(Exception e)
-      {
+      } catch (Exception e) {
       
       }
    }
-   public static void main(String[] args)
-   {
+   public static void main(String[] args) {
       new Testing().setVisible(true);
    }
 }
