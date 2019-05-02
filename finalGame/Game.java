@@ -231,15 +231,18 @@ public class Game extends JFrame implements KeyListener {
 
       jbConnect.addActionListener(ae -> {
          if (jbConnect.getText() == "Connect") {
-            jtfAddress.setEnabled(false);
-            jbConnect.setText("Disconnect");
-            try {
-               cSocket = new Socket(jtfAddress.getText(), SERVER_PORT);
-               sendServerData = new ObjectOutputStream(cSocket.getOutputStream());
-               getServerData = new ObjectInputStream(cSocket.getInputStream());
-               connect = new Connection(cSocket, sendServerData, getServerData);
-            } catch (Exception e) {
-               e.printStackTrace();// die?
+            try {cSocket = new Socket(jtfAddress.getText(), SERVER_PORT);
+                sendServerData = new ObjectOutputStream(cSocket.getOutputStream());
+                getServerData = new ObjectInputStream(cSocket.getInputStream());
+                connect = new Connection(cSocket, sendServerData, getServerData);
+                jbConnect.setText("Disconnect");
+                jtfAddress.setEnabled(false);
+            } catch (ConnectException ce) {
+                JOptionPane.showMessageDialog(null, "Connection refused.");
+            } catch (UnknownHostException uhe) {
+                JOptionPane.showMessageDialog(null, "Unknown host while connecting.");
+            } catch (IOException ioe) {
+                 JOptionPane.showMessageDialog(null, "Input/output exception while connecting.");
             }
          } else if (jbConnect.getText() == "Disconnect") {
             jbConnect.setText("Connect");
