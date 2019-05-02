@@ -67,7 +67,7 @@ public class Game extends JFrame implements KeyListener {
 
    private JButton jbWhoIsIn = new JButton("Who is in");
    private JButton jbColor = new JButton("Choose Color");
-   private JButton jbJoin = new JButton("Join");
+   private JButton jbJoin = new JButton("Join Game");
 
    // Attributes
    public static final int SERVER_PORT = 16789; // dont change this again - josh
@@ -217,16 +217,14 @@ public class Game extends JFrame implements KeyListener {
 
       send.setEnabled(false);
       msgBox.setEnabled(false);
+      
+      jbJoin.setEnabled(false);
+      jbWhoIsIn.setEnabled(false);
 
       // Add it to ActionListener
       send.addActionListener(ae -> {
-         // send a message
-         try {
-            connect.sendMessage(username, msgBox.getText());
-            msgBox.setText("");
-         } catch (NullPointerException e) {
-            JOptionPane.showMessageDialog(null, "You probably aren't connected!");
-         }
+         connect.sendMessage(username, msgBox.getText());
+         msgBox.setText("");
       });
 
       jbConnect.addActionListener(ae -> {
@@ -238,6 +236,8 @@ public class Game extends JFrame implements KeyListener {
                connect = new Connection(cSocket, sendServerData, getServerData);
                jbConnect.setText("Disconnect");
                jtfAddress.setEnabled(false);
+               jbJoin.setEnabled(true);
+               jbWhoIsIn.setEnabled(true);
             } catch (ConnectException ce) {
                JOptionPane.showMessageDialog(null, "Connection refused.");
             } catch (UnknownHostException uhe) {
