@@ -286,21 +286,7 @@ public class Game extends JFrame implements KeyListener {
          }
       });
       jbColor.addActionListener(colorChooser);
-<<<<<<< HEAD
-      // jbName.addKeyListener(this);
 
-      jbJoin.addActionListener(ae -> {
-         ResetGame();
-         menub.setVisible(false);
-         GameState = GAME_STATES.GAME;
-         jpButton.setVisible(false);
-         jp.setVisible(false);
-
-      });
-=======
-      //jbName.addKeyListener(this);
-      
-      
       jbJoin.addActionListener(
          ae -> {
             ResetGame();
@@ -311,7 +297,6 @@ public class Game extends JFrame implements KeyListener {
             jp.setVisible(false);
             
          });
->>>>>>> 6f46d4af917d8171c6980fa12a3c371218a77b66
       // Add the south border area to the full panel
       // add(jpSouthBorder, BorderLayout.SOUTH);
       // jp.add(menu);
@@ -391,23 +376,6 @@ public class Game extends JFrame implements KeyListener {
    private void update() {
       fps = (int) (1f / dt);
       switch (GameState) {
-<<<<<<< HEAD
-      case MENU:
-         break;
-      case CREATE:
-         break;
-      case GAME:
-         player.update(level);
-         level.update(player);
-         location.update(player);
-         if (player.win) {
-            GameState = GAME_STATES.LEADERBOARD;
-            leaderboard.setVisible(true);
-         } // end if checking if player has won
-         break;
-      case LEADERBOARD:
-         break;
-=======
          case MENU:
             break;
          case CREATE:
@@ -427,7 +395,6 @@ public class Game extends JFrame implements KeyListener {
             break;
          case LEADERBOARD:
             break;
->>>>>>> 6f46d4af917d8171c6980fa12a3c371218a77b66
       } // end switch
    } // end update
 
