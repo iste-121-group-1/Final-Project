@@ -3,11 +3,12 @@ package finalGame;
 import finalGame.Game.*;
 //import static finalGame.DataObject.DataType.GAME;
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * GameData
  */
-public class GameData extends DataObject {
+public class GameData extends DataObject implements Serializable {
 
     // GameData will contain Type: Game
     // Player GameState
