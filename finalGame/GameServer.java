@@ -13,6 +13,8 @@ import java.awt.*;
 public class GameServer extends JFrame {
    JPanel jpTextArea;
    JLabel jlTextArea;
+   JPanel ipPanel;
+   JLabel ipLabel;
    // Vector objects for Socket and PrintWriter
    Vector<Socket> SocketConnection = new Vector<Socket>();
    Vector<ObjectOutputStream> clientWriters = new Vector<ObjectOutputStream>();
@@ -27,12 +29,12 @@ public class GameServer extends JFrame {
    ArrayList<Color> clientColors = new ArrayList<Color>();
    // ArrayList<Integer> clientXpos = new ArrayList<Integer>();
    // ArrayList<Integer> clientYpos = new ArrayList<Integer>();
-   
+
    // ArrayList to hold available colors
    ArrayList<Color> availableColors = new ArrayList<Color>();
 
-
    JTextArea textArea = new JTextArea(20, 30);
+   ServerSocket sSocket;
 
    public GameServer() {
 
@@ -46,6 +48,10 @@ public class GameServer extends JFrame {
 
       jpTextArea.add(jlTextArea); // Add label to the panel
 
+      ipPanel = new JPanel();
+      ipLabel = new JLabel();
+      ipPanel.add(ipLabel);
+
       // Scroll panel object
       JScrollPane scroll = new JScrollPane(textArea);
       scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -53,6 +59,7 @@ public class GameServer extends JFrame {
       textArea.setEditable(false);
       jpTextArea.add(scroll);
 
+      add(ipPanel, BorderLayout.NORTH);
       add(jpTextArea, BorderLayout.CENTER);
 
       setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -61,7 +68,8 @@ public class GameServer extends JFrame {
 
       try {
 
-         ServerSocket sSocket = new ServerSocket(16789);
+         sSocket = new ServerSocket(16789);
+         ipLabel.setText(sSocket.getInetAddress().toString());
          ObjectInputStream getClientData;
          ObjectOutputStream sendClientData;
 
@@ -160,9 +168,21 @@ public class GameServer extends JFrame {
                if (clientColors.contains(color)) {
                   // tell client to pick a different color
                   writeToClient("Pick a different color " + name + "!");
+               } else {
+                  clientColors.add(color);
                }
                xpos = ((GameData) tempObject).xpos;
                ypos = ((GameData) tempObject).ypos;
+               break;
+            // if a POS object is recieved, the username and pos data is stored and
+            // immediately sent to all connected clients
+            case POS:
+               name = ((GameData) tempObject).name;
+               xpos = ((GameData) tempObject).xpos;
+               ypos = ((GameData) tempObject).ypos;
+               updateClientPos(name, xpos, ypos);
+               break;
+            case STATE:
                break;
             default:
                // do nothing at all
@@ -259,14 +279,15 @@ public class GameServer extends JFrame {
    /**
     * Method to update each clients position
     * 
-    * @param _xpos the xpos to update the player xpos to
-    * @param _ypos the ypos to update the player ypos to
+    * @param username the username of the player whos position is being updated
+    * @param _xpos    the xpos to update the player xpos to
+    * @param _ypos    the ypos to update the player ypos to
     */
-   public void updateClientPos(int _xpos, int _ypos) {
+   public void updateClientPos(String username, int _xpos, int _ypos) {
       for (ObjectOutputStream sender : clientWriters) {
          // ObjectOutputStream sender = clientWriters.get(clientId);
          try {
-            sender.writeObject(new GameData(_xpos, _ypos));
+            sender.writeObject(new GameData(username, _xpos, _ypos));
          } catch (IOException ioe) {
             // TODO: handle io exception
          }
@@ -276,13 +297,14 @@ public class GameServer extends JFrame {
    /**
     * Method to update each client's Game State
     *
-    * @param state the GAME_STATES to update the clients to
+    * @param username the username of the player who is being updated
+    * @param state    the GAME_STATES to update the clients to
     */
-   public void updateClientState(GAME_STATES state) {
+   public void updateClientState(String username, GAME_STATES state) {
       for (ObjectOutputStream sender : clientWriters) {
          // ObjectOutputStream sender = clientWriters.get(clientId);
          try {
-            sender.writeObject(new GameData(state));
+            sender.writeObject(new GameData(username, state));
          } catch (IOException ioe) {
             // TODO: handle io exception
          }

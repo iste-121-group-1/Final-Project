@@ -62,6 +62,30 @@ public class GameData extends DataObject {
     }
 
     /**
+     * Constructor just for position data, gives it DataType.POS
+     * 
+     * @param username the username of the player that is being updated
+     * @param _xpos
+     * @param _ypos
+     */
+    public GameData(String username, int _xpos, int _ypos) {
+        type = DataType.POS;
+        xpos = _xpos;
+        ypos = _ypos;
+    }
+
+    /**
+     * Constructor just for game satate, gives it DataType.STATE
+     * 
+     * @param username the username of the player that is being updated
+     * @param _state
+     */
+    public GameData(String username, GAME_STATES _state) {
+        type = DataType.STATE;
+        state = _state;
+    }
+
+    /**
      * Updates the game state
      * 
      * @param _state
