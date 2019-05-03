@@ -152,6 +152,7 @@ public class GameServer extends JFrame {
                   System.out.println("gamedata getting sent");
                   state = ((GameData) tempObj).state;
                   username = ((GameData) tempObj).name;
+                  clientNames.add(username); // not sure if this even remotely matters tbh
                   color = ((GameData) tempObj).color;
                   /*
                    * if (clientColors.contains(color)) { // tell client to pick a different color
@@ -160,6 +161,13 @@ public class GameServer extends JFrame {
                    */
                   xpos = ((GameData) tempObj).xpos;
                   ypos = ((GameData) tempObj).ypos;
+                  for (ObjectOutputStream sender : clientWriters) {
+                     try {
+                        sender.writeObject(new GameData(state, username, color, xpos, ypos));
+                     } catch (IOException ioe) {
+                        // TODO: handle io exception
+                     }
+                  }
                } else if (tempObj instanceof PosObject) {
                   // if a POS object is recieved, the username and pos data is stored and
                   // immediately sent to all connected clients
@@ -172,7 +180,7 @@ public class GameServer extends JFrame {
                   }
                } else if (tempObj instanceof StateObject) {
                   state = ((StateObject) tempObj).state;
-                  //username = ((GameData) tempObj).name;
+                  // username = ((GameData) tempObj).name;
                   writeToLog("updating game state");
                   synchronized (lock) {
                      updateClientState(state);
@@ -182,12 +190,17 @@ public class GameServer extends JFrame {
                   synchronized (lock) {
                      FileWriter writer = new FileWriter("file.txt");
                      String time = ((LeaderboardData) tempObj).data;
-                     writer.write(time);
+                     writer.append(time + "\n");
                      writer.close();
                      writeToLog("done writing to file.txt, reading now");
                      BufferedReader reader = new BufferedReader(new FileReader("file.txt"));
                      String scoreLine = reader.readLine(); // read line that contains scores
-                     String scores = scoreLine += "\n";
+                     String scores = "test player: 60.982345483 \n";
+                     writeToLog("start looping through scores");
+                     // attempting to loop just makes it not work at all for some reason
+                     scores = scores += (scoreLine + "\n");
+                     writeToLog(scores);
+                     updateLeaderboard(scores);
                      reader.close();
                   }
                }
@@ -284,6 +297,22 @@ public class GameServer extends JFrame {
          // ObjectOutputStream sender = clientWriters.get(clientId);
          try {
             sender.writeObject(new StateObject(state));
+         } catch (IOException ioe) {
+            // TODO: handle io exception
+         }
+      }
+   }
+
+   /**
+    * Method to update the leaderboard data
+    *
+    * @param data the username and time in seconds of the latest winner
+    */
+   public void updateLeaderboard(String data) {
+      for (ObjectOutputStream sender : clientWriters) {
+         // ObjectOutputStream sender = clientWriters.get(clientId);
+         try {
+            sender.writeObject(new LeaderboardData(data));
          } catch (IOException ioe) {
             // TODO: handle io exception
          }

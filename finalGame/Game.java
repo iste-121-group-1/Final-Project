@@ -308,20 +308,21 @@ public class Game extends JFrame implements KeyListener {
       // END MENU/CHAT UI //
 
       // LEADERBOARD UI //
-      leaderboard = new JPanel(new GridLayout(3, 1));
-      scores = new JPanel(new GridLayout(0, 1));
+      leaderboard = new JPanel(new GridLayout(2, 1));
+      scores = new JPanel(new GridLayout(1, 1));
       JPanel blank = new JPanel();
       leaderboardButtons = new JPanel(new GridLayout(1, 2));
 
       // JFrame that holds the scores. I know it's bad to have two JFrames
       // in a program. I don't care
-      leaderboardScores = new JFrame();
-      leaderboardScores.setDefaultCloseOperation(EXIT_ON_CLOSE);
+      //leaderboardScores = new JFrame();
+      //leaderboardScores.setDefaultCloseOperation(EXIT_ON_CLOSE);
       leaderboardArea = new JTextArea(20, 40);
-      leaderboardScores.add(new JScrollPane(leaderboardArea));
+      //leaderboardScores.add(new JScrollPane(leaderboardArea));
       leaderboardArea.setEditable(false);
-      leaderboardScores.pack();
-      leaderboardScores.setLocationRelativeTo(null);
+      //leaderboardScores.pack();
+      //leaderboardScores.setLocationRelativeTo(null);
+      scores.add(leaderboardArea);
 
       /*
        *
@@ -359,7 +360,7 @@ public class Game extends JFrame implements KeyListener {
       leaderboardButtons.add(leaderboardQuit);
 
       leaderboard.add(scores);
-      leaderboard.add(blank);
+      //leaderboard.add(blank);
       leaderboard.add(leaderboardButtons);
 
       leaderboard.setVisible(false);
@@ -398,14 +399,14 @@ public class Game extends JFrame implements KeyListener {
          if (player.win) {
             stateChange(GAME_STATES.LEADERBOARD);
             leaderboard.setVisible(true);
-            leaderboardScores.setVisible(true);
+            //leaderboardScores.setVisible(true);
             endGame = System.nanoTime();
             menub.setVisible(true);
             menu.setVisible(false);
             long elapsedTime = endGame - startGame;
             gameTotal = (double) elapsedTime / 1000000000.0;
             System.out.println(gameTotal);
-            connect.sendLeader(username + gameTotal);
+            connect.sendLeader(username + ": " + gameTotal);
          } // end if checking if player has won
          break;
       case LEADERBOARD:
@@ -562,19 +563,14 @@ public class Game extends JFrame implements KeyListener {
                   messageArea.append(localMessage + "\n");
 
                } else if (tempObj instanceof GameData) {
-                  System.out.println("does it start the GameData switch?");// it does not
+                  //System.out.println("does it start the GameData switch?");// it does not
                   System.out.println("this one's a game data");
                   // TODO udpate the OtherPlayers and also
                   if (((GameData) tempObj).name == username) {
                      // do nothing
                   } else {
-                     // int index =
-                     if (otherPlayers.contains(((GameData) tempObj).name)) {
-                        int index = otherPlayers.indexOf(((GameData) tempObj).name);
-                        otherPlayers.add(index, ((GameData) tempObj));
-                     } else {
-                        otherPlayers.add((GameData) tempObj);
-                     }
+                     // also do nothing, at least for now
+                     
                   }
                } else if (tempObj instanceof PosObject) {
                   // gets a pos, compares usernames to make sure its an OtherPlayer's, updates
@@ -588,6 +584,13 @@ public class Game extends JFrame implements KeyListener {
                      System.out.println("does this ever happen"); // narrarator: it did not
                      gameStart();
                   }
+               } else if (tempObj instanceof LeaderboardData) {
+                  GameState = GAME_STATES.LEADERBOARD;
+                  leaderboardArea.append(((LeaderboardData)tempObj).data);
+                  System.out.println(((LeaderboardData)tempObj).data);
+                  leaderboard.setVisible(true);
+                  leaderboardScores.setVisible(true);
+                  leaderboardArea.setVisible(true);
                }
 
             } catch (Exception e) {
