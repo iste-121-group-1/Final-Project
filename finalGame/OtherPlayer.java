@@ -15,6 +15,9 @@ public class OtherPlayer extends GameObject {
     int h = 50;
     int w = 50;
 
+    int x;
+    int y;
+
     public boolean win = false; // winner
 
     private GameData data;
@@ -50,8 +53,13 @@ public class OtherPlayer extends GameObject {
     public void draw(Graphics2D g) {
         // g.translate(this.getX(), this.getY());
         g.setColor(c);
-        g.fillRect(data.getXpos(), data.getYpos(), h, w);
+        g.fillRect(x, y, h, w);
     } // end draw
+
+    public void updatePos(int xpos, int ypos) {
+        this.x = xpos;
+        this.y = ypos;
+    }
 
     public boolean checkWin() {
         if (data.getXpos() >= winPos) {

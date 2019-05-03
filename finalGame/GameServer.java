@@ -63,7 +63,6 @@ public class GameServer extends JFrame {
       setDefaultCloseOperation(EXIT_ON_CLOSE);
       setVisible(true);
       // end GUI
-
       try {
 
          sSocket = new ServerSocket(16789);
@@ -73,9 +72,7 @@ public class GameServer extends JFrame {
 
          while (true) {
             Socket cSocket = sSocket.accept();
-            // PrintWriter printWriter = new PrintWriter(new
-            // OutputStreamWriter(cSocket.getOutputStream()));
-            // switched to ObjectOutputStreams
+            // object io
             getClientData = new ObjectInputStream(cSocket.getInputStream());
             sendClientData = new ObjectOutputStream(cSocket.getOutputStream());
 
@@ -152,64 +149,48 @@ public class GameServer extends JFrame {
                      clientMessage(username, message);
                   }
                } else if (tempObj instanceof GameData) {
-                  switch (((GameData) tempObj).DataType) {
-                  case GAME:
-                     System.out.println("gamedata getting sent");
-                     state = ((GameData) tempObj).state;
-                     username = ((GameData) tempObj).name;
-                     color = ((GameData) tempObj).color;
-                     if (clientColors.contains(color)) {
-                        // tell client to pick a different color
-                        writeToClient("Pick a different color " + username + "!");
-                     } else {
-                        clientColors.add(color);
-                     }
-                     xpos = ((GameData) tempObj).xpos;
-                     ypos = ((GameData) tempObj).ypos;
-                     break;
+                  System.out.println("gamedata getting sent");
+                  state = ((GameData) tempObj).state;
+                  username = ((GameData) tempObj).name;
+                  color = ((GameData) tempObj).color;
+                  /*
+                   * if (clientColors.contains(color)) { // tell client to pick a different color
+                   * writeToClient("Pick a different color " + username + "!"); } else {
+                   * clientColors.add(color); }
+                   */
+                  xpos = ((GameData) tempObj).xpos;
+                  ypos = ((GameData) tempObj).ypos;
+               } else if (tempObj instanceof PosObject) {
                   // if a POS object is recieved, the username and pos data is stored and
                   // immediately sent to all connected clients
-                  case POS:
-                     username = ((GameData) tempObj).name;
-                     xpos = ((GameData) tempObj).xpos;
-                     ypos = ((GameData) tempObj).ypos;
-                     synchronized (lock) {
-                        updateClientPos(username, xpos, ypos);
-                     }
-                     break;
-                  case STATE:
-                     state = ((GameData) tempObj).state;
-                     username = ((GameData) tempObj).name;
-                     synchronized (lock) {
-                        updateClientState(username, state);
-                     }
-                     break;
-                  default:
-                     break;
+                  username = ((PosObject) tempObj).name;
+                  xpos = ((PosObject) tempObj).xpos;
+                  ypos = ((PosObject) tempObj).ypos;
+                  writeToLog("updating pos, x: " + xpos + ", y: " + ypos);
+                  synchronized (lock) {
+                     updateClientPos(username, xpos, ypos);
+                  }
+               } else if (tempObj instanceof StateObject) {
+                  state = ((StateObject) tempObj).state;
+                  //username = ((GameData) tempObj).name;
+                  writeToLog("updating game state");
+                  synchronized (lock) {
+                     updateClientState(state);
+                  }
+               } else if (tempObj instanceof LeaderboardData) {
+                  writeToLog("updating leaderboard");
+                  synchronized (lock) {
+                     FileWriter writer = new FileWriter("file.txt");
+                     String time = ((LeaderboardData) tempObj).data;
+                     writer.write(time);
+                     writer.close();
+                     writeToLog("done writing to file.txt, reading now");
+                     BufferedReader reader = new BufferedReader(new FileReader("file.txt"));
+                     String scoreLine = reader.readLine(); // read line that contains scores
+                     String scores = scoreLine += "\n";
+                     reader.close();
                   }
                }
-               // DONE its,, got
-               // most of this switch statement should be considered a war crime, be warned
-               /*
-                * DataObject tempObject = (DataObject) getClientData.readObject(); switch
-                * (tempObject.DataType) { case TEXT:
-                * System.out.println("bitch does this work the fuck"); synchronized (lock) {
-                * String message = ((TextData) tempObject).message; writeToClient(message); }
-                * break;
-                * 
-                * case GAME: System.out.println("how about this shit motherfucker"); state =
-                * ((GameData) tempObject).state; name = ((GameData) tempObject).name; color =
-                * ((GameData) tempObject).color; if (clientColors.contains(color)) { // tell
-                * client to pick a different color writeToClient("Pick a different color " +
-                * name + "!"); } else { clientColors.add(color); } xpos = ((GameData)
-                * tempObject).xpos; ypos = ((GameData) tempObject).ypos; break; // if a POS
-                * object is recieved, the username and pos data is stored and // immediately
-                * sent to all connected clients case POS: name = ((GameData) tempObject).name;
-                * xpos = ((GameData) tempObject).xpos; ypos = ((GameData) tempObject).ypos;
-                * synchronized (lock) { updateClientPos(name, xpos, ypos); } break; case STATE:
-                * break; default: // do nothing at all break; }
-                */
-
             } catch (Exception e) {
                // TODO: handle exception
             }
@@ -285,7 +266,7 @@ public class GameServer extends JFrame {
       for (ObjectOutputStream sender : clientWriters) {
          // ObjectOutputStream sender = clientWriters.get(clientId);
          try {
-            sender.writeObject(new GameData(username, _xpos, _ypos));
+            sender.writeObject(new PosObject(username, _xpos, _ypos));
          } catch (IOException ioe) {
             // TODO: handle io exception
          }
@@ -298,11 +279,11 @@ public class GameServer extends JFrame {
     * @param username the username of the player who is being updated
     * @param state    the GAME_STATES to update the clients to
     */
-   public void updateClientState(String username, GAME_STATES state) {
+   public void updateClientState(GAME_STATES state) {
       for (ObjectOutputStream sender : clientWriters) {
          // ObjectOutputStream sender = clientWriters.get(clientId);
          try {
-            sender.writeObject(new GameData(state));
+            sender.writeObject(new StateObject(state));
          } catch (IOException ioe) {
             // TODO: handle io exception
          }

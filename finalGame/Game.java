@@ -234,6 +234,7 @@ public class Game extends JFrame implements KeyListener {
                sendServerData = new ObjectOutputStream(cSocket.getOutputStream());
                getServerData = new ObjectInputStream(cSocket.getInputStream());
                connect = new Connection(cSocket, sendServerData, getServerData);
+               connect.start();
                jbConnect.setText("Disconnect");
                jtfAddress.setEnabled(false);
                jbJoin.setEnabled(true);
@@ -272,6 +273,7 @@ public class Game extends JFrame implements KeyListener {
             msgBox.setEnabled(true);
          } else if (jbName.getText() == "Logout") {
             messageArea.append(username + " disconnected");
+            connect.sendMessage(username, username + " disconnected");
             jbName.setText("Login");
             jtfName.setEnabled(true);
             // no longer logged in, no longer able to send messages
@@ -297,8 +299,8 @@ public class Game extends JFrame implements KeyListener {
       jbColor.addActionListener(colorChooser);
 
       jbJoin.addActionListener(ae -> {
-         connect.sendState(username, GameState);
-         gameStart();
+         connect.sendState(username, GameState.GAME);
+         //gameStart();
       });
 
       menu.setVisible(true);
@@ -320,21 +322,18 @@ public class Game extends JFrame implements KeyListener {
       leaderboardArea.setEditable(false);
       leaderboardScores.pack();
       leaderboardScores.setLocationRelativeTo(null);
-      
+
       /*
        *
        * READING SCORES FROM SERVER: PSEUDOCODE OR WHATEVER
        *
        * get each line from the server (server sends it as a string?)
-       * leaderboardArea.append(line)
-       * this should loop until the server doesnt send anything else
-       * fuck with the textarea stuff to make it correct width/whatever
-       * sry i cant do more ur really the mvp of this project but i dont
-       * wanna fuck with the shit youre gonna rework. 
-       * things to note: this can technically happen anytime bc textarea
-       * is a global variable
-       * i doubt the cod ewill actually happen here lol
-       * dont worry about making it format nice. just get username and
+       * leaderboardArea.append(line) this should loop until the server doesnt send
+       * anything else fuck with the textarea stuff to make it correct width/whatever
+       * sry i cant do more ur really the mvp of this project but i dont wanna fuck
+       * with the shit youre gonna rework. things to note: this can technically happen
+       * anytime bc textarea is a global variable i doubt the cod ewill actually
+       * happen here lol dont worry about making it format nice. just get username and
        * seconds. who cares. none of us
        *
        */
@@ -406,6 +405,7 @@ public class Game extends JFrame implements KeyListener {
             long elapsedTime = endGame - startGame;
             gameTotal = (double) elapsedTime / 1000000000.0;
             System.out.println(gameTotal);
+            connect.sendLeader(username + gameTotal);
          } // end if checking if player has won
          break;
       case LEADERBOARD:
@@ -563,43 +563,30 @@ public class Game extends JFrame implements KeyListener {
 
                } else if (tempObj instanceof GameData) {
                   System.out.println("does it start the GameData switch?");// it does not
-                  switch (((GameData) tempObj).DataType) {
-                  case GAME:
-                     System.out.println("this one's a game data");
-                     // TODO udpate the OtherPlayers and also
-                     if (((GameData) tempObj).name == username) {
-                        // do nothing
+                  System.out.println("this one's a game data");
+                  // TODO udpate the OtherPlayers and also
+                  if (((GameData) tempObj).name == username) {
+                     // do nothing
+                  } else {
+                     // int index =
+                     if (otherPlayers.contains(((GameData) tempObj).name)) {
+                        int index = otherPlayers.indexOf(((GameData) tempObj).name);
+                        otherPlayers.add(index, ((GameData) tempObj));
                      } else {
-                        // int index =
-                        if (otherPlayers.contains(((GameData) tempObj).name)) {
-                           int index = otherPlayers.indexOf(((GameData) tempObj).name);
-                           otherPlayers.add(index, ((GameData) tempObj));
-                        } else {
-                           otherPlayers.add((GameData) tempObj);
-                        }
-                        // pass that good shit to OtherPlayers
-                        // state = ((GameData) tempObj).state;
-                        // color = ((GameData) tempObj).color;
-                        // xpos = ((GameData) tempObj).xpos;
-                        // ypos = ((GameData) tempObj).ypos;
+                        otherPlayers.add((GameData) tempObj);
                      }
-                     break;
+                  }
+               } else if (tempObj instanceof PosObject) {
                   // gets a pos, compares usernames to make sure its an OtherPlayer's, updates
                   // that player
-                  case POS:
-                     System.out.println("this one's a pos data");
-                     // TODO this needs to pass the positions to respective OtherPlayers
-                     break;
-                  case STATE:
-                     System.out.println("this one's a state data");
-                     GameState = ((GameData) tempObj).state;
-                     if (GameState == GAME_STATES.GAME) {
-                        System.out.println("does this ever happen");  // narrarator: it did not
-                        gameStart();
-                     }
-                     break;
-                  default:
-                     break;
+                  System.out.println("this one's a pos data");
+                  // TODO this needs to pass the positions to respective OtherPlayers
+               } else if (tempObj instanceof StateObject) {
+                  System.out.println("this one's a state data");
+                  GameState = ((StateObject) tempObj).state;
+                  if (GameState == GAME_STATES.GAME) {
+                     System.out.println("does this ever happen"); // narrarator: it did not
+                     gameStart();
                   }
                }
 
@@ -632,7 +619,7 @@ public class Game extends JFrame implements KeyListener {
        */
       public void sendPos(String username, int xpos, int ypos) {
          try {
-            send.writeObject(new GameData(username, xpos, ypos));
+            send.writeObject(new PosObject(username, xpos, ypos));
          } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -642,11 +629,20 @@ public class Game extends JFrame implements KeyListener {
       public void sendState(String username, GAME_STATES state) {
          try {
             System.out.println("Sending the state");
-            send.writeObject(new GameData(state));
+            send.writeObject(new StateObject(state));
             System.out.println("state sent");
          } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+         }
+      }
+
+      public void sendLeader(String data) {
+         try {
+            System.out.println("sending leaderboard data");
+            send.writeObject(new LeaderboardData(data));
+         } catch (Exception e) {
+            //TODO: handle exception
          }
       }
 

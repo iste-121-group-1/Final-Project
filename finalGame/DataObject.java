@@ -13,6 +13,7 @@ public abstract class DataObject implements Serializable {
         POS,
         STATE,
         WIN,
+        LEADERBOARD,
     }
 
 	public DataType DataType;
