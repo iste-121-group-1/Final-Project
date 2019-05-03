@@ -5,7 +5,7 @@ class Testing extends JFrame {
    public Testing() {
       //BufferedReader br = null;
       File file = new File("file.txt");
-      setLocation(300,200);
+      // setLocation(300,200);
       setDefaultCloseOperation(EXIT_ON_CLOSE);
       JTextArea area = new JTextArea(20,40);
       getContentPane().add(new JScrollPane(area));

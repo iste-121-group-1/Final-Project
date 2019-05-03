@@ -91,6 +91,8 @@ public class Game extends JFrame implements KeyListener {
    private JPanel leaderboardButtons;
    private JButton leaderboardReturn;
    private JButton leaderboardQuit;
+   private JFrame leaderboardScores;
+   private JTextArea leaderboardArea;
 
    // double buffer
    private BufferStrategy strategy;
@@ -295,8 +297,16 @@ public class Game extends JFrame implements KeyListener {
       jbColor.addActionListener(colorChooser);
 
       jbJoin.addActionListener(ae -> {
+<<<<<<< HEAD
          connect.sendState(username, GameState);
          gameStart();
+=======
+         ResetGame();
+         stateChange(GAME_STATES.GAME);
+         startGame = System.nanoTime();
+         menub.setVisible(false);
+         menu.setVisible(false);
+>>>>>>> 11246f875e8a76136ff9d0b00dd1543e283d0e69
       });
 
       menu.setVisible(true);
@@ -309,13 +319,44 @@ public class Game extends JFrame implements KeyListener {
       JPanel blank = new JPanel();
       leaderboardButtons = new JPanel(new GridLayout(1, 2));
 
-      // TO IMPLEMENT -- LISTING SCORES PROPERLY
+      // JFrame that holds the scores. I know it's bad to have two JFrames
+      // in a program. I don't care
+      leaderboardScores = new JFrame();
+      leaderboardScores.setDefaultCloseOperation(EXIT_ON_CLOSE);
+      leaderboardArea = new JTextArea(20, 40);
+      leaderboardScores.add(new JScrollPane(leaderboardArea));
+      leaderboardArea.setEditable(false);
+      leaderboardScores.pack();
+      leaderboardScores.setLocationRelativeTo(null);
+      
+      /*
+       *
+       * READING SCORES FROM SERVER: PSEUDOCODE OR WHATEVER
+       *
+       * get each line from the server (server sends it as a string?)
+       * leaderboardArea.append(line)
+       * this should loop until the server doesnt send anything else
+       * fuck with the textarea stuff to make it correct width/whatever
+       * sry i cant do more ur really the mvp of this project but i dont
+       * wanna fuck with the shit youre gonna rework. 
+       * things to note: this can technically happen anytime bc textarea
+       * is a global variable
+       * i doubt the cod ewill actually happen here lol
+       * dont worry about making it format nice. just get username and
+       * seconds. who cares. none of us
+       *
+       */
 
       leaderboardReturn = new JButton("Play Again");
       leaderboardReturn.addActionListener(ae -> {
          stateChange(GAME_STATES.MENU);
          menu.setVisible(true);
          leaderboard.setVisible(false);
+         // UNSURE HOW TO PROPERLY IMPLEMENT THIS BUT MAKE THE SCORES
+         // GO AWAY WHEN YOU GO TO MENU
+         if (leaderboardScores != null) {
+            leaderboardScores.setVisible(false);
+         }
       });
 
       leaderboardQuit = new JButton("Quit");
@@ -366,6 +407,7 @@ public class Game extends JFrame implements KeyListener {
          if (player.win) {
             stateChange(GAME_STATES.LEADERBOARD);
             leaderboard.setVisible(true);
+            leaderboardScores.setVisible(true);
             endGame = System.nanoTime();
             menub.setVisible(true);
             menu.setVisible(false);
