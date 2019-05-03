@@ -297,16 +297,8 @@ public class Game extends JFrame implements KeyListener {
       jbColor.addActionListener(colorChooser);
 
       jbJoin.addActionListener(ae -> {
-<<<<<<< HEAD
          connect.sendState(username, GameState);
          gameStart();
-=======
-         ResetGame();
-         stateChange(GAME_STATES.GAME);
-         startGame = System.nanoTime();
-         menub.setVisible(false);
-         menu.setVisible(false);
->>>>>>> 11246f875e8a76136ff9d0b00dd1543e283d0e69
       });
 
       menu.setVisible(true);
