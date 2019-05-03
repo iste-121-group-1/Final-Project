@@ -67,7 +67,7 @@ public class GameServer extends JFrame {
       try {
 
          sSocket = new ServerSocket(16789);
-         ipLabel.setText(sSocket.getInetAddress().toString());
+         ipLabel.setText(InetAddress.getLocalHost().toString());
          ObjectInputStream getClientData;
          ObjectOutputStream sendClientData;
 
@@ -302,7 +302,7 @@ public class GameServer extends JFrame {
       for (ObjectOutputStream sender : clientWriters) {
          // ObjectOutputStream sender = clientWriters.get(clientId);
          try {
-            sender.writeObject(new GameData(username, state));
+            sender.writeObject(new GameData(state));
          } catch (IOException ioe) {
             // TODO: handle io exception
          }

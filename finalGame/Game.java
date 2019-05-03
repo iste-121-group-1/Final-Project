@@ -215,7 +215,7 @@ public class Game extends JFrame implements KeyListener {
 
       send.setEnabled(false);
       msgBox.setEnabled(false);
-      
+
       jbJoin.setEnabled(false);
       jbWhoIsIn.setEnabled(false);
 
@@ -295,12 +295,8 @@ public class Game extends JFrame implements KeyListener {
       jbColor.addActionListener(colorChooser);
 
       jbJoin.addActionListener(ae -> {
-         ResetGame();
-         stateChange(GAME_STATES.GAME);
-         startGame = System.nanoTime();
-         menub.setVisible(false);
-         menu.setVisible(false);
-
+         connect.sendState(username, GameState);
+         gameStart();
       });
 
       menu.setVisible(true);
@@ -354,7 +350,7 @@ public class Game extends JFrame implements KeyListener {
       createBufferStrategy(2);
       strategy = getBufferStrategy();
 
-      stateChange(GAME_STATES.MENU);
+      GameState = GAME_STATES.MENU;
       setLocationRelativeTo(null);
    } // end initialization
 
@@ -484,6 +480,15 @@ public class Game extends JFrame implements KeyListener {
 
    public void stateChange(GAME_STATES state) {
       GameState = state;
+      connect.sendState(username, GameState);
+   }
+
+   public void gameStart() {
+      ResetGame();
+      GameState = GAME_STATES.GAME;
+      startGame = System.nanoTime();
+      menub.setVisible(false);
+      menu.setVisible(false);
    }
 
    public static void main(String[] args) {
@@ -523,6 +528,7 @@ public class Game extends JFrame implements KeyListener {
                   messageArea.append(localMessage + "\n");
 
                } else if (tempObj instanceof GameData) {
+                  System.out.println("does it start the GameData switch?");// it does not
                   switch (((GameData) tempObj).DataType) {
                   case GAME:
                      System.out.println("this one's a game data");
@@ -530,7 +536,7 @@ public class Game extends JFrame implements KeyListener {
                      if (((GameData) tempObj).name == username) {
                         // do nothing
                      } else {
-                        //int index = 
+                        // int index =
                         if (otherPlayers.contains(((GameData) tempObj).name)) {
                            int index = otherPlayers.indexOf(((GameData) tempObj).name);
                            otherPlayers.add(index, ((GameData) tempObj));
@@ -538,20 +544,25 @@ public class Game extends JFrame implements KeyListener {
                            otherPlayers.add((GameData) tempObj);
                         }
                         // pass that good shit to OtherPlayers
-                        //state = ((GameData) tempObj).state;  
-                        //color = ((GameData) tempObj).color;
-                        //xpos = ((GameData) tempObj).xpos;
-                        //ypos = ((GameData) tempObj).ypos;
+                        // state = ((GameData) tempObj).state;
+                        // color = ((GameData) tempObj).color;
+                        // xpos = ((GameData) tempObj).xpos;
+                        // ypos = ((GameData) tempObj).ypos;
                      }
                      break;
-                  // gets a pos, compares usernames to make sure its an OtherPlayer's, updates that player
+                  // gets a pos, compares usernames to make sure its an OtherPlayer's, updates
+                  // that player
                   case POS:
                      System.out.println("this one's a pos data");
                      // TODO this needs to pass the positions to respective OtherPlayers
                      break;
                   case STATE:
                      System.out.println("this one's a state data");
-                     stateChange(((GameData) tempObj).state);
+                     GameState = ((GameData) tempObj).state;
+                     if (GameState == GAME_STATES.GAME) {
+                        System.out.println("does this ever happen");  // narrarator: it did not
+                        gameStart();
+                     }
                      break;
                   default:
                      break;
@@ -593,6 +604,18 @@ public class Game extends JFrame implements KeyListener {
             e.printStackTrace();
          }
       }
+
+      public void sendState(String username, GAME_STATES state) {
+         try {
+            System.out.println("Sending the state");
+            send.writeObject(new GameData(state));
+            System.out.println("state sent");
+         } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+      }
+
    } // End Connection constructor
 
    class ColorChooser extends JFrame implements ActionListener {
